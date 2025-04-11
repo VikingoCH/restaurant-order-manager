@@ -1,0 +1,6 @@
+[
+  {
+    "type": "sqlite",
+    "path": "/Applications/XAMPP/xamppfiles/htdocs/laravel12-app-starter/database/database.sqlite"
+  }
+]

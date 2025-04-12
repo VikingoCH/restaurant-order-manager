@@ -1,17 +1,11 @@
-# Laravel 12 App starter
+# Restaurant Order Manager
 ## Intro
-Laravel Base template based on Laravel 12 livewire starter kit.
-
-Template for a personal App where user must be authenticad to get acces to the application. Only Admin user can add new users. 
-
-Default Flux UI components library used by livewire starter kit is complete replaced by MaryUI.
-
+Laravel-Livewire APP for managing in house orders, print order receipt and control payment for small restaurant.
+Note: User must be authenticaed to access the APP. i.e. not possible to access the APP without athenticated user.
 ___
 **Disclamer:** 
 
 I'm a self-learning hobbyist coder, that code in my free time. I love coding! so I create small web-apps for my personal use just for fun and learning.
-
-I created this repository as a base for my web-apps.
 
 You're free to use this repository but most likely you'll find some typical amateur mistakes or not so good coding practices.... :wink:
 
@@ -22,16 +16,24 @@ ___
 ## Authorization
 Minimalist and simple authorizaiton implementation using laravel gates.
 
-A is_admin column have to be created in the users table to manage admin basic permissions.
+A is_admin column added to the users table to manage admin basic permissions.
 
 ### roles
 - Admin (is_admin => True):
   - Manage App setting
   - Add / Delete users
-  - View / Add / Edit / Delete all records in DB
+  - Manage soft deleted records
+  - View / Add / Edit / Delete records in DB
 - User (is_admin => False):
-  - View all records
-  - Add / Edit records in DB
+  - View / Add / Edit / Delete records in DB
+
+## Authorization
+Included languages:
+  - en
+  - de
+  - it
+  - pt
+  - es
 
 ## Packages
 - [Laravel 12] (https://laravel.com/docs/12.x)

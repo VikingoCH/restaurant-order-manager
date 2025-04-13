@@ -38,6 +38,13 @@ return new class extends Migration
             $table->softDeletes();
         });
 
+        Schema::create('payment_methods', function (Blueprint $table)
+        {
+            $table->id();
+            $table->string('name', length: 50);
+            $table->timestamps();
+        });
+
         Schema::create('transactions', function (Blueprint $table)
         {
             $table->id();
@@ -48,17 +55,11 @@ return new class extends Migration
             $table->decimal('tax', total: 4, places: 2);
             $table->boolean('paid')->default(false);
             $table->foreignId('order_id')->constrained();
+            $table->foreignId('payment_method_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
         });
 
-        Schema::create('payment_methods', function (Blueprint $table)
-        {
-            $table->id();
-            $table->string('name', length: 50);
-            $table->foreignId('transaction_id')->constrained();
-            $table->timestamps();
-        });
 
         Schema::create('order_items', function (Blueprint $table)
         {
@@ -81,8 +82,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('order_items');
-        Schema::dropIfExists('payment_methods');
         Schema::dropIfExists('transactions');
+        Schema::dropIfExists('payment_methods');
         Schema::dropIfExists('orders');
         Schema::dropIfExists('places');
         Schema::dropIfExists('locations');

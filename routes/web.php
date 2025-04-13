@@ -1,8 +1,13 @@
 <?php
 
-use App\Livewire\Settings\DeleteUserForm;
-use App\Livewire\Settings\Password;
-use App\Livewire\Settings\Profile;
+use App\Http\Controllers\GeneralSettingController;
+use App\Livewire\Profile\Profile as ProfileProfile;
+use App\Livewire\Profile\DeleteUserForm;
+use App\Livewire\Profile\Password;
+use App\Livewire\Profile\Profile;
+use App\Livewire\Settings\PaymentMethods;
+use App\Livewire\Settings\Printers;
+use App\Livewire\Settings\TableLocations;
 use App\Livewire\Settings\Users\DeleteUser;
 use App\Livewire\Settings\Users\ListUsers;
 use App\Livewire\Settings\Users\EditUser;
@@ -25,20 +30,36 @@ Route::middleware(['auth'])->group(function ()
 
     Route::redirect('settings', 'settings/profile');
 
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
-    Route::get('settings/password', Password::class)->name('settings.password');
-    Route::get('settings/delete', DeleteUserForm::class)->name('settings.delete');
-    Route::group(
-        [
-            'prefix' => 'settings/users',
-            'as' => 'settings.users.'
-        ],
+    Route::name('profile.')->prefix('profile')->group(function ()
+    {
+        Route::get('/', Profile::class)->name('index');
+        Route::get('password', Password::class)->name('password');
+        Route::get('delete', DeleteUserForm::class)->name('delete');
+    });
+    Route::name('settings.')->prefix('settings')->group(
         function ()
         {
-            Route::get('list', ListUsers::class)->name('list');
-            Route::get('edit/{id}', EditUser::class)->name('edit');
-            Route::get('register', RegisterUser::class)->name('register');
-            Route::get('delete/{id}', DeleteUser::class)->name('delete');
+            Route::get('/payment-methods', PaymentMethods::class)->name('payment.methods');
+            Route::get('/table-locations', TableLocations::class)->name('table.locations');
+            Route::get('/printers', Printers::class)->name('printers');
+
+            Route::get('/general', [GeneralSettingController::class, 'index'])->name('general');
+            Route::post('/general/create', [GeneralSettingController::class, 'create'])->name('general.create');
+            Route::put('/general/{id}/update', [GeneralSettingController::class, 'update'])->name('general.update');
+
+            // Route::resource('general', GeneralSettingController::class)->except([
+            //     'show',
+            //     'destroy'
+            // ]);
+            Route::name('users.')->prefix('users')->group(
+                function ()
+                {
+                    Route::get('/list', ListUsers::class)->name('list');
+                    Route::get('/edit/{id}', EditUser::class)->name('edit');
+                    Route::get('/add', RegisterUser::class)->name('add');
+                    Route::get('/delete/{id}', DeleteUser::class)->name('delete');
+                }
+            );
         }
     );
 });

@@ -103,3 +103,13 @@
 .mary-table-pagination button {
     @apply cursor-pointer
 }
+
+/**
+* Livewire Sortable styles
+*/
+.draggable-mirror {
+    background-color: #fff;
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+}

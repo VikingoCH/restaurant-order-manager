@@ -5,7 +5,7 @@
             <x-avatar :placeholder="auth()->user()->initials()" :title="auth()->user()->name" />
         </span>
     </x-slot:trigger>
-    <x-menu-item :href="route('settings.profile')" icon="o-user" title="Profile" />
+    <x-menu-item :href="route('profile.index')" icon="o-user" title="Profile" />
     <x-menu-separator />
     <div>
         <x-form action="{{ route('logout') }}" method="POST">

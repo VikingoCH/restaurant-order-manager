@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Settings;
+namespace App\Livewire\Profile;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,12 +21,15 @@ class Password extends Component
      */
     public function updatePassword(): void
     {
-        try {
+        try
+        {
             $validated = $this->validate([
                 'current_password' => ['required', 'string', 'current_password'],
                 'password' => ['required', 'string', PasswordRule::defaults(), 'confirmed'],
             ]);
-        } catch (ValidationException $e) {
+        }
+        catch (ValidationException $e)
+        {
             $this->reset('current_password', 'password', 'password_confirmation');
 
             throw $e;

@@ -27,7 +27,7 @@ A is_admin column added to the users table to manage admin basic permissions.
 - User (is_admin => False):
   - View / Add / Edit / Delete records in DB
 
-## Authorization
+## Locales
 Included languages:
   - en
   - de

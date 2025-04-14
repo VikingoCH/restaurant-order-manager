@@ -1,8 +1,9 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
     <x-header progress-indicator separator title="{{ __('labels.payment_methods') }}">
     </x-header>
-    <div class="flex flex-row gap-4">
-        <x-card class="grow rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
+    <div class="flex flex-row justify-center gap-4">
+        {{-- <div class="flex "> --}}
+        <x-card class="w-full rounded-xl border border-neutral-200 lg:w-3/4 dark:border-neutral-700" separator shadow
             title="{{ __('Available payment methods') }}">
             <x-slot:menu>
                 <x-buttons.add class="btn-sm" wire:click="create" />
@@ -18,9 +19,11 @@
             </x-table>
         </x-card>
 
+        {{-- </div> --}}
+
         <!-- New Payment Method form -->
         @if ($newForm)
-            <x-card class="grow rounded-xl border border-neutral-200 dark:border-neutral-700" shadow
+            <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
                 title="{{ __('New Payment Method') }}">
                 <x-form wire:submit='store'>
                     <x-input label="{{ __('labels.name') }}" wire:model="name" />
@@ -34,7 +37,7 @@
 
         <!-- Edit Payment Method form -->
         @if ($editForm)
-            <x-card class="grow rounded-xl border border-neutral-200 dark:border-neutral-700" shadow
+            <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
                 title="{{ __('Edit Payment Method') }}">
                 <x-form wire:submit='update'>
                     <x-input label="{{ __('labels.name') }}" wire:model="name" />

@@ -19,10 +19,10 @@ class Index extends Component
     #[Url]
     public string $search = '';
 
-    public function mount()
-    {
-        $this->activeTab = MenuSection::first()->id ?? null;
-    }
+    // public function mount()
+    // {
+    //     $this->activeTab = MenuSection::first()->id ?? null;
+    // }
 
     // Reset table pagination only if these properties has changed
     // public function updated($property)
@@ -33,38 +33,46 @@ class Index extends Component
     //     }
     // }
 
-    public function menuSections(): mixed
+    // public function menuSections(): mixed
+    // {
+    //     return MenuSection::orderBy('position', 'asc')->get();
+    // }
+
+    public function menuSections()
     {
-        return MenuSection::all();
+        $sections = MenuSection::with('menuItems')->orderBy('position', 'asc')->get();
+        $this->activeTab = $sections->first()->id;
+        return $sections;
     }
 
-    public function menuItems(): mixed
-    {
-        $item = [];
-        $sections = $this->menuSections();
-        if ($sections->count() != 0)
-        {
-            foreach ($sections as $section)
-            {
-                $response = MenuItem::query()
-                    ->with(['menuFixedSides', 'menuSelectableSides'])
-                    ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%$this->search%"))
-                    ->where('menu_section_id', $section->id)
-                    ->orderBy('position', 'asc')->get();
-                $item[$section->name] = $response ?? [];
-            }
-        }
-        return $item;
-    }
+    // public function menuItems(): mixed
+    // {
+    //     $item = [];
+    //     $sections = MenuSection::with('menuItems')->orderBy('position', 'asc')->get();
+    //     // dd($sections->find(1)->menuItems()->orderBy('position', 'asc')->get());
+    //     if ($sections->count() != 0)
+    //     {
+    //         foreach ($sections as $section)
+    //         {
+    //             $response = MenuItem::query()
+    //                 ->with(['menuFixedSides', 'menuSelectableSides'])
+    //                 ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%$this->search%"))
+    //                 ->where('menu_section_id', $section->id)
+    //                 ->orderBy('position', 'asc')->get();
+    //             $item[$section->name] = $response ?? [];
+    //         }
+    //     }
+    //     return $item;
+    // }
 
     public function headers(): array
     {
         return [
-            ['key' => 'reorder', 'label' => '', 'class' => 'w-1'],
+            ['key' => 'orderIcon', 'label' => '', 'class' => 'w-1'],
             ['key' => 'position', 'label' => '#', 'class' => 'w-1 hidden lg:table-cell'],
             ['key' => 'image_path', 'label' => __('labels.image'), 'class' => 'w-3'],
             ['key' => 'name', 'label' => __('labels.title')],
-            ['key' => 'sides', 'label' => __('labels.sides')],
+            // ['key' => 'sides', 'label' => __('labels.sides')],
             ['key' => 'price', 'label' => __('labels.price'), 'format' => ['currency', '2.\'', 'CHF']],
         ];
     }
@@ -100,7 +108,7 @@ class Index extends Component
         $this->success(__('Menu item deleted successfully'));
     }
 
-    public function updateRowOrder($items)
+    public function changeRowOrder($items)
     {
         foreach ($items as $item)
         {
@@ -114,7 +122,7 @@ class Index extends Component
     {
         return view('livewire.menu.index', [
             'sections' => $this->menuSections(),
-            'menuItems' => $this->menuItems(),
+            // 'menuItems' => $this->menuItems(),
             'headers' => $this->headers(),
         ]);
     }

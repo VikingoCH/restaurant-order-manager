@@ -7,6 +7,8 @@ use App\Models\MenuItem;
 use App\Models\MenuSection;
 use App\Models\MenuSelectableSide;
 use App\Models\MenuSide;
+use App\Models\Printer;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
@@ -19,33 +21,30 @@ class Edit extends Component
     use Toast, WithFileUploads;
 
     public MenuItem $menuItem;
-
+    public $withSides = false;
 
     public $fixedSides = [];
     public $selectableSides = [];
 
-    #[Validate]
-    public $name;
-
-    // [Validate('required|string|max:50|unique:menu_items,slug')]
-    #[Validate]
-    public $slug;
-
-    #[Validate]
-    public $price;
-
-    #[Validate]
+    #[Validate('integer')]
     public $position;
 
-    #[Validate]
+    #[Validate('required|string|max:150')]
+    public $name;
+
+    #[Validate('decimal:0,2|min:1')]
+    public $price;
+
+    #[Validate('image|nullable|max:1024')]
     public $newImagePath;
 
-
-    public $image_path;
-
-    #[Validate]
+    #[Validate('required|int')]
     public $menu_section_id;
 
+    #[Validate('required|int')]
+    public $printer_id;
+
+    public $image_path;
 
     public function mount(): void
     {
@@ -54,19 +53,22 @@ class Edit extends Component
             ->pluck('menu_side_id')->toArray();
 
         $this->selectableSides = MenuSelectableSide::where('menu_item_id', $this->menuItem->id)->get('menu_side_id')->pluck('menu_side_id')->toArray();
+        if (count($this->fixedSides) != 0 || count($this->selectableSides) != 0)
+        {
+            $this->withSides = true;
+        }
     }
 
-    protected function rules()
-    {
-        return [
-            'name' => 'required|string|max:150',
-            'slug' => [Rule::unique('menu_items')->ignore($this->menuItem->id), 'required', 'string', 'max:50'],
-            'price' => 'required|decimal:0,2|min:1',
-            'position' => 'integer',
-            'newImagePath' => 'image|nullable|max:1024',
-            'menu_section_id' => 'required|int',
-        ];
-    }
+    // protected function rules()
+    // {
+    //     return [
+    //         'name' => 'required|string|max:150',
+    //         'price' => 'required|decimal:0,2|min:1',
+    //         'position' => 'integer',
+    //         'newImagePath' => 'image|nullable|max:1024',
+    //         'menu_section_id' => 'required|int',
+    //     ];
+    // }
 
     public function save(): void
     {
@@ -74,10 +76,10 @@ class Edit extends Component
         $this->menuItem->update(
             [
                 'name' => $validated['name'],
-                'slug' => $validated['slug'],
                 'price' => $validated['price'],
                 'position' => $validated['position'],
                 'menu_section_id' => $validated['menu_section_id'],
+                'printer_id' => $validated['printer_id'],
             ]
         );
 
@@ -95,22 +97,25 @@ class Edit extends Component
         }
 
         // Update menu side dishes
+        //TODO: Side dishes update to be improved. No to delete and save each time
         $fixSides = MenuFixedSide::where('menu_item_id', $this->menuItem->id)->get();
         $selectSides = MenuSelectableSide::where('menu_item_id', $this->menuItem->id)->get();
-        if ($fixSides->count() > 0)
-        {
-            foreach ($fixSides as $side)
-            {
-                $side->delete();
-            }
-        }
-        if ($selectSides->count() > 0)
-        {
-            foreach ($selectSides as $side)
-            {
-                $side->delete();
-            }
-        }
+        // dd('fixDB', Arr::flatten($fixSides), 'fixPage', $this->fixedSides, 'SelecDB', $selectSides, 'SelecPage', $this->selectableSides);
+        // Check for existing side dishes in DB and remove them
+        // if ($fixSides->count() > 0)
+        // {
+        //     foreach ($fixSides as $side)
+        //     {
+        //         $side->delete();
+        //     }
+        // }
+        // if ($selectSides->count() > 0)
+        // {
+        //     foreach ($selectSides as $side)
+        //     {
+        //         $side->delete();
+        //     }
+        // }
 
         if (count($this->fixedSides) > 0)
         {
@@ -145,6 +150,7 @@ class Edit extends Component
         return view('livewire.menu.edit', [
             'sections' => MenuSection::all(),
             'sides' => MenuSide::all(),
+            'printers' => Printer::all(),
         ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\MenuItem;
 use App\Models\MenuSection;
 use App\Models\MenuSelectableSide;
 use App\Models\MenuSide;
+use App\Models\Printer;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,26 +17,27 @@ class Create extends Component
 {
     use Toast, WithFileUploads;
 
+    public $withSides = true;
     public $fixedSides = [];
     public $selectableSides = [];
+
+    #[Validate('integer')]
+    public $position;
 
     #[Validate('required|string|max:150')]
     public $name;
 
-    #[Validate('required|string|max:50|unique:menu_items,slug')]
-    public $slug;
-
     #[Validate('decimal:0,2|min:1')]
     public $price;
-
-    #[Validate('integer')]
-    public $position;
 
     #[Validate('image|nullable|max:1024')]
     public $image_path;
 
     #[Validate('required|int')]
     public $menu_section_id;
+
+    #[Validate('required|int')]
+    public $printer_id;
 
     public function save(): void
     {
@@ -83,6 +85,7 @@ class Create extends Component
         return view('livewire.menu.create', [
             'sections' => MenuSection::all(),
             'sides' => MenuSide::all(),
+            'printers' => Printer::all(),
         ]);
     }
 }

@@ -14,9 +14,6 @@ class Create extends Component
     #[Validate('required|string|max:150')]
     public $name;
 
-    #[Validate('required|string|max:50|unique:menu_sections,slug')]
-    public $slug;
-
     #[Validate('integer')]
     public $position;
 

@@ -9,7 +9,7 @@
         <div>
             <x-table :headers="$headers" :rows="$menuSections" changeRowOrder empty-text="{{ __('Menu sections not found!') }}"
                 show-empty-text>
-                @scope('cell_reorder', $menuSection)
+                @scope('cell_orderIcon', $menuSection)
                     <x-icon class="cursor-move text-gray-400" name="c-arrows-up-down" wire:sortable.handle />
                 @endscope
                 @scope('actions', $menuSection)

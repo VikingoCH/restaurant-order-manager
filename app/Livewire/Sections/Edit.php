@@ -6,7 +6,6 @@ use App\Models\MenuSection;
 use Livewire\Component;
 use Mary\Traits\Toast;
 use Livewire\Attributes\Validate;
-use Illuminate\Validation\Rule;
 
 class Edit extends Component
 {
@@ -14,27 +13,15 @@ class Edit extends Component
 
     public MenuSection $menuSection;
 
-    #[Validate]
+    #[Validate('required|string|max:150')]
     public $name;
 
-    #[Validate]
-    public $slug;
-
-    #[Validate]
+    #[Validate('integer')]
     public $position;
 
     public function mount(): void
     {
         $this->fill($this->menuSection);
-    }
-
-    protected function rules()
-    {
-        return [
-            'name' => 'required|string|max:150',
-            'slug' => [Rule::unique('menu_sections')->ignore($this->menuSection->id), 'required', 'string', 'max:50'],
-            'position' => 'integer',
-        ];
     }
 
     public function save()

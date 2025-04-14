@@ -5,7 +5,6 @@
             <div class="flex flex-col gap-4 lg:flex-row lg:gap-8">
                 <div class="flex flex-col gap-4 lg:w-full">
                     <x-input label="{{ __('labels.name') }}" wire:model.blur="name" />
-                    <x-input label="{{ __('labels.slug') }}" wire:model.blur="slug" />
                     <x-input label="{{ __('labels.position') }}" wire:model.blur="position" />
                 </div>
             </div>

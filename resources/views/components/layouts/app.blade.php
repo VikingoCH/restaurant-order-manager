@@ -44,28 +44,32 @@
                     <x-menu-item icon="gmdi.shopping-cart-o" link="/" title="{{ __('labels.orders') }}" />
                     <x-menu-item icon="gmdi.food-bank-o" link="###" title="{{ __('labels.transanctions') }}" />
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
-                        <x-menu-item icon="gmdi.restaurant-menu-o" link="#"
+                        <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
                             title="{{ __('labels.menu_items') }}" />
-                        <x-menu-item icon="gmdi.settings-input-component-o" link="#"
+                        <x-menu-item icon="gmdi.settings-input-component-o" link="{{ route('sections.index') }}"
                             title="{{ __('labels.menu_sections') }}" />
-                        <x-menu-item icon="gmdi.discount-o" link="#" title="{{ __('labels.menu_sides') }}" />
+                        <x-menu-item icon="gmdi.discount-o" link="{{ route('sides.index') }}"
+                            title="{{ __('labels.menu_sides') }}" />
                     </x-menu-sub>
-                    <x-menu-item icon="o-presentation-chart-bar" link="###" title="{{ __('labels.statistics') }}" />
-                    <x-menu-sub icon="gmdi.construction-o" title="{{ __('labels.settings') }}">
-                        <x-menu-item icon="o-credit-card" link="{{ route('settings.payment.methods') }}"
-                            title="{{ __('labels.payment_methods') }}" />
-                        <x-menu-item icon="gmdi.location-on-o" link="{{ route('settings.table.locations') }}"
-                            title="{{ __('labels.table_locations') }}" />
-                        <x-menu-item icon="gmdi.print-o" link="{{ route('settings.printers') }}"
-                            title="{{ __('labels.printers') }}" />
-                        <x-menu-item icon="o-cog-6-tooth" link="{{ route('settings.general') }}"
-                            title="{{ __('labels.app_settings') }}" />
-                        <x-menu-item icon="o-users" link="{{ route('settings.users.list') }}"
-                            title="{{ __('labels.users') }}" />
-                        <x-menu-item icon="gmdi.restore-from-trash-o" link="###"
-                            title="{{ __('labels.trash') }}" />
+                    <x-menu-item icon="o-presentation-chart-bar" link="###"
+                        title="{{ __('labels.statistics') }}" />
+                    @can('manage_settings')
+                        <x-menu-sub icon="gmdi.construction-o" title="{{ __('labels.settings') }}">
+                            <x-menu-item icon="o-credit-card" link="{{ route('settings.payment.methods') }}"
+                                title="{{ __('labels.payment_methods') }}" />
+                            <x-menu-item icon="gmdi.location-on-o" link="{{ route('settings.table.locations') }}"
+                                title="{{ __('labels.table_locations') }}" />
+                            <x-menu-item icon="gmdi.print-o" link="{{ route('settings.printers') }}"
+                                title="{{ __('labels.printers') }}" />
+                            <x-menu-item icon="o-cog-6-tooth" link="{{ route('settings.general') }}"
+                                title="{{ __('labels.app_settings') }}" />
+                            <x-menu-item icon="o-users" link="{{ route('settings.users.list') }}"
+                                title="{{ __('labels.users') }}" />
+                            <x-menu-item icon="gmdi.restore-from-trash-o" link="###"
+                                title="{{ __('labels.trash') }}" />
 
-                    </x-menu-sub>
+                        </x-menu-sub>
+                    @endcan
                 </x-menu>
             </x-slot:sidebar>
 

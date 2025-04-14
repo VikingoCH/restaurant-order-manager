@@ -5,16 +5,14 @@
         <x-card class="grow rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             title="{{ __('Available printers') }}">
             <x-slot:menu>
-                <x-button class="btn-sm btn-primary" icon="o-plus" tooltip="{{ __('labels.add') }}" wire:click="create" />
+                <x-buttons.add class="btn-sm" wire:click="create" />
             </x-slot:menu>
 
             <x-table :headers='$headers' :rows='$printers' empty-text="{{ __('Nothing to show!') }}" show-empty-text>
                 @scope('actions', $printer)
                     <div class="flex flex-nowrap gap-3">
-                        <x-button class="btn-sm text-primary" icon="o-pencil" spinner tooltip="{{ __('labels.edit') }}"
-                            wire:click='edit({{ $printer->id }})' />
-                        <x-button class="btn-sm text-error" icon="o-trash" spinner tooltip="{{ __('labels.delete') }}"
-                            wire:click="destroy({{ $printer->id }})" wire:confirm="{{ __('Are you sure?') }}" />
+                        <x-buttons.edit wire:click='edit({{ $printer->id }})' />
+                        <x-buttons.trash wire:click="destroy({{ $printer->id }})" />
                     </div>
                 @endscope
             </x-table>
@@ -31,8 +29,8 @@
                     <x-input label="{{ __('labels.ip') }}" wire:model="ip_address" />
                     <x-input label="{{ __('labels.conection') }}" wire:model="conection_type" />
                     <x-slot:actions>
-                        <x-button label="{{ __('labels.cancel') }}" wire:click="$toggle('newForm')" />
-                        <x-button class="btn-primary" label="{{ __('labels.add') }}" spinner="store" type="submit" />
+                        <x-buttons.save spinner="store" type="submit" />
+                        <x-buttons.cancel wire:click="$toggle('newForm')" />
                     </x-slot:actions>
                 </x-form>
             </x-card>
@@ -49,8 +47,8 @@
                     <x-input label="{{ __('labels.ip') }}" wire:model="ip_address" />
                     <x-input label="{{ __('labels.conection') }}" wire:model="conection_type" />
                     <x-slot:actions>
-                        <x-button label="{{ __('labels.cancel') }}" wire:click="$toggle('editForm')" />
-                        <x-button class="btn-primary" label="{{ __('labels.save') }}" spinner="store" type="submit" />
+                        <x-buttons.save spinner="update" type="submit" />
+                        <x-buttons.cancel wire:click="$toggle('editForm')" />
                     </x-slot:actions>
                 </x-form>
             </x-card>

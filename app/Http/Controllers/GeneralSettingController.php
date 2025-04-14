@@ -3,16 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
-use Mary\Traits\Toast;
+use Illuminate\Support\Facades\Gate;
 
 class GeneralSettingController extends Controller
 {
-    use Toast;
 
     public function index()
     {
+        Gate::authorize('manage_settings');
+
         $appSetting = AppSetting::first();
 
         if ($appSetting)
@@ -30,6 +32,8 @@ class GeneralSettingController extends Controller
 
     public function create(Request $request)
     {
+        Gate::authorize('manage_settings');
+
         $request->validate([
             'order_prefix' => 'required|string|max:255',
             'tax' => 'required|decimal:0,2',
@@ -45,6 +49,8 @@ class GeneralSettingController extends Controller
 
     public function update(Request $request, $id)
     {
+        Gate::authorize('manage_settings');
+
         $request->validate([
             'order_prefix' => 'required|string|max:255',
             'tax' => 'required|decimal:0,2',

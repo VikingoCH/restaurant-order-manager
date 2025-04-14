@@ -46,6 +46,8 @@ class Printers extends Component
 
     public function edit(Printer $printer)
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->fill($printer);
         $this->editForm = true;
@@ -53,6 +55,8 @@ class Printers extends Component
 
     public function update()
     {
+        $this->authorize('manage_settings');
+
         $printer = Printer::find($this->id);
         $printer->update($this->validate());
         $this->reset();
@@ -61,12 +65,16 @@ class Printers extends Component
 
     public function create()
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->newForm = true;
     }
 
     public function store()
     {
+        $this->authorize('manage_settings');
+
         Printer::create($this->validate());
         $this->reset();
         $this->success(__('Printer created successfully'));
@@ -74,12 +82,16 @@ class Printers extends Component
 
     public function destroy(Printer $printer)
     {
+        $this->authorize('manage_settings');
+
         $printer->delete();
         $this->success(__('Printer deleted successfully'));
     }
 
     public function render()
     {
+        $this->authorize('manage_settings');
+
         return view('livewire.settings.printers', [
             'headers' => $this->headers(),
             'printers' => Printer::all(),

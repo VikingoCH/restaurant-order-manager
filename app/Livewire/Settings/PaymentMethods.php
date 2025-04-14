@@ -29,6 +29,8 @@ class PaymentMethods extends Component
 
     public function edit(PaymentMethod $payMethod)
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->fill($payMethod);
         $this->editForm = true;
@@ -36,6 +38,8 @@ class PaymentMethods extends Component
 
     public function update()
     {
+        $this->authorize('manage_settings');
+
         $payMethod = PaymentMethod::find($this->id);
         $payMethod->update($this->validate());
         $this->reset();
@@ -44,12 +48,16 @@ class PaymentMethods extends Component
 
     public function create()
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->newForm = true;
     }
 
     public function store()
     {
+        $this->authorize('manage_settings');
+
         PaymentMethod::create($this->validate());
         $this->reset();
         $this->success(__('Payment Method created successfully'));
@@ -57,6 +65,8 @@ class PaymentMethods extends Component
 
     public function destroy(PaymentMethod $payMethod)
     {
+        $this->authorize('manage_settings');
+
         $payMethod->delete();
         $this->success(__('Payment Method deleted successfully'));
     }
@@ -64,6 +74,8 @@ class PaymentMethods extends Component
 
     public function render()
     {
+        $this->authorize('manage_settings');
+
         return view('livewire.settings.payment-methods', [
             'headers' => $this->headers(),
             'payMethods' => PaymentMethod::all(),

@@ -5,7 +5,7 @@
         <x-header separator subtitle="{{ __('Settings used in general by the App') }}"
             title="{{ __('General Settings - Create') }}">
             <x-slot:actions>
-                <x-button class="btn-primary" icon="o-plus" label="{{ __('labels.save') }}" type="submit" />
+                <x-buttons.save type="submit" />
             </x-slot:actions>
         </x-header>
         @include('general-settings.form')

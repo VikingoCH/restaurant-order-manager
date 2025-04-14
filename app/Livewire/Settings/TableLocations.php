@@ -41,6 +41,8 @@ class TableLocations extends Component
 
     public function edit(Location $location)
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->fill($location);
         $this->number = $location->places->count();
@@ -49,6 +51,8 @@ class TableLocations extends Component
 
     public function update()
     {
+        $this->authorize('manage_settings');
+
         //Update Locations Table
         $location = Location::find($this->id);
         $location->update($this->validate());
@@ -87,12 +91,16 @@ class TableLocations extends Component
 
     public function create()
     {
+        $this->authorize('manage_settings');
+
         $this->reset();
         $this->newForm = true;
     }
 
     public function store()
     {
+        $this->authorize('manage_settings');
+
         $this->validate();
         $location = Location::create([
             'name' => $this->name,
@@ -111,13 +119,16 @@ class TableLocations extends Component
 
     public function destroy(Location $location)
     {
+        $this->authorize('manage_settings');
+
         $location->delete();
         $this->success(__('Payment Method deleted successfully'));
     }
 
     public function changeRowOrder($items)
     {
-        // dd($items);
+        $this->authorize('manage_settings');
+
         foreach ($items as $item)
         {
             Location::find($item['value'])->update(['position' => $item['order']]);
@@ -129,8 +140,7 @@ class TableLocations extends Component
 
     public function render()
     {
-        // $locations = Location::with(['places'])->get();
-        // dd($locations[0]->places->count());
+        $this->authorize('manage_settings');
 
         return view('livewire.settings.table-locations', [
             'headers' => $this->headers(),

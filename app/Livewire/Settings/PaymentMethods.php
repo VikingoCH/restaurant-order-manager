@@ -16,8 +16,7 @@ class PaymentMethods extends Component
     public $name = '';
     public $id;
 
-    public $editForm = false;
-    public $newForm = false;
+    public $showForm = false;
 
     public function headers()
     {
@@ -33,17 +32,7 @@ class PaymentMethods extends Component
 
         $this->reset();
         $this->fill($payMethod);
-        $this->editForm = true;
-    }
-
-    public function update()
-    {
-        $this->authorize('manage_settings');
-
-        $payMethod = PaymentMethod::find($this->id);
-        $payMethod->update($this->validate());
-        $this->reset();
-        $this->success(__('Payment Method updated successfully'));
+        $this->showForm = true;
     }
 
     public function create()
@@ -51,17 +40,26 @@ class PaymentMethods extends Component
         $this->authorize('manage_settings');
 
         $this->reset();
-        $this->newForm = true;
+        $this->showForm = true;
     }
 
-    public function store()
+    public function save()
     {
         $this->authorize('manage_settings');
-
-        PaymentMethod::create($this->validate());
-        $this->reset();
-        $this->success(__('Payment Method created successfully'));
+        if ($this->id)
+        {
+            $payMethod = PaymentMethod::find($this->id);
+            $payMethod->update($this->validate());
+            $this->reset();
+        }
+        else
+        {
+            PaymentMethod::create($this->validate());
+            $this->reset();
+        }
+        $this->success(__('Payment Method saved successfully'));
     }
+
 
     public function destroy(PaymentMethod $payMethod)
     {

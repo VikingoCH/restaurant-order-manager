@@ -25,13 +25,12 @@
                         <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700"
                             title="{{ __('Side dishes') }}">
                             <x-slot:menu>
-                                <x-toggle class="self-start"
-                                    label="{{ $withSides ? __('Show Side Dishes') : __('Hide Side Dishes') }}" right
-                                    wire:click="$toggle('withSides')" wire:model='withSides' />
+                                <x-toggle label="{{ $withSides ? __('Show Side Dishes') : __('Hide Side Dishes') }}"
+                                    right wire:click="$toggle('withSides')" wire:model='withSides' />
                             </x-slot:menu>
 
                             @if ($withSides)
-                                <div class="grid w-full grid-cols-3 items-center lg:w-1/2">
+                                <div class="grid w-full grid-cols-3 items-center text-xs lg:w-1/2 lg:text-sm">
                                     <span class="fieldset-legend mb-0.5">{{ __('labels.name') }}</span>
                                     <span class="fieldset-legend mb-0.5">{{ __('labels.always') }}</span>
                                     <span class="fieldset-legend mb-0.5">{{ __('labels.one_of') }}</span>

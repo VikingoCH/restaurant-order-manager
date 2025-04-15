@@ -28,8 +28,7 @@ class Printers extends Component
 
     public $id;
 
-    public $editForm = false;
-    public $newForm = false;
+    public $showForm = false;
 
     public function headers()
     {
@@ -50,17 +49,7 @@ class Printers extends Component
 
         $this->reset();
         $this->fill($printer);
-        $this->editForm = true;
-    }
-
-    public function update()
-    {
-        $this->authorize('manage_settings');
-
-        $printer = Printer::find($this->id);
-        $printer->update($this->validate());
-        $this->reset();
-        $this->success(__('Printer updated successfully'));
+        $this->showForm = true;
     }
 
     public function create()
@@ -68,16 +57,25 @@ class Printers extends Component
         $this->authorize('manage_settings');
 
         $this->reset();
-        $this->newForm = true;
+        $this->showForm = true;
     }
 
-    public function store()
+    public function save()
     {
         $this->authorize('manage_settings');
+        if ($this->id)
+        {
+            $printer = Printer::find($this->id);
+            $printer->update($this->validate());
+            $this->reset();
+        }
+        else
+        {
+            Printer::create($this->validate());
+            $this->reset();
+        }
 
-        Printer::create($this->validate());
-        $this->reset();
-        $this->success(__('Printer created successfully'));
+        $this->success(__('Printer saved successfully'));
     }
 
     public function destroy(Printer $printer)

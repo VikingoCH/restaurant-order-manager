@@ -1,7 +1,7 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
     <x-header progress-indicator separator title="{{ __('labels.table_locations') }}">
     </x-header>
-    <div class="flex flex-row justify-center gap-4">
+    <div class="flex flex-col-reverse justify-center gap-4 lg:flex-row">
         <x-card class="w-full rounded-xl border border-neutral-200 lg:w-3/4 dark:border-neutral-700" separator shadow
             title="{{ __('Available Tables') }}">
             <x-slot:menu>

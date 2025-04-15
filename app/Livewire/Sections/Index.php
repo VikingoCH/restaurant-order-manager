@@ -3,6 +3,7 @@
 namespace App\Livewire\Sections;
 
 use App\Models\MenuSection;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -10,6 +11,17 @@ class Index extends Component
 {
 
     use Toast;
+
+    #[Validate('required|string|max:150')]
+    public $name;
+
+    #[Validate('integer')]
+    public $position;
+
+    public $id;
+
+    public $showForm = false;
+
 
     public function headers(): array
     {
@@ -20,12 +32,36 @@ class Index extends Component
         ];
     }
 
-    public function menuSections(): mixed
+    public function edit(MenuSection $menuSection)
     {
-        return MenuSection::orderBy('position', 'asc')->get();
+        $this->reset();
+        $this->fill($menuSection);
+        $this->showForm = true;
     }
 
-    public function delete(MenuSection $menuSection): void
+    public function create()
+    {
+        $this->reset();
+        $this->showForm = true;
+    }
+
+    public function save()
+    {
+        if ($this->id)
+        {
+            $menuSection = MenuSection::find($this->id);
+            $menuSection->update($this->validate());
+            $this->reset();
+        }
+        else
+        {
+            MenuSection::create($this->validate());
+            $this->reset();
+        }
+        $this->success(__('Menu Section saved successfully'));
+    }
+
+    public function destroy(MenuSection $menuSection): void
     {
         $menuSection->delete();
 
@@ -44,7 +80,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.sections.index', [
-            'menuSections' => $this->menuSections(),
+            'menuSections' => MenuSection::orderBy('position', 'asc')->get(),
             'headers' => $this->headers(),
         ]);
     }

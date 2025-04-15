@@ -7,9 +7,13 @@
         <x-header separator subtitle="{{ __('Settings used in general by the App') }}"
             title="{{ __('General Settings') }}">
             <x-slot:actions>
-                <x-buttons.save type="submit" />
+                <x-buttons.save responsive type="submit" />
             </x-slot:actions>
         </x-header>
-        @include('general-settings.form')
+        <div class="flex w-full justify-center lg:w-3/4">
+            <div class="flex flex-col gap-4">
+                @include('general-settings.form')
+            </div>
+        </div>
     </form>
 </x-layouts.app>

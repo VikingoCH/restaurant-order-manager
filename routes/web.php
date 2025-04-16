@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Menu;
 use App\Livewire\Sections;
 use App\Livewire\Sides;
+use App\Livewire\Orders;
 
 
 // Route::view('/', 'home')
@@ -30,9 +31,11 @@ Route::get('/lang/{locale}', function ($locale)
 
 Route::middleware(['auth'])->group(function ()
 {
-    Route::view('/', 'home')->name('home');
+    Route::get('/', Orders\Index::class)->name('home');
+    Route::get('/order/{orderId}/edit', Orders\Edit::class)->name('order.edit');
 
-    Route::redirect('settings', 'settings/profile');
+
+    // Route::redirect('settings', 'settings/profile');
 
     Route::name('menu.')->prefix('menu')->group(function ()
     {

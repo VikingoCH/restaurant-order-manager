@@ -21,6 +21,7 @@ class Index extends Component
     public function headers(): array
     {
         return [
+            ['key' => 'orderIcon', 'label' => '', 'class' => 'w-1'],
             ['key' => 'id', 'label' => 'id', 'class' => 'w-1 hidden lg:table-cell'],
             ['key' => 'name', 'label' => __('labels.title')],
         ];
@@ -65,6 +66,15 @@ class Index extends Component
         $menuSide->delete();
 
         $this->success(__('Menu side dish deleted successfully'));
+    }
+
+    public function changeRowOrder($items)
+    {
+        foreach ($items as $item)
+        {
+            MenuSide::find($item['value'])->update(['position' => $item['order']]);
+        }
+        $this->success(__('Menu Items reordered successfully'));
     }
 
     public function render()

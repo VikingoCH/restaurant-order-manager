@@ -19,7 +19,7 @@ class Index extends Component
             ['key' => 'number', 'label' => __('labels.order_number')],
             ['key' => 'table', 'label' => __('labels.table'), 'class' => 'w-3'],
             // ['key' => 'place_id', 'label' => __('labels.table'), 'class' => 'w-3'],
-            ['key' => 'amount', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF ']],
+            ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d']],
         ];
     }

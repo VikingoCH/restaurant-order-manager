@@ -13,6 +13,7 @@ class MenuSide extends Model
 
     protected $fillable = [
         'name',
+        'position',
     ];
 
     public function menuItemsFixed(): BelongsToMany

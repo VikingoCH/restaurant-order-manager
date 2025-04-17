@@ -29,7 +29,10 @@
                 <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No orders yet!') }}"
                     link="/order/{id}/edit" show-empty-text>
                     @scope('actions', $openOrder)
-                        <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                        <div class="flex flex-nowrap gap-3">
+                            <x-buttons.pay />
+                            <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                        </div>
                     @endscope
                 </x-table>
             </x-card>

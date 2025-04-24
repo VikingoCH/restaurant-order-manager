@@ -16,10 +16,9 @@ class Index extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'number', 'label' => __('labels.order_number')],
+            ['key' => 'number', 'label' => __('labels.order_number'), 'class' => 'w-3'],
             ['key' => 'table', 'label' => __('labels.table'), 'class' => 'w-3'],
-            // ['key' => 'place_id', 'label' => __('labels.table'), 'class' => 'w-3'],
-            ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF ']],
+            ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'w-48'],
             ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d']],
         ];
     }
@@ -57,6 +56,7 @@ class Index extends Component
     {
         return view('livewire.orders.index', [
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
+            'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(20),
             'headers' => $this->headers(),
             'locations' => Location::with('places')->get(),
         ]);

@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderItem extends Model
+class Transaction extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
-        'quantity',
-        'price',
-        'printed',
-        'sides',
-        'remarks',
-        'selectable_sides',
-        'fixed_sides',
+        'number',
+        'total',
+        'discount',
+        'tip',
+        'tax',
+        'paid',
         'order_id',
-        'menu_item_id',
+        'payment_method_id',
     ];
 
-    public function menuItem(): BelongsTo
+    public function paymentMethod(): BelongsTo
     {
-        return $this->belongsTo(MenuItem::class);
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function transactionItems(): HasMany
+    {
+        return $this->hasMany(TransactionItem::class);
     }
 
     public function order(): BelongsTo

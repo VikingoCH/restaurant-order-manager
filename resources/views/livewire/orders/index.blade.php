@@ -24,13 +24,13 @@
             </div>
         </x-card>
         <div class="flex w-full flex-col gap-4 lg:w-3/4">
-            <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
+            <x-card class="w- rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
                 title="{{ __('Open Orders') }}">
                 <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No orders yet!') }}"
                     link="/order/{id}/edit" show-empty-text>
                     @scope('actions', $openOrder)
                         <div class="flex flex-nowrap gap-3">
-                            <x-buttons.pay />
+                            <x-buttons.pay link="{{ route('transaction.payment', [$openOrder->id]) }}" />
                             <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
                         </div>
                     @endscope
@@ -38,7 +38,7 @@
             </x-card>
             <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
                 title="{{ __('Closed Orders') }}">
-                <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No closed orders today!') }}"
+                <x-table :headers="$headers" :rows="$closedOrders" empty-text="{{ __('No closed orders today!') }}"
                     show-empty-text />
             </x-card>
         </div>

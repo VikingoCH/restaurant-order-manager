@@ -16,27 +16,6 @@ class Index extends Component
 
     public $activeTab;
 
-    #[Url]
-    public string $search = '';
-
-    // public function mount()
-    // {
-    //     $this->activeTab = MenuSection::first()->id ?? null;
-    // }
-
-    // Reset table pagination only if these properties has changed
-    // public function updated($property)
-    // {
-    //     if (in_array($property, ['search']))
-    //     {
-    //         $this->resetPage();
-    //     }
-    // }
-
-    // public function menuSections(): mixed
-    // {
-    //     return MenuSection::orderBy('position', 'asc')->get();
-    // }
 
     public function menuSections()
     {
@@ -45,26 +24,6 @@ class Index extends Component
         return $sections;
     }
 
-    // public function menuItems(): mixed
-    // {
-    //     $item = [];
-    //     $sections = MenuSection::with('menuItems')->orderBy('position', 'asc')->get();
-    //     // dd($sections->find(1)->menuItems()->orderBy('position', 'asc')->get());
-    //     if ($sections->count() != 0)
-    //     {
-    //         foreach ($sections as $section)
-    //         {
-    //             $response = MenuItem::query()
-    //                 ->with(['menuFixedSides', 'menuSelectableSides'])
-    //                 ->when($this->search, fn(Builder $q) => $q->where('name', 'like', "%$this->search%"))
-    //                 ->where('menu_section_id', $section->id)
-    //                 ->orderBy('position', 'asc')->get();
-    //             $item[$section->name] = $response ?? [];
-    //         }
-    //     }
-    //     return $item;
-    // }
-
     public function headers(): array
     {
         return [
@@ -72,7 +31,6 @@ class Index extends Component
             ['key' => 'position', 'label' => '#', 'class' => 'w-1 hidden lg:table-cell'],
             ['key' => 'image_path', 'label' => __('labels.image'), 'class' => 'w-3'],
             ['key' => 'name', 'label' => __('labels.title')],
-            // ['key' => 'sides', 'label' => __('labels.sides')],
             ['key' => 'price', 'label' => __('labels.price'), 'format' => ['currency', '2.\'', 'CHF']],
         ];
     }
@@ -80,28 +38,6 @@ class Index extends Component
     public function delete(MenuItem $menuItem): void
     {
         // TODO: To implement sof deletes recovery and destroy methods
-        // $fixSides = MenuFixedSide::where('menu_item_id', $menuItem->id)->get();
-        // $selectSides = MenuFixedSide::where('menu_item_id', $menuItem->id)->get();
-        // if ($fixSides->count() > 0)
-        // {
-        //     foreach ($fixSides as $side)
-        //     {
-        //         $side->delete();
-        //     }
-        // }
-        // if ($selectSides->count() > 0)
-        // {
-        //     foreach ($selectSides as $side)
-        //     {
-        //         $side->delete();
-        //     }
-        // }
-
-        // if ($menuItem->image_path)
-        // {
-        //     // Delete the old image if it exists
-        //     Storage::disk('public')->delete($menuItem->image_path);
-        // }
 
         $menuItem->delete();
 
@@ -122,7 +58,6 @@ class Index extends Component
     {
         return view('livewire.menu.index', [
             'sections' => $this->menuSections(),
-            // 'menuItems' => $this->menuItems(),
             'headers' => $this->headers(),
         ]);
     }

@@ -17,7 +17,6 @@
                         <x-select :options="$sections" label="{{ __('labels.sections') }}"
                             wire:model.blur="menu_section_id" />
                         <x-input label="{{ __('labels.name') }}" wire:model.blur="name" />
-                        {{-- <x-input label="{{ __('labels.slug') }}" wire:model.blur="slug" /> --}}
                         <x-input label="{{ __('labels.price') }}" locale="de-CH" money prefix="CHF"
                             wire:model.blur="price" />
                         <x-input label="{{ __('labels.position') }}" wire:model.blur="position" />
@@ -50,11 +49,6 @@
                                     @endforeach
                                 </div>
                             @endif
-                            {{-- {{ dump($sides) }}
-                            <hr class="border border-b-2 border-red-400" />
-                            {{ var_dump($fixedSides) }}
-                            <hr class="border border-b-2 border-red-400" />
-                            {{ dump($selectableSides) }} --}}
                         </x-card>
                     </div>
                 </div>

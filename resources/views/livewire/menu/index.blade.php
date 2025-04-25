@@ -1,10 +1,6 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
     <x-header progress-indicator separator subtitle="{{ __('Configure your menu') }}"
         title="{{ __('labels.menu_items') }}">
-        <x-slot:middle class="!justify-end">
-            <x-input icon="o-magnifying-glass" placeholder="Search ..." wire:model.live.debounce="search" />
-
-        </x-slot:middle>
         <x-slot:actions>
             @if (!$sections->isEmpty())
                 <x-buttons.add link="{{ route('menu.create') }}" responsive />
@@ -32,27 +28,6 @@
                                         <x-icon class="cursor-move text-gray-400" name="c-arrows-up-down"
                                             wire:sortable.handle />
                                     @endscope
-                                    {{-- @scope('cell_sides', $menuItem)
-                                        <p>
-                                            @if ($menuItem->menuFixedSides->isNotEmpty())
-                                                @foreach ($menuItem->menuFixedSides as $side)
-                                                    {{ $side->name . ' | ' }}
-                                                @endforeach
-                                            @else
-                                                {{ '--' }}
-                                            @endif
-                                        </p>
-                                        <p>
-                                            @if ($menuItem->menuSelectableSides->isNotEmpty())
-                                                <span>{{ __('labels.one_of') }}</span>
-                                                @foreach ($menuItem->menuSelectableSides as $side)
-                                                    {{ $side->name . ' | ' }}
-                                                @endforeach
-                                            @else
-                                                {{ '--' }}
-                                            @endif
-                                        </p>
-                                    @endscope --}}
                                     @scope('cell_image_path', $menuItem)
                                         @if ($menuItem->image_path != null)
                                             <x-avatar class="!w-10 !rounded-lg"

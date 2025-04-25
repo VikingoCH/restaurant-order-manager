@@ -75,10 +75,6 @@ class Create extends Component
         $this->success(__('Menu item created successfully'), redirectTo: route('menu.index'));
     }
 
-    // public function menuSections()
-    // {
-    //     return MenuSection::all();
-    // }
 
     public function render()
     {

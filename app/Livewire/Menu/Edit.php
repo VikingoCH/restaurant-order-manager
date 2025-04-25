@@ -59,17 +59,6 @@ class Edit extends Component
         }
     }
 
-    // protected function rules()
-    // {
-    //     return [
-    //         'name' => 'required|string|max:150',
-    //         'price' => 'required|decimal:0,2|min:1',
-    //         'position' => 'integer',
-    //         'newImagePath' => 'image|nullable|max:1024',
-    //         'menu_section_id' => 'required|int',
-    //     ];
-    // }
-
     public function save(): void
     {
         $validated = $this->validate();
@@ -97,25 +86,8 @@ class Edit extends Component
         }
 
         // Update menu side dishes
-        //TODO: Side dishes update to be improved. No to delete and save each time
         $fixSides = MenuFixedSide::where('menu_item_id', $this->menuItem->id)->get();
         $selectSides = MenuSelectableSide::where('menu_item_id', $this->menuItem->id)->get();
-        // dd('fixDB', Arr::flatten($fixSides), 'fixPage', $this->fixedSides, 'SelecDB', $selectSides, 'SelecPage', $this->selectableSides);
-        // Check for existing side dishes in DB and remove them
-        // if ($fixSides->count() > 0)
-        // {
-        //     foreach ($fixSides as $side)
-        //     {
-        //         $side->delete();
-        //     }
-        // }
-        // if ($selectSides->count() > 0)
-        // {
-        //     foreach ($selectSides as $side)
-        //     {
-        //         $side->delete();
-        //     }
-        // }
 
         if (count($this->fixedSides) > 0)
         {

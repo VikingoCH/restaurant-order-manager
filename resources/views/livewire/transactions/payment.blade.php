@@ -20,56 +20,77 @@
         </x-alert>
     @endif
     <div class="flex flex-col justify-center gap-4 lg:flex-row">
+
+        <!-- Ordered Items Section -->
         <x-card class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             title="{{ __('labels.open_items') }}">
             <x-slot:menu>
-                <x-buttons.pay label="{{ __('Pay all') }}" />
+                <x-buttons.pay label="{{ __('Pay all') }}" wire:click='addAllPaymentItems' />
             </x-slot:menu>
             <x-table :headers="$headers" :rows="$orderItems" @row-click="$wire.addPaymentItem($event.detail.id)"
-                empty-text="{{ __('All ordered items are payed!') }}" show-empty-text>
-                {{-- @scope('cell_items', $orderItem)
-                    <p>{{ $orderItem->menuItem->name }}</p>
-                    <span class="text-xs text-gray-400">{{ $orderItem->sides }}</span>
-                    <span class="text-xs text-gray-400">
-                        {{ $orderItem->remarks ? ' | ' . $orderItem->remarks : '' }}
-                    </span>
-                @endscope
-
-                @scope('cell_total', $orderItem)
-                    {{ 'CHF ' . number_format($orderItem->quantity * $orderItem->price, 2) }}
-                @endscope --}}
-            </x-table>
+                empty-text="{{ __('All ordered items are payed!') }}" show-empty-text />
+            <div class="mt-4 flex flex-row gap-2 border-t border-gray-300">
+                <div class="basis-2/3 py-2 text-end font-bold">{{ __('labels.total') }}</div>
+                <div class="basis-1/3 px-12 py-2 text-end font-bold">{{ 'CHF ' . $orderItemsTotal }}</div>
+            </div>
         </x-card>
+
+        <!-- Payment section -->
         <x-card class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             title="{{ __('labels.payment') }}">
             <x-table :headers="$headers" :rows="$paymentItems" empty-text="{{ __('Select an item to add') }}"
                 show-empty-text />
+
             <hr class="my-8 border border-gray-300" />
-            <x-form>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="py-2 text-end font-bold">{{ __('labels.subTotal') }}</div>
-                    <x-input prefix="CHF" readonly value="{{ number_format($itemsTotal, 2) }}" />
 
-                    <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" />
-                    <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly value="120 CHF" />
+            <div class="grid grid-cols-2 gap-2">
+                <div class="py-2 text-end font-bold">{{ __('labels.sub_total') }}</div>
+                <x-input prefix="CHF" readonly value="{{ number_format($itemsTotal, 2) }}" />
 
-                    <x-input icon="gmdi.percent-o" label="{{ __('VAT (%)') }}" />
-                    <x-input label="{{ __('Total VAT') }}" prefix="CHF" readonly value="10 CHF" />
+                <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" wire:model.live='discount' />
+                <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly
+                    value="{{ number_format(((int) $discount / 100) * $itemsTotal, 2) }}" />
 
-                    <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div>
-                    <x-input prefix="CHF" />
+                <x-input icon="gmdi.percent-o" label="{{ __('MWST (%)') }}" wire:model.live='tax' />
+                <x-input label="{{ __('Total MWST') }}" prefix="CHF" readonly
+                    value="{{ number_format(($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
 
-                    <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div>
-                    <x-input prefix="CHF" readonly value="400" />
+                <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div>
+                <x-input prefix="CHF" wire:model.live='tip' />
 
-                    <x-select :options="$paymentMethods" icon="o-credit-card" label="{{ __('Payment Method') }}" />
-                    <div class="flex flex-row justify-center align-middle">
-                        <x-buttons.pay />
-                        <x-buttons.cancel />
-                    </div>
+                <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div>
+                <x-input prefix="CHF" readonly
+                    value="{{ number_format($itemsTotal - ((int) $discount / 100) * $itemsTotal + (int) $tip + ($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
+            </div>
 
+            <div class="mt-8 flex flex-col gap-4 border-t border-gray-300">
+
+                <x-select :options="$paymentMethods" icon="o-credit-card" label="{{ __('Payment Method') }}"
+                    wire:model='paymentMethod' />
+
+                <div class="grid grid-cols-3 gap-2">
+                    @if (count($paymentItems) != 0)
+                        <x-button class="btn-primary mt-auto" icon="gmdi.payments-o" label="{{ __('labels.pay') }}"
+                            wire:click='pay' />
+                        <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print') }}"
+                            wire:click="$toggle('printing')" />
+                    @else
+                        <x-button class="btn-primary mt-auto" disabled icon="gmdi.payments-o"
+                            label="{{ __('labels.pay') }}" />
+                        <x-button class="btn-secondary mt-auto" disabled icon="o-printer"
+                            label="{{ __('labels.print') }}" />
+                    @endif
+                    <x-buttons.cancel class="mt-auto" wire:click='cancel' />
                 </div>
-            </x-form>
+            </div>
         </x-card>
     </div>
+
+    <!-- Temporal printing modal - to be replaced by final printer method -->
+    <x-modal separator title="Printing payment" wire:model="printing">
+        <div class="flex justify-between">
+            Printing ...
+            <x-loading class="loading-bars" />
+        </div>
+    </x-modal>
 </div>

@@ -6,40 +6,67 @@ use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentMethod;
+use App\Models\Transaction;
+use App\Models\TransactionItem;
+use App\Traits\AppSettings;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 class Payment extends Component
 {
-    use Toast;
+    use Toast, AppSettings;
 
     public $orderId;
     public array $selectedRows;
 
-    public $orderItems;
+    public $orderItems = [];
     public $hasOpenItems = false;
     public array $paymentItems = [];
+    public $orderItemsTotal = 0;
 
     public $itemsTotal = 0;
+    public $discount = 0;
+    public $tax;
+    public $tip = 0;
+    public $paymentMethod;
+
+    public $printing = false;
 
 
     public function mount()
     {
+        $this->setOrderItems();
+        $this->tax = $this->tax();
+    }
+
+    public function setOrderItems()
+    {
         $orderItems = OrderItem::with(['menuItem'])->where('order_id', $this->orderId)->where('is_payed', false)->get();
-        foreach ($orderItems as $orderItem)
+        if ($orderItems)
         {
-            $this->orderItems[$orderItem->id] = [
-                'id' => $orderItem->id,
-                'item' => $orderItem->menuItem->name,
-                'quantity' => $orderItem->quantity,
-                'price' => $orderItem->price,
-                'total' => number_format($orderItem->quantity * $orderItem->price, 2),
-            ];
+            foreach ($orderItems as $orderItem)
+            {
+                $this->orderItems[$orderItem->id] = [
+                    'id' => $orderItem->id,
+                    'item' => $orderItem->menuItem->name,
+                    'quantity' => $orderItem->quantity - $orderItem->payed_quantity,
+                    'price' => $orderItem->price,
+                    'total' => number_format(($orderItem->quantity - $orderItem->payed_quantity) * $orderItem->price, 2),
+                ];
+                $this->orderItemsTotal += $this->orderItems[$orderItem->id]['total'];
+            }
+            if ($orderItems->where('printed', false)->count() != 0)
+            {
+                $this->hasOpenItems = true;
+            }
         }
-        if ($orderItems->where('printed', false)->count() != 0)
-        {
-            return $this->hasOpenItems = true;
-        }
+    }
+
+    public function setPaymentMethods()
+    {
+        $paymentMethods = PaymentMethod::all();
+        $this->paymentMethod = $paymentMethods->first()->id;
+        return $paymentMethods;
     }
 
     public function headers(): array
@@ -53,44 +80,23 @@ class Payment extends Component
         ];
     }
 
-    // public function orderItems()
-    // {
-    //     $orderItems = OrderItem::with(['menuItem'])->where('order_id', $this->orderId)->get();
-    //     foreach ($orderItems as $orderItem)
-    //     {
-    //         $this->orderItems[$orderItem->id] = [
-    //             'item' => $orderItem->menuItem->name,
-    //             'quantity' => $orderItem->quantity,
-    //             'price' => $orderItem->price,
-    //             'total' => number_format($orderItem->quantity * $orderItem->price, 2),
-    //         ];
-    //     }
-    // }
-
-    // public function hasOpenItems()
-    // {
-    //     if ($this->orderItems->where('printed', false)->count() != 0)
-    //     {
-    //         return $this->hasOpenItems = true;
-    //     }
-    //     return $this->hasOpenItems = false;
-    // }
-
     public function addPaymentItem($orderItemId)
     {
-        // $orderItem = $this->orderItems[$orderItemId];
-        // $menuItem = MenuItem::where('id', $orderItem->menu_item_id);
+        //If item is already in the payment list
         if (array_key_exists($orderItemId, $this->paymentItems))
         {
+            //Add payment item
             $this->paymentItems[$orderItemId]['quantity'] += 1;
             $this->paymentItems[$orderItemId]['total'] += $this->orderItems[$orderItemId]['price'];
 
+            // Update order item
             $this->orderItems[$orderItemId]['quantity'] -= 1;
             $this->orderItems[$orderItemId]['total'] = number_format($this->orderItems[$orderItemId]['quantity'] * $this->orderItems[$orderItemId]['price'], 2);
         }
-        else
+        else //If item is not in the payment list yet
         {
-            // dd($orderItem);
+
+            // Create payment item
             $this->paymentItems[$orderItemId] = [
                 'id' => $orderItemId,
                 'item' => $this->orderItems[$orderItemId]['item'],
@@ -99,27 +105,111 @@ class Payment extends Component
                 'total' => $this->orderItems[$orderItemId]['price'],
             ];
 
+            // Update order item
             $this->orderItems[$orderItemId]['quantity'] -= 1;
             $this->orderItems[$orderItemId]['total'] = number_format($this->orderItems[$orderItemId]['quantity'] * $this->orderItems[$orderItemId]['price'], 2);
         }
 
-        $this->itemsTotal += $this->paymentItems[$orderItemId]['total'];
+        // Recalculate totals
+        $this->itemsTotal += $this->paymentItems[$orderItemId]['price'];
+        $this->orderItemsTotal -= $this->paymentItems[$orderItemId]['price'];
 
+
+        // If all order items added to payment list then remove it from order list
         if ($this->orderItems[$orderItemId]['quantity'] == 0)
         {
             unset($this->orderItems[$orderItemId]);
         }
-        // var_dump($this->paymentItems);
-        $this->success('Item Added', $orderItemId);
+    }
+
+    public function addAllPaymentItems()
+    {
+        $this->paymentItems = $this->orderItems;
+
+        //calculate subtotal
+        foreach ($this->paymentItems as $paymentItem)
+        {
+            $this->itemsTotal += $paymentItem['total'];
+        }
+        $this->orderItems = [];
+        $this->orderItemsTotal = 0;
+    }
+
+    public function pay()
+    {
+        $order = Order::find($this->orderId);
+
+        //Transaction Number
+        date_default_timezone_set('Europe/Zurich');
+        $orderNumber = Order::where('id', $this->orderId)->get('number');
+        $transacNumber = $orderNumber[0]->number . '-' . date('Ymd-Gis');
+
+        // Transaction register
+        $transaction = Transaction::create([
+            'number' => $transacNumber,
+            'total' => $this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal + (int) $this->tip + ($this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal) * ((int) $this->tax / 100),
+            'discount' => ((int) $this->discount / 100) * $this->itemsTotal,
+            'tip' => $this->tip,
+            'tax' => ($this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal) * ((int) $this->tax / 100),
+            'paid' => true,
+            'order_id' => $order->id,
+            'payment_method_id' => $this->paymentMethod,
+        ]);
+
+        //transaction Items register
+        $orderItems = OrderItem::where('order_id', $this->orderId)->where('is_payed', false)->get();
+        foreach ($this->paymentItems as $orderItemId => $paymentItem)
+        {
+            TransactionItem::create([
+                'item' => $paymentItem['item'],
+                'quantity' => $paymentItem['quantity'],
+                'price' => $paymentItem['price'],
+                'transaction_id' => $transaction->id,
+            ]);
+
+            // Update the order item
+            $orderItem = $orderItems->find($orderItemId);
+            $payedQty = $orderItem->payed_quantity + $paymentItem['quantity'];
+            $orderItem->payed_quantity = $payedQty;
+            $orderItem->printed = true;
+            if ($orderItem->quantity == $payedQty)
+            {
+                $orderItem->update(['is_payed' => true]);
+            }
+        }
+
+        //Verify if all items are payed if so then close the order
+        if (OrderItem::where('order_id', $this->orderId)->where('is_payed', false)->count() == 0)
+        {
+            $order->update(['is_open' => false]);
+            $order->place->update(['available' => true]);
+            $this->success('No more orders');
+        }
+
+        $this->reset('paymentItems', 'itemsTotal', 'discount', 'tip');
+        // $this->success('Payment processed sucessfully');
+    }
+
+    //TODO: To include logic for printer.
+    public function updatedPrinting()
+    {
+        sleep(3);
+        $this->printing = false;
+    }
+
+
+    public function cancel()
+    {
+        $this->reset('orderItems', 'orderItemsTotal', 'paymentItems', 'itemsTotal', 'discount', 'tip');
+        $this->setOrderItems();
+        $this->tax = $this->tax();
     }
 
     public function render()
     {
         return view('livewire.transactions.payment', [
             'order' => Order::find($this->orderId),
-            'paymentMethods' => PaymentMethod::all(),
-            // 'orderItems' => $this->orderItems(),
-            // 'hasOpenItems' => $this->hasOpenItems(),
+            'paymentMethods' => $this->setPaymentMethods(),
             'headers' => $this->headers(),
         ]);
     }

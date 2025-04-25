@@ -42,7 +42,10 @@
                 {{-- Activates the menu item when a route matches the `link` property --}}
                 <x-menu :title="null" activate-by-route>
                     <x-menu-item icon="gmdi.shopping-cart-o" link="/" title="{{ __('labels.orders') }}" />
-                    <x-menu-item icon="gmdi.food-bank-o" link="###" title="{{ __('labels.transanctions') }}" />
+
+                    <x-menu-item icon="gmdi.food-bank-o" link="{{ route('transactions.index') }}"
+                        title="{{ __('labels.transanctions') }}" />
+
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
                         <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
                             title="{{ __('labels.menu_items') }}" />
@@ -51,8 +54,10 @@
                         <x-menu-item icon="gmdi.discount-o" link="{{ route('sides.index') }}"
                             title="{{ __('labels.menu_sides') }}" />
                     </x-menu-sub>
+
                     <x-menu-item icon="o-presentation-chart-bar" link="###"
                         title="{{ __('labels.statistics') }}" />
+
                     @can('manage_settings')
                         <x-menu-sub icon="gmdi.construction-o" title="{{ __('labels.settings') }}">
                             <x-menu-item icon="o-credit-card" link="{{ route('settings.payment.methods') }}"
@@ -67,7 +72,6 @@
                                 title="{{ __('labels.users') }}" />
                             <x-menu-item icon="gmdi.restore-from-trash-o" link="###"
                                 title="{{ __('labels.trash') }}" />
-
                         </x-menu-sub>
                     @endcan
                 </x-menu>
@@ -82,6 +86,8 @@
         {{--  TOAST area --}}
         <x-toast position="toast-bottom toast-end" />
         <script defer src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
+        </script>
     </body>
 
 </html>

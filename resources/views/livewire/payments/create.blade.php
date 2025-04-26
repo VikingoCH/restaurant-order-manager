@@ -51,7 +51,7 @@
                 <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly
                     value="{{ number_format(((int) $discount / 100) * $itemsTotal, 2) }}" />
 
-                <x-input icon="gmdi.percent-o" label="{{ __('MWST (%)') }}" wire:model.live='tax' />
+                <x-input icon="gmdi.percent-o" label="{{ __('labels.tax') }}" wire:model.live='tax' />
                 <x-input label="{{ __('Total MWST') }}" prefix="CHF" readonly
                     value="{{ number_format(($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
 

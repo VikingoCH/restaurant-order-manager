@@ -7,11 +7,12 @@ use App\Models\Order;
 use App\Models\Place;
 use App\Traits\AppSettings;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use AppSettings, Toast;
+    use AppSettings, Toast, WithPagination;
 
     public function headers(): array
     {
@@ -19,7 +20,7 @@ class Index extends Component
             ['key' => 'number', 'label' => __('labels.order_number'), 'class' => 'w-3'],
             ['key' => 'table', 'label' => __('labels.table'), 'class' => 'w-3'],
             ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'w-48'],
-            ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d']],
+            ['key' => 'created_at', 'label' => __('labels.date'), 'format' => ['date', 'Y/m/d (H:i)']],
         ];
     }
 
@@ -56,7 +57,7 @@ class Index extends Component
     {
         return view('livewire.orders.index', [
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
-            'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(20),
+            'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),
             'locations' => Location::with('places')->get(),
         ]);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Transactions;
+namespace App\Livewire\Payments;
 
 use App\Models\MenuItem;
 use App\Models\Order;
@@ -12,7 +12,7 @@ use App\Traits\AppSettings;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
-class Payment extends Component
+class Create extends Component
 {
     use Toast, AppSettings;
 
@@ -207,7 +207,7 @@ class Payment extends Component
 
     public function render()
     {
-        return view('livewire.transactions.payment', [
+        return view('livewire.payments.create', [
             'order' => Order::find($this->orderId),
             'paymentMethods' => $this->setPaymentMethods(),
             'headers' => $this->headers(),

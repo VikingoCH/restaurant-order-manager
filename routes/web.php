@@ -18,7 +18,7 @@ use App\Livewire\Sections;
 use App\Livewire\Sides;
 use App\Livewire\Orders;
 use App\Livewire\Transactions;
-use App\Models\Transaction;
+use App\Livewire\Payments;
 
 // Route::view('/', 'home')
 //     ->middleware(['auth', 'verified'])
@@ -36,7 +36,7 @@ Route::middleware(['auth'])->group(function ()
     Route::get('/order/{orderId}/edit', Orders\Edit::class)->name('order.edit');
 
     Route::get('/transactions', Transactions\Index::class)->name('transactions.index');
-    Route::get('/transactions/{orderId}/payment', Transactions\Payment::class)->name('transaction.payment');
+    Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
 
     // Route::redirect('settings', 'settings/profile');
 

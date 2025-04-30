@@ -9,7 +9,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="bg-base-200/50 dark:bg-base-200/50 font-[verdana] antialiased">
+    <body class="bg-base-200/50 dark:bg-base-200/75 font-[verdana] antialiased">
 
         {{-- The navbar with `sticky` and `full-width` --}}
         <x-nav full-width sticky>
@@ -27,7 +27,7 @@
             {{-- Right side actions --}}
             <x-slot:actions>
                 <x-menus.lang-menu />
-                <x-theme-toggle class="btn-ghost btn-sm" darkTheme="dark" lightTheme="light" />
+                <x-theme-toggle class="btn-ghost btn-sm" darkTheme="mydark" lightTheme="mylight" />
                 <x-menus.user-menu />
             </x-slot:actions>
         </x-nav>

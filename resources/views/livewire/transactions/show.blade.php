@@ -25,8 +25,8 @@
                 <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div>
                 <x-input prefix="CHF" readonly value="{{ number_format($transaction->total, 2) }}" />
             </div>
-            <div class="mt-8 flex flex-col gap-4 border-t border-gray-300">
-                <x-button class="btn-primary" icon="gmdi.arrow-back" label="{{ __('labels.close') }}"
+            <div class="mt-4 flex flex-col gap-4 border-t border-gray-300">
+                <x-button class="btn-secondary mt-2" icon="gmdi.arrow-back" label="{{ __('labels.close') }}"
                     wire:click='close' />
             </div>
         </x-card>

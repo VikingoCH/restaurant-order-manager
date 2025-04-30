@@ -29,7 +29,7 @@
         <!-- New Payment Method form -->
         @if ($newForm)
             <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
-                title="{{ __('New Payment Method') }}">
+                title="{{ __('New tables location') }}">
 
                 <x-form wire:submit='store'>
                     <x-input label="{{ __('labels.name') }}" wire:model="name" />

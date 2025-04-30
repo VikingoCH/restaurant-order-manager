@@ -20,7 +20,10 @@ class Index extends Component
     public function menuSections()
     {
         $sections = MenuSection::with('menuItems')->orderBy('position', 'asc')->get();
-        $this->activeTab = $sections->first()->id;
+        if (!$sections->isEmpty())
+        {
+            $this->activeTab = $sections->first()->id;
+        }
         return $sections;
     }
 

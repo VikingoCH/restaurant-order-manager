@@ -3,7 +3,7 @@
         @if (session()->has('locale'))
             <x-dynamic-component :component="'flag-language-' . session('locale')" class="h-6 w-6" />
         @else
-            <x-flag-language-en class="h-6 w-6" />
+            <x-dynamic-component :component="'flag-language-' . app()->getLocale()" class="h-6 w-6" />
         @endif
     </x-slot:trigger>
     @foreach (config('lang.supported_locales') as $locale => $data)

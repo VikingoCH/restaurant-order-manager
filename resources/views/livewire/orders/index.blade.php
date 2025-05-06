@@ -36,11 +36,11 @@
                     @endscope
                 </x-table>
             </x-card>
-            <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
+            {{-- <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
                 title="{{ __('Closed Orders') }}">
                 <x-table :headers="$headers" :rows="$closedOrders" empty-text="{{ __('No closed orders today!') }}"
                     show-empty-text with-pagination />
-            </x-card>
+            </x-card> --}}
         </div>
     </div>
 

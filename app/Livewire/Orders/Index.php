@@ -57,7 +57,7 @@ class Index extends Component
     {
         return view('livewire.orders.index', [
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
-            'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
+            // 'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),
             'locations' => Location::with('places')->get(),
         ]);

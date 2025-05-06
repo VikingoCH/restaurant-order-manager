@@ -5,6 +5,8 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" name="viewport">
         <meta content="{{ csrf_token() }}" name="csrf-token">
+        <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+        <link href="https://unpkg.com/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet">
         <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -41,10 +43,10 @@
 
                 {{-- Activates the menu item when a route matches the `link` property --}}
                 <x-menu :title="null" activate-by-route>
-                    <x-menu-item icon="gmdi.shopping-cart-o" link="/" title="{{ __('labels.orders') }}" />
+                    <x-menu-item icon="gmdi.shopping-cart-o" link="/" title="{{ __('Open Orders') }}" />
 
-                    <x-menu-item icon="gmdi.food-bank-o" link="{{ route('transactions.index') }}"
-                        title="{{ __('labels.transanctions') }}" />
+                    <x-menu-item icon="gmdi.payments-o" link="{{ route('transactions.index') }}"
+                        title="{{ __('Closed Orders') }}" />
 
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
                         <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
@@ -88,6 +90,12 @@
         <script defer src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://unpkg.com/flatpickr/dist/plugins/monthSelect/index.js"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/it.js"></script>
+        <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
     </body>
 
 </html>

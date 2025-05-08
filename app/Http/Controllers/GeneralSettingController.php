@@ -36,11 +36,13 @@ class GeneralSettingController extends Controller
 
         $request->validate([
             'order_prefix' => 'required|string|max:255',
+            'quick_order_name' => 'required|string|max:255',
             'tax' => 'required|decimal:0,2',
             'rows_per_page' => 'required|integer',
         ]);
         AppSetting::create([
             'order_prefix' => $request->order_prefix,
+            'quick_order_name' => $request->quick_order_name,
             'tax' => $request->tax,
             'rows_per_page' => $request->rows_per_page,
         ]);
@@ -53,6 +55,7 @@ class GeneralSettingController extends Controller
 
         $request->validate([
             'order_prefix' => 'required|string|max:255',
+            'quick_order_name' => 'required|string|max:255',
             'tax' => 'required|decimal:0,2',
             'rows_per_page' => 'required|integer',
         ]);
@@ -60,6 +63,7 @@ class GeneralSettingController extends Controller
 
         $appSetting = AppSetting::find($id);
         $appSetting->order_prefix = $request->order_prefix;
+        $appSetting->quick_order_name = $request->quick_order_name;
         $appSetting->tax = $request->tax;
         $appSetting->rows_per_page = $request->rows_per_page;
         $appSetting->save();

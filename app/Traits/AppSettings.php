@@ -11,6 +11,11 @@ trait AppSettings
         return $this->appSettings()->order_prefix;
     }
 
+    protected function quickOrderName()
+    {
+        return $this->appSettings()->quick_order_name;
+    }
+
     protected function tax()
     {
         return $this->appSettings()->tax;

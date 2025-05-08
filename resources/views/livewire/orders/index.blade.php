@@ -1,5 +1,9 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
-    <x-header progress-indicator separator title="{{ __('labels.orders') }}" />
+    <x-header progress-indicator separator title="{{ __('labels.orders') }}">
+        <x-slot:actions>
+            <x-button class="btn-primary" icon="gmdi.fastfood-o" label="{{ __('labels.quick_order') }}" />
+        </x-slot:actions>
+    </x-header>
 
     <div class="flex flex-col justify-center gap-4 lg:flex-row-reverse">
         <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" separator shadow

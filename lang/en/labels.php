@@ -73,6 +73,7 @@ return [
     'processed' => 'Processed',
     'profile' => 'Profile',
     'quantity' => 'Quantity',
+    'quick_order' => 'Quick Order',
     'remarks' => 'Remarks',
     'save' => 'Save',
     'section' => 'Section',

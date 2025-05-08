@@ -11,6 +11,19 @@
         @enderror
     </x-card>
 </div>
+<div class="flex flex-row gap-4">
+    <div class="flex w-3/5 flex-col">
+        <h3 class="text-lg font-bold">{{ __('Quick Order Name') }}</h3>
+        <p class="text-gray-500">
+            {{ __('Used as order item name when a quick order is ceated') }}</p>
+    </div>
+    <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
+        <x-input name="quick_order_name" value="{{ isset($appSetting) ? $appSetting->quick_order_name : '' }}" />
+        @error('quick_order_name')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('quick_order_name') }}</span>
+        @enderror
+    </x-card>
+</div>
 <div class="mt-4 flex flex-row gap-4">
     <div class="flex w-3/5 flex-col">
         <h3 class="text-lg font-bold">{{ __('Tax') }}</h3>

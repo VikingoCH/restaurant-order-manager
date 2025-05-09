@@ -9,7 +9,8 @@ class Location extends Model
 {
     protected $fillable = [
         'name',
-        'position'
+        'position',
+        'physical'
     ];
 
 

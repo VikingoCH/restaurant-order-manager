@@ -36,7 +36,7 @@ class Index extends Component
             'table' => $location[0]->name . "-" . $place->number,
             'place_id' => $place->id
         ]);
-        $order->number = $prefix . "-" . date("m-Y") . "-" . $order->id;
+        $order->number = $prefix . "-" . date("Ymd") . "-" . $order->id;
         $order->save();
 
         $place->available = false;
@@ -59,7 +59,7 @@ class Index extends Component
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
             // 'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),
-            'locations' => Location::with('places')->get(),
+            'locations' => Location::where('physical', true)->with('places')->get(),
         ]);
     }
 }

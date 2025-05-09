@@ -57,7 +57,7 @@ class TableLocations extends Component
         $location = Location::find($this->id);
         $location->update($this->validate());
 
-        //Current number of places
+        //Current number of places in DB
         $tables = $location->places->count();
 
         //If number of places is incremented
@@ -144,7 +144,7 @@ class TableLocations extends Component
 
         return view('livewire.settings.table-locations', [
             'headers' => $this->headers(),
-            'locations' => Location::with(['places'])->orderBy('position', 'asc')->get(),
+            'locations' => Location::where('physical', true)->with(['places'])->orderBy('position', 'asc')->get(),
         ]);
     }
 }

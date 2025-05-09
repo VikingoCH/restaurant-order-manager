@@ -15,6 +15,8 @@ return new class extends Migration
         {
             $table->id();
             $table->string('name', length: 50);
+            $table->integer('position')->default(1);
+            $table->boolean('physical')->default(true);
             $table->timestamps();
         });
 
@@ -33,6 +35,7 @@ return new class extends Migration
             $table->string('number', length: 50);
             $table->decimal('total', total: 8, places: 2);
             $table->boolean('is_open')->default(false);
+            $table->string('table', length: 100)->default('notable');
             $table->foreignId('place_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
@@ -65,10 +68,14 @@ return new class extends Migration
         {
             $table->id();
             $table->integer('quantity');
-            $table->decimal('total', total: 8, places: 2);
+            $table->decimal('price', total: 8, places: 2);
             $table->boolean('printed')->default(false);
             $table->string('sides');
             $table->string('remarks');
+            $table->string('fixed_sides', length: 50)->nullable();
+            $table->boolean('is_paid')->default(false);
+            $table->integer('paid_quantity')->default(0);
+            $table->string('selectable_sides', length: 50)->nullable();
             $table->foreignId('order_id')->constrained();
             $table->foreignId('menu_item_id')->constrained();
             $table->timestamps();

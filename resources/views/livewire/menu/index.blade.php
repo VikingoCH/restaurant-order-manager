@@ -10,7 +10,7 @@
     <div class="flex justify-center">
         <x-card class="w-full rounded-xl border border-neutral-200 lg:w-3/4 dark:border-neutral-700" separator shadow>
             @if ($sections->isEmpty())
-                <x-alert class="alert-warning alert-soft"
+                <x-alert class="alert-info"
                     description="{{ __('Create first at least one section to include items in the menu') }}"
                     icon="o-exclamation-triangle" title="{{ __('No menu sections found') }}">
                     <x-slot:actions>

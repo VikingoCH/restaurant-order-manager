@@ -41,7 +41,7 @@ class Create extends Component
 
     public function setOrderItems()
     {
-        $orderItems = OrderItem::with(['menuItem'])->where('order_id', $this->orderId)->where('is_payed', false)->get();
+        $orderItems = OrderItem::with(['menuItem'])->where('order_id', $this->orderId)->where('is_paid', false)->get();
         if ($orderItems)
         {
             foreach ($orderItems as $orderItem)
@@ -49,9 +49,9 @@ class Create extends Component
                 $this->orderItems[$orderItem->id] = [
                     'id' => $orderItem->id,
                     'item' => $orderItem->menuItem->name,
-                    'quantity' => $orderItem->quantity - $orderItem->payed_quantity,
+                    'quantity' => $orderItem->quantity - $orderItem->paid_quantity,
                     'price' => $orderItem->price,
-                    'total' => number_format(($orderItem->quantity - $orderItem->payed_quantity) * $orderItem->price, 2),
+                    'total' => number_format(($orderItem->quantity - $orderItem->paid_quantity) * $orderItem->price, 2),
                 ];
                 $this->orderItemsTotal += $this->orderItems[$orderItem->id]['total'];
             }
@@ -142,7 +142,7 @@ class Create extends Component
         //Transaction Number
         date_default_timezone_set('Europe/Zurich');
         $orderNumber = Order::where('id', $this->orderId)->get('number');
-        $transacNumber = $orderNumber[0]->number . '-' . date('Ymd-Gis');
+        $transacNumber = $orderNumber[0]->number . '-' . date('Gis');
 
         // Transaction register
         $transaction = Transaction::create([
@@ -157,7 +157,7 @@ class Create extends Component
         ]);
 
         //transaction Items register
-        $orderItems = OrderItem::where('order_id', $this->orderId)->where('is_payed', false)->get();
+        $orderItems = OrderItem::where('order_id', $this->orderId)->where('is_paid', false)->get();
         foreach ($this->paymentItems as $orderItemId => $paymentItem)
         {
             TransactionItem::create([
@@ -169,17 +169,17 @@ class Create extends Component
 
             // Update the order item
             $orderItem = $orderItems->find($orderItemId);
-            $payedQty = $orderItem->payed_quantity + $paymentItem['quantity'];
-            $orderItem->payed_quantity = $payedQty;
+            $paidQty = $orderItem->paid_quantity + $paymentItem['quantity'];
+            $orderItem->paid_quantity = $paidQty;
             $orderItem->printed = true;
-            if ($orderItem->quantity == $payedQty)
+            if ($orderItem->quantity == $paidQty)
             {
-                $orderItem->update(['is_payed' => true]);
+                $orderItem->update(['is_paid' => true]);
             }
         }
 
-        //Verify if all items are payed if so then close the order
-        if (OrderItem::where('order_id', $this->orderId)->where('is_payed', false)->count() == 0)
+        //Verify if all items are paid if so then close the order
+        if (OrderItem::where('order_id', $this->orderId)->where('is_paid', false)->count() == 0)
         {
             $order->update(['is_open' => false]);
             $order->place->update(['available' => true]);

@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            AppSettingsSeeder::class,
+            LocationPlaceSeeder::class,
         ]);
     }
 }

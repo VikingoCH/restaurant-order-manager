@@ -28,10 +28,11 @@
                 <x-buttons.pay label="{{ __('Pay all') }}" wire:click='addAllPaymentItems' />
             </x-slot:menu>
             <x-table :headers="$headers" :rows="$orderItems" @row-click="$wire.addPaymentItem($event.detail.id)"
-                empty-text="{{ __('All ordered items are payed!') }}" show-empty-text />
+                empty-text="{{ __('All ordered items are paid!') }}" show-empty-text />
             <div class="mt-4 flex flex-row gap-2 border-t border-gray-300">
                 <div class="basis-2/3 py-2 text-end font-bold">{{ __('labels.total') }}</div>
-                <div class="basis-1/3 px-12 py-2 text-end font-bold">{{ 'CHF ' . $orderItemsTotal }}</div>
+                <div class="basis-1/3 px-12 py-2 text-end font-bold">{{ 'CHF ' . number_format($orderItemsTotal, 2) }}
+                </div>
             </div>
         </x-card>
 
@@ -44,8 +45,10 @@
             <hr class="my-8 border border-gray-300" />
 
             <div class="grid grid-cols-2 gap-2">
-                <div class="py-2 text-end font-bold">{{ __('labels.sub_total') }}</div>
-                <x-input prefix="CHF" readonly value="{{ number_format($itemsTotal, 2) }}" />
+                {{-- <div class="py-2 text-end font-bold">{{ __('labels.sub_total') }}</div> --}}
+                <span></span>
+                <x-input label="{{ __('labels.sub_total') }}" prefix="CHF" readonly
+                    value="{{ number_format($itemsTotal, 2) }}" />
 
                 <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" wire:model.live='discount' />
                 <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly
@@ -55,11 +58,13 @@
                 <x-input label="{{ __('Total MWST') }}" prefix="CHF" readonly
                     value="{{ number_format(($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
 
-                <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div>
-                <x-input prefix="CHF" wire:model.live='tip' />
+                {{-- <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div> --}}
+                <span></span>
+                <x-input label="{{ __('labels.tip') }}" prefix="CHF" wire:model.live='tip' />
 
-                <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div>
-                <x-input prefix="CHF" readonly
+                {{-- <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div> --}}
+                <span></span>
+                <x-input label="{{ __('labels.total') }}" prefix="CHF" readonly
                     value="{{ number_format($itemsTotal - ((int) $discount / 100) * $itemsTotal + (int) $tip + ($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
             </div>
 

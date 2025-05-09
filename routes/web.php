@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function ()
 
     Route::get('/transactions', Transactions\Index::class)->name('transactions.index');
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
+    Route::get('/payments/quick-order', Payments\QuickOrder::class)->name('payments.quick-order');
 
     // Route::redirect('settings', 'settings/profile');
 

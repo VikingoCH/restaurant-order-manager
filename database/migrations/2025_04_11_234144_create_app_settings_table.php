@@ -15,6 +15,7 @@ return new class extends Migration
         {
             $table->id();
             $table->string('order_prefix')->default('ORD');
+            $table->string('quick_order_name')->default('Verschiedene Gerichte');
             $table->decimal('tax', total: 4, places: 2)->default(7.7);
             $table->integer('rows_per_page')->default(10);
             $table->timestamps();

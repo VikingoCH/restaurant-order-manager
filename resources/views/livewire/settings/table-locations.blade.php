@@ -26,7 +26,7 @@
 
         </x-card>
 
-        <!-- New Payment Method form -->
+        <!-- New Table location form -->
         @if ($newForm)
             <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
                 title="{{ __('New tables location') }}">
@@ -44,7 +44,7 @@
             </x-card>
         @endif
 
-        <!-- Edit Payment Method form -->
+        <!-- Edit Table location form -->
         @if ($editForm)
             <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
                 title="{{ __('Edit Payment Method') }}">

@@ -19,8 +19,8 @@ class OrderItem extends Model
         'remarks',
         'selectable_sides',
         'fixed_sides',
-        'is_payed',
-        'payed_quantity',
+        'is_paid',
+        'paid_quantity',
         'order_id',
         'menu_item_id',
     ];

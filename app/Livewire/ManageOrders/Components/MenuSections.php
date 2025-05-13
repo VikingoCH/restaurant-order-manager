@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders\Components;
+namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\MenuSection;
 use Livewire\Component;
@@ -11,7 +11,7 @@ class MenuSections extends Component
 
     public function render()
     {
-        return view('livewire.orders.components.menu-sections', [
+        return view('livewire.manage-orders.components.menu-sections', [
             'sections' => MenuSection::orderBy('position', 'asc')->get()
         ]);
     }

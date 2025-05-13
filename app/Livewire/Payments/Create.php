@@ -147,10 +147,10 @@ class Create extends Component
         // Transaction register
         $transaction = Transaction::create([
             'number' => $transacNumber,
-            'total' => $this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal + (int) $this->tip + ($this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal) * ((int) $this->tax / 100),
-            'discount' => ((int) $this->discount / 100) * $this->itemsTotal,
+            'total' => $this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal + (float) $this->tip + ($this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal) * ((float) $this->tax / 100),
+            'discount' => ((float) $this->discount / 100) * $this->itemsTotal,
             'tip' => $this->tip,
-            'tax' => ($this->itemsTotal - ((int) $this->discount / 100) * $this->itemsTotal) * ((int) $this->tax / 100),
+            'tax' => ($this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal) * ((float) $this->tax / 100),
             'paid' => true,
             'order_id' => $order->id,
             'payment_method_id' => $this->paymentMethod,
@@ -170,8 +170,11 @@ class Create extends Component
             // Update the order item
             $orderItem = $orderItems->find($orderItemId);
             $paidQty = $orderItem->paid_quantity + $paymentItem['quantity'];
-            $orderItem->paid_quantity = $paidQty;
-            $orderItem->printed = true;
+            $orderItem->update(['paid_quantity' => $paidQty]);
+            if (!$orderItem->printed)
+            {
+                $orderItem->update(['printed' => true]);
+            }
             if ($orderItem->quantity == $paidQty)
             {
                 $orderItem->update(['is_paid' => true]);

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Menu;
 use App\Livewire\Sections;
 use App\Livewire\Sides;
-use App\Livewire\Orders;
+use App\Livewire\ManageOrders;
 use App\Livewire\Transactions;
 use App\Livewire\Payments;
 
@@ -32,8 +32,8 @@ Route::get('/lang/{locale}', function ($locale)
 
 Route::middleware(['auth'])->group(function ()
 {
-    Route::get('/', Orders\Index::class)->name('home');
-    Route::get('/order/{orderId}/edit', Orders\Edit::class)->name('order.edit');
+    Route::get('/', ManageOrders\Index::class)->name('home');
+    Route::get('/manage-order/{orderId}/edit', ManageOrders\Edit::class)->name('manage-order.edit');
 
     Route::get('/transactions', Transactions\Index::class)->name('transactions.index');
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');

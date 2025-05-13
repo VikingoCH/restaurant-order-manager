@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders\Components;
+namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\MenuItem;
 use App\Models\Order;
@@ -130,7 +130,7 @@ class MenuItems extends Component
 
     public function render()
     {
-        return view('livewire.orders.components.menu-items', [
+        return view('livewire.manage-orders.components.menu-items', [
             'menuItems' => $this->menuItems(),
         ]);
     }

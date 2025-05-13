@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders\Components;
+namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\MenuItem;
 use App\Models\Order;
@@ -169,7 +169,7 @@ class OpenOrderItems extends Component
     #[On('refreshOrderItems')]
     public function render()
     {
-        return view('livewire.orders.components.open-order-items', [
+        return view('livewire.manage-orders.components.open-order-items', [
             'orderItems' => OrderItem::with(['menuItem'])->where('printed', false)->where('order_id', $this->orderId)->get(),
             // 'withActions' => !$this->isPrinted,
             'headers' => $this->headers(),

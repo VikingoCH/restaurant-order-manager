@@ -43,10 +43,12 @@
 
                 {{-- Activates the menu item when a route matches the `link` property --}}
                 <x-menu :title="null" activate-by-route>
-                    <x-menu-item icon="gmdi.shopping-cart-o" link="/" title="{{ __('Open Orders') }}" />
+                    <x-menu-item icon="o-building-storefront" link="/" title="{{ __('Manage') }}" />
+
+                    <x-menu-item icon="o-shopping-cart" link="/" title="{{ __('Orders') }}" />
 
                     <x-menu-item icon="gmdi.payments-o" link="{{ route('transactions.index') }}"
-                        title="{{ __('Closed Orders') }}" />
+                        title="{{ __('Payments') }}" />
 
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
                         <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"

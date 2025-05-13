@@ -87,7 +87,7 @@ return [
     'table' => 'Table',
     'tables' => 'Tables',
     'table_locations' => 'Table Locations',
-    'tax' => 'MWST(%',
+    'tax' => 'MWST(%)',
     'taxes' => 'Taxes',
     'tip' => 'Tip',
     'title' => 'Title',

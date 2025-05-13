@@ -3,6 +3,7 @@
 namespace App\Livewire\Transactions;
 
 use App\Models\Order;
+use App\Models\Transaction;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
@@ -12,7 +13,7 @@ class Index extends Component
     use WithPagination, WithoutUrlPagination;
 
     public array $expanded = [];
-    public $dateRange = 'today';
+    public $dateRange = '--';
     public $monthYear = '';
     public $showing = '';
 
@@ -26,7 +27,8 @@ class Index extends Component
         return [
             ['key' => 'number', 'label' => __('labels.order_number'), 'class' => 'w-3'],
             ['key' => 'table', 'label' => __('labels.table'), 'class' => 'w-3'],
-            ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF ']],
+            // ['key' => 'total', 'label' => __('labels.sub_total'), 'format' => ['currency', '2.\'', 'CHF ']],
+            ['key' => 'total_order', 'label' => __('labels.total'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d (H:i)']],
             ['key' => 'updated_at', 'label' => __('labels.closed_at'), 'format' => ['date', 'Y/m/d (H:i)']],
         ];
@@ -45,6 +47,7 @@ class Index extends Component
         ];
     }
 
+    // Date picker plugin settings
     public function datePlugin()
     {
         if (session()->has('locale'))
@@ -134,10 +137,21 @@ class Index extends Component
             ->where('is_open', false)->orderBy('updated_at', 'desc')->paginate(20);
     }
 
+    public function totals()
+    {
+        // $transacTotals =
+        return Transaction::query()
+            ->selectRaw('order_id as id, SUM(total) as total_sum')
+            ->groupBy('order_id')
+            ->get();
+        // dd($transacTotals->where('order_id', 1)->first()->total_sum);
+    }
+
 
     public function render()
     {
         return view('livewire.transactions.index', [
+            'totals' => $this->totals(),
             'orders' => $this->orders(),
             'headers' => $this->headers(),
             'dateRanges' => $this->dateRanges(),

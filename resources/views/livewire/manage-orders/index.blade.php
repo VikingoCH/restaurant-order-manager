@@ -43,7 +43,7 @@
             <x-card class="w- rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
                 title="{{ __('Open Orders') }}">
                 <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No orders yet!') }}"
-                    link="/order/{id}/edit" show-empty-text with-pagination>
+                    link="/manage-order/{id}/edit" show-empty-text with-pagination>
                     @scope('actions', $openOrder)
                         <div class="flex flex-nowrap gap-3">
                             <x-buttons.pay link="{{ route('payments.create', [$openOrder->id]) }}" />

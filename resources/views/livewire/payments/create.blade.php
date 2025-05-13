@@ -15,7 +15,7 @@
             icon="o-exclamation-triangle" title="{{ __('This order have open items!!') }}">
             <x-slot:actions>
                 <x-button class="btn-sm btn-secondary" label="{{ __('Check open items') }}"
-                    link="{{ route('order.edit', [$orderId]) }}" />
+                    link="{{ route('manage-order.edit', [$orderId]) }}" />
             </x-slot:actions>
         </x-alert>
     @endif

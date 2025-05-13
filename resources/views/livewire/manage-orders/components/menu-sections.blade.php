@@ -8,7 +8,7 @@
                         {{ $section->name }}
                     </x-slot:heading>
                     <x-slot:content>
-                        <livewire:orders.components.menu-items :$orderId :key="$section->id" :sectionId="$section->id" />
+                        <livewire:manage-orders.components.menu-items :$orderId :key="$section->id" :sectionId="$section->id" />
                     </x-slot:content>
                 </x-collapse>
             @endforeach

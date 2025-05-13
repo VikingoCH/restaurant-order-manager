@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders;
+namespace App\Livewire\ManageOrders;
 
 use App\Models\MenuSection;
 use App\Models\Order;
@@ -35,7 +35,7 @@ class Edit extends Component
 
     public function render()
     {
-        return view('livewire.orders.edit', [
+        return view('livewire.manage-orders.edit', [
             'sections' => MenuSection::orderBy('position', 'asc')->get(),
             'order' => $this->order(),
         ]);

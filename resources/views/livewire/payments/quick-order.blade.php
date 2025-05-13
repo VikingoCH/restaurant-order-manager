@@ -8,11 +8,11 @@
 
             <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" wire:model.live='discount' />
             <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly
-                value="{{ number_format(((int) $discount / 100) * $orderAmount, 2) }}" />
+                value="{{ number_format(((float) $discount / 100) * $orderAmount, 2) }}" />
 
             <x-input icon="gmdi.percent-o" label="{{ __('labels.tax') }}" wire:model.live='tax' />
             <x-input label="{{ __('Total MWST') }}" prefix="CHF" readonly
-                value="{{ number_format(($orderAmount - ((int) $discount / 100) * $orderAmount) * ((int) $tax / 100), 2) }}" />
+                value="{{ number_format(($orderAmount - ((float) $discount / 100) * $orderAmount) * ((float) $tax / 100), 2) }}" />
 
             {{-- <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div> --}}
             <span></span>
@@ -21,7 +21,7 @@
             {{-- <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div> --}}
             <span></span>
             <x-input label="{{ __('labels.total') }}" prefix="CHF" readonly
-                value="{{ number_format($orderAmount - ((int) $discount / 100) * $orderAmount + (int) $tip + ($orderAmount - ((int) $discount / 100) * $orderAmount) * ((int) $tax / 100), 2) }}" />
+                value="{{ number_format($orderAmount - ((float) $discount / 100) * $orderAmount + $tip + ($orderAmount - ((float) $discount / 100) * $orderAmount) * ((float) $tax / 100), 2) }}" />
         </div>
 
         <div class="mt-8 flex flex-col gap-4 border-t border-gray-300">

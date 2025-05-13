@@ -49,8 +49,8 @@ class QuickOrder extends Component
             'number' => $prefix,
             'total' => $this->orderAmount,
             'is_open' => false,
-            'table' => 'notable',
-            // 'place_id' => 0
+            'table' => 'none',
+            'place_id' => 1,
         ]);
         $order->number = $prefix . "-" . date("Ymd") . "-" . $order->id;
         $order->save();
@@ -58,10 +58,10 @@ class QuickOrder extends Component
         //Create the transaction
         $transaction = Transaction::create([
             'number' => $order->number . '-' . date('Gis'),
-            'total' => $this->orderAmount - ((int) $this->discount / 100) * $this->orderAmount + (int) $this->tip + ($this->orderAmount - ((int) $this->discount / 100) * $this->orderAmount) * ((int) $this->tax / 100),
-            'discount' => ((int) $this->discount / 100) * $this->orderAmount,
+            'total' => $this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount + (float) $this->tip + ($this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount) * ((float) $this->tax / 100),
+            'discount' => ((float) $this->discount / 100) * $this->orderAmount,
             'tip' => $this->tip,
-            'tax' => ($this->orderAmount - ((int) $this->discount / 100) * $this->orderAmount) * ((int) $this->tax / 100),
+            'tax' => ($this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount) * ((float) $this->tax / 100),
             'paid' => true,
             'order_id' => $order->id,
             'payment_method_id' => $this->paymentMethod,
@@ -75,7 +75,7 @@ class QuickOrder extends Component
             'transaction_id' => $transaction->id,
         ]);
         $this->success('Transaction created successfully');
-        return redirect()->to('transactions.index');
+        return redirect()->route('transactions.index');
     }
 
     //TODO: To include logic for printer.

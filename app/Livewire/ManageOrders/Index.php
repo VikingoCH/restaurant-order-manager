@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders;
+namespace App\Livewire\ManageOrders;
 
 use App\Models\Location;
 use App\Models\Order;
@@ -41,7 +41,7 @@ class Index extends Component
 
         $place->available = false;
         $place->save();
-        $this->success(__('Order created successfully'), redirectTo: route('order.edit', $order->id));
+        $this->success(__('Order created successfully'), redirectTo: route('manage-order.edit', $order->id));
         $this->success(__('Order created successfully'));
     }
 
@@ -55,7 +55,7 @@ class Index extends Component
 
     public function render(): mixed
     {
-        return view('livewire.orders.index', [
+        return view('livewire.manage-orders.index', [
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
             // 'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),

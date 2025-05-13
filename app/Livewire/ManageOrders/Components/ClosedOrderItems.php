@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Orders\Components;
+namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -44,7 +44,7 @@ class ClosedOrderItems extends Component
     #[On('OrderItemsPrinted')]
     public function render()
     {
-        return view('livewire.orders.components.closed-order-items', [
+        return view('livewire.manage-orders.components.closed-order-items', [
             'orderItems' => OrderItem::with(['menuItem'])->where('printed', true)->where('order_id', $this->orderId)->get(),
             'headers' => $this->headers(),
         ]);

@@ -1,5 +1,5 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
-    <x-header progress-indicator separator title="{{ __('labels.orders') }}">
+    <x-header progress-indicator separator title="{{ __('labels.manage') }}">
         <x-slot:actions>
             <x-button class="btn-primary" icon="gmdi.fastfood-o" label="{{ __('labels.quick_order') }}"
                 link="{{ route('payments.quick-order') }}" />

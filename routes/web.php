@@ -17,6 +17,7 @@ use App\Livewire\Menu;
 use App\Livewire\Sections;
 use App\Livewire\Sides;
 use App\Livewire\ManageOrders;
+use App\Livewire\Orders;
 use App\Livewire\Transactions;
 use App\Livewire\Payments;
 
@@ -35,7 +36,11 @@ Route::middleware(['auth'])->group(function ()
     Route::get('/', ManageOrders\Index::class)->name('home');
     Route::get('/manage-order/{orderId}/edit', ManageOrders\Edit::class)->name('manage-order.edit');
 
+    Route::get('/orders', Orders\Index::class)->name('orders.index');
+    Route::get('/orders/{order}/show', Orders\Show::class)->name('orders.show');
+
     Route::get('/transactions', Transactions\Index::class)->name('transactions.index');
+
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
     Route::get('/payments/quick-order', Payments\QuickOrder::class)->name('payments.quick-order');
 

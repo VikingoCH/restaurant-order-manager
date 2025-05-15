@@ -17,7 +17,6 @@ class Create extends Component
     use Toast, AppSettings;
 
     public $orderId;
-    public array $selectedRows;
 
     public $orderItems = [];
     public $hasOpenItems = false;

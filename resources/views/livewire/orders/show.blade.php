@@ -1,6 +1,6 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
     {{-- {{ dd($order) }} --}}
-    <x-header progress-indicator separator subtitle="{{ $order->number }}" title="{{ __('labels.order-details') }}">
+    <x-header progress-indicator separator subtitle="{{ $order->number }}" title="{{ __('labels.order_details') }}">
         <x-slot name="actions">
             <x-buttons.back link="{{ route('orders.index') }}" />
         </x-slot>

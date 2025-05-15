@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function ()
     Route::get('/orders/{order}/show', Orders\Show::class)->name('orders.show');
 
     Route::get('/transactions', Transactions\Index::class)->name('transactions.index');
+    Route::get('/transactions/{transaction}/show', Transactions\Show::class)->name('transactions.show');
 
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
     Route::get('/payments/quick-order', Payments\QuickOrder::class)->name('payments.quick-order');

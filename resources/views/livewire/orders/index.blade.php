@@ -2,7 +2,7 @@
     <x-header progress-indicator separator title="{{ __('labels.orders') }}" />
     <div class="flex w-full flex-col justify-center gap-4">
         <!-- Closed Orders table -->
-        <x-card class="w- rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
+        <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             subtitle="{{ $showing }}" title="{{ __('Close Orders') }}">
             <x-slot:menu>
                 <x-select :options="$dateRanges" class="bg-primary" wire:model.live="dateRange" />

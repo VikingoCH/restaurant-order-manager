@@ -36,13 +36,13 @@ class Index extends Component
     public function dateRanges(): array
     {
         return [
-            ['id' => '--', 'name' => __('labels.all')],
-            ['id' => 'today', 'name' => __('labels.date_today')],
-            ['id' => 'yesterday', 'name' => __('labels.date_yesterday')],
-            ['id' => 'this_week', 'name' => __('labels.date_this_week')],
-            ['id' => 'last_week', 'name' => __('labels.date_last_week')],
-            ['id' => 'this_month', 'name' => __('labels.date_this_month')],
-            ['id' => 'last_month', 'name' => __('labels.date_last_month')],
+            ['id' => '--', 'name' => __('labels.date_range.all')],
+            ['id' => 'today', 'name' => __('labels.date_range.today')],
+            ['id' => 'yesterday', 'name' => __('labels.date_range.yesterday')],
+            ['id' => 'this_week', 'name' => __('labels.date_range.this_week')],
+            ['id' => 'last_week', 'name' => __('labels.date_range.last_week')],
+            ['id' => 'this_month', 'name' => __('labels.date_range.this_month')],
+            ['id' => 'last_month', 'name' => __('labels.date_range.last_month')],
         ];
     }
 

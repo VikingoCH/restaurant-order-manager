@@ -9,13 +9,13 @@
 
 /** daisyUI */
 @plugin "daisyui" {
-    themes: light --default, mylight, dark --prefersdark, mydark
+    themes: light --default, pblight, dark --prefersdark, pbdark
 }
 
 /* --color-primary-content: oklch(33.387% 0.04 162.24); */
 
 @plugin "daisyui/theme" {
-    name: "mylight";
+    name: "pblight";
     default: false;
     prefersdark: false;
     color-scheme: "light";
@@ -51,7 +51,7 @@
 
 
 @plugin "daisyui/theme" {
-    name: "mydark";
+    name: "pbdark";
     default: false;
     prefersdark: false;
     color-scheme: "dark";
@@ -65,8 +65,8 @@
     --color-secondary-content: oklch(94% 0.028 342.258);
     --color-accent: oklch(77% 0.152 181.912);
     --color-accent-content: oklch(38% 0.063 188.416);
-    --color-neutral: oklch(14% 0.005 285.823);
-    --color-neutral-content: oklch(92% 0.004 286.32);
+    --color-neutral: oklch(96% 0.001 286.375);
+    --color-neutral-content: oklch(55% 0.016 285.938);
     --color-info: oklch(74% 0.16 232.661);
     --color-info-content: oklch(29% 0.066 243.157);
     --color-success: oklch(76% 0.177 163.223);
@@ -92,6 +92,14 @@
 
 /* Theme toggle */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/**
+* Mary sidebar activate-by-route
+*/
+.mary-active-menu {
+    @apply bg-neutral text-neutral-content
+}
+
 
 /**
 * Mary Table paginator

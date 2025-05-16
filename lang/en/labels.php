@@ -85,6 +85,7 @@ return [
     'quantity' => 'Quantity',
     'quick_order' => 'Quick Order',
     'remarks' => 'Remarks',
+    'reports' => 'Reports',
     'save' => 'Save',
     'section' => 'Section',
     'sections' => 'Sections',

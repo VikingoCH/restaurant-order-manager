@@ -29,7 +29,7 @@
             {{-- Right side actions --}}
             <x-slot:actions>
                 <x-menus.lang-menu />
-                <x-theme-toggle class="btn-ghost btn-sm" darkTheme="mydark" lightTheme="mylight" />
+                <x-theme-toggle class="btn-ghost btn-sm" darkTheme="pbdark" lightTheme="pblight" />
                 <x-menus.user-menu />
             </x-slot:actions>
         </x-nav>
@@ -42,7 +42,7 @@
             <x-slot:sidebar class="bg-base-300" collapsible drawer="main-drawer">
 
                 {{-- Activates the menu item when a route matches the `link` property --}}
-                <x-menu :title="null" activate-by-route>
+                <x-menu activate-by-route>
                     <x-menu-item icon="o-building-storefront" link="/" title="{{ __('labels.manage') }}" />
 
                     <x-menu-item icon="o-shopping-cart" link="{{ route('orders.index') }}"
@@ -50,6 +50,8 @@
 
                     <x-menu-item icon="gmdi.payments-o" link="{{ route('transactions.index') }}"
                         title="{{ __('labels.payments') }}" />
+
+                    <x-menu-item icon="o-presentation-chart-bar" link="###" title="{{ __('labels.reports') }}" />
 
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
                         <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
@@ -59,9 +61,6 @@
                         <x-menu-item icon="gmdi.discount-o" link="{{ route('sides.index') }}"
                             title="{{ __('labels.menu_sides') }}" />
                     </x-menu-sub>
-
-                    <x-menu-item icon="o-presentation-chart-bar" link="###"
-                        title="{{ __('labels.statistics') }}" />
 
                     @can('manage_settings')
                         <x-menu-sub icon="gmdi.construction-o" title="{{ __('labels.settings') }}">

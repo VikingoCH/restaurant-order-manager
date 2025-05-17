@@ -18,6 +18,5 @@
             <!-- Closed Order Items -->
             <livewire:manage-orders.components.closed-order-items :$orderId />
         </div>
-        {{-- <livewire:orders.menu-item-edit :$orderId @item-added="$refresh" /> --}}
     </div>
 </div>

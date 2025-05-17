@@ -4,6 +4,7 @@
 
     @foreach ($menuItems as $menuItem)
         <x-list-item :item="$menuItem" avatar="image_path" class="w-full">
+            {{-- <x-list-item :item="$menuItem" class="w-full"> --}}
             <x-slot:avatar>
                 <a class="cursor-pointer" link="#" wire:click.prevent='add({{ $menuItem->id }})'>
                     <x-avatar class="!w-10 !rounded-lg" image="{{ asset('storage/' . $menuItem->image_path) }}" />
@@ -20,7 +21,7 @@
                 </a>
             </x-slot:sub-value>
             <x-slot:actions>
-                <x-buttons.edit wire:click='addForm({{ $menuItem->id }})' />
+                <x-buttons.edit-icon wire:click='addForm({{ $menuItem->id }})' />
             </x-slot:actions>
         </x-list-item>
     @endforeach

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Models\OrderItem;
 use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Livewire\Component;
@@ -16,24 +17,19 @@ class Index extends Component
     public $years = [];
     public $months = [];
     public array $yearSalesChart = [];
+    public array $mostSoldChart = [];
 
     public function mount()
     {
         $year = date('Y');
         $years = range($year, $year - 10);
-        // dd($years);
-        // $this->years = Arr::map($years, function (int $value, int $key)
-        // {
-        //     return ['id' => $key, 'name' => $value];
-        // });
         $this->years = Arr::map($years, fn(int $value, int $key) => ['id' => $key, 'name' => $value]);
         $this->monthlySalesPerYear();
+        $this->mostSoldProducts();
     }
 
     public function updatedYearId()
     {
-        // dd($this->years[$this->yearId]['name'], $this->yearId);
-        $this->success('year Updated');
         $this->monthlySalesPerYear();
     }
 
@@ -66,6 +62,44 @@ class Index extends Component
         ];
     }
 
+    public function mostSoldProducts()
+    {
+        $mostSoldProducts = OrderItem::with('menuItem')
+            ->selectRaw('menu_item_id, SUM(quantity) as total')
+            ->groupBy('menu_item_id')
+            ->orderBy('total', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($item)
+            {
+                return [
+                    'name' => $item->menuItem->name,
+                    'total' => $item->total,
+                ];
+            });
+        // ->toArray();
+        // dd($mostSoldProducts->pluck('name')->toArray());
+
+        $this->mostSoldChart = [
+            'type' => 'pie',
+            'options' => [
+                'plugins' => [
+                    'legend' => [
+                        'position' => 'right',
+                    ]
+                ]
+            ],
+            'data' => [
+                'labels' => $mostSoldProducts->pluck('name')->toArray(),
+                'datasets' => [
+                    [
+                        'label' => __('labels.total'),
+                        'data' => $mostSoldProducts->pluck('total')->toArray(),
+                    ]
+                ]
+            ]
+        ];
+    }
 
     public function render()
     {

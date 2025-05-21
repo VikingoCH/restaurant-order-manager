@@ -21,6 +21,7 @@ return [
     'current_password' => 'Current Password',
     'date' => 'Date',
     'date_by_month' => 'By Month',
+    'date_year' => 'Year',
     'date_range' => [
         'all' => 'All',
         'today' => 'Today',
@@ -104,6 +105,7 @@ return [
     'title' => 'Title',
     'total' => 'Total',
     'total_paid' => 'Total Paid',
+    'total_sales' => 'Total Sales',
     'transactions' => 'Transactions',
     'transaction_detail' => 'Transaction Detail',
     'trash' => 'Trash',
@@ -112,4 +114,6 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'view' => 'View',
+    'year' => 'year',
+    'years' => 'years',
 ];

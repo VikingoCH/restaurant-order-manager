@@ -135,7 +135,7 @@ class Index extends Component
                     $query->whereMonth('updated_at', $month)->whereYear('updated_at', $year);
                 }
             })
-            ->orderBy('updated_at', 'desc')->paginate(5);
+            ->orderBy('updated_at', 'desc')->paginate(20);
     }
 
     public function total()

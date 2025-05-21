@@ -189,7 +189,8 @@ class Create extends Component
         }
 
         $this->reset('paymentItems', 'itemsTotal', 'discount', 'tip');
-        // $this->success('Payment processed sucessfully');
+        $this->success('Payment processed sucessfully');
+        return redirect('/');
     }
 
     //TODO: To include logic for printer.

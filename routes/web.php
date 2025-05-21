@@ -20,6 +20,7 @@ use App\Livewire\ManageOrders;
 use App\Livewire\Orders;
 use App\Livewire\Transactions;
 use App\Livewire\Payments;
+use App\Livewire\Reports;
 
 // Route::view('/', 'home')
 //     ->middleware(['auth', 'verified'])
@@ -44,6 +45,9 @@ Route::middleware(['auth'])->group(function ()
 
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
     Route::get('/payments/quick-order', Payments\QuickOrder::class)->name('payments.quick-order');
+
+    Route::get('/reports', Reports\Index::class)->name('reports.index');
+
 
     // Route::redirect('settings', 'settings/profile');
 

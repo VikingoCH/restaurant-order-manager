@@ -51,7 +51,8 @@
                     <x-menu-item icon="gmdi.payments-o" link="{{ route('transactions.index') }}"
                         title="{{ __('labels.payments') }}" />
 
-                    <x-menu-item icon="o-presentation-chart-bar" link="###" title="{{ __('labels.reports') }}" />
+                    <x-menu-item icon="o-presentation-chart-bar" link="{{ route('reports.index') }}"
+                        title="{{ __('labels.reports') }}" />
 
                     <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
                         <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
@@ -92,6 +93,7 @@
         <script defer src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://unpkg.com/flatpickr/dist/plugins/monthSelect/index.js"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>

@@ -42,7 +42,7 @@
             <x-table :headers="$headers" :rows="$paymentItems" empty-text="{{ __('Select an item to add') }}"
                 show-empty-text>
                 @scope('actions', $paymentItem)
-                    <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                    <x-buttons.trash wire:click="removePaymentItem({{ $paymentItem['id'] }})" />
                 @endscope
             </x-table>
 

@@ -114,7 +114,7 @@ class Create extends Component
         $this->orderItemsTotal -= $this->paymentItems[$orderItemId]['price'];
 
 
-        // If all order items added to payment list then remove it from order list
+        // If all order items added to payment list then remove it from ordered list
         if ($this->orderItems[$orderItemId]['quantity'] == 0)
         {
             unset($this->orderItems[$orderItemId]);
@@ -136,18 +136,38 @@ class Create extends Component
 
     public function removePaymentItem($orderItemId)
     {
+
+        //If item exist in the ordered items list
+        if (array_key_exists($orderItemId, $this->orderItems))
+        {
+            //Update order item
+            $this->orderItems[$orderItemId]['quantity'] += 1;
+            $this->orderItems[$orderItemId]['total'] = number_format($this->orderItems[$orderItemId]['quantity'] * $this->orderItems[$orderItemId]['price'], 2);
+        }
+        else //If item is not in the ordered list create ordered item
+        {
+            $this->orderItems[$orderItemId] = [
+                'id' => $orderItemId,
+                'item' => $this->paymentItems[$orderItemId]['item'],
+                'quantity' => 1,
+                'price' => $this->paymentItems[$orderItemId]['price'],
+                'total' => $this->paymentItems[$orderItemId]['price'],
+            ];
+        }
+
         //Remove payment item
         $this->paymentItems[$orderItemId]['quantity'] -= 1;
         $this->paymentItems[$orderItemId]['total'] = number_format($this->paymentItems[$orderItemId]['quantity'] * $this->paymentItems[$orderItemId]['price'], 2);
 
+        // Recalculate totals
+        $this->itemsTotal -= $this->paymentItems[$orderItemId]['price'];
+        $this->orderItemsTotal += $this->paymentItems[$orderItemId]['price'];
 
-        $this->itemsTotal -= $this->paymentItems[$orderItemId]['total'];
-        unset($this->paymentItems[$orderItemId]);
-
-        // Update order item
-        $this->orderItems[$orderItemId]['quantity'] -= 1;
-        $this->orderItems[$orderItemId]['total'] = number_format($this->orderItems[$orderItemId]['quantity'] * $this->orderItems[$orderItemId]['price'], 2);
-        $this->orderItemsTotal -= $this->orderItems[$orderItemId]['price'];
+        // If all order items removed from payment list then add it from ordered list
+        if ($this->paymentItems[$orderItemId]['quantity'] == 0)
+        {
+            unset($this->paymentItems[$orderItemId]);
+        }
     }
 
     public function pay()

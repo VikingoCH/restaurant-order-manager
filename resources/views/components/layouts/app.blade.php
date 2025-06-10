@@ -5,8 +5,10 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" name="viewport">
         <meta content="{{ csrf_token() }}" name="csrf-token">
+        <!-- Mary UI date picker plugin styles -->
         <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
         <link href="https://unpkg.com/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet">
+
         <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -88,12 +90,20 @@
             </x-slot:content>
         </x-main>
 
-        {{--  TOAST area --}}
+        <!-- Mary UI Toast -->
         <x-toast position="toast-bottom toast-end" />
+
+        <!-- Sortable plugin (sort data tables) -->
         <script defer src="https://cdn.jsdelivr.net/gh/livewire/sortable@v1.x.x/dist/livewire-sortable.js"></script>
+
+        <!-- Mary UI curency plugin -->
         <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
         </script>
+
+        <!-- Mary UI chart plugin -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+        <!-- Mary UI date picker plugin -->
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://unpkg.com/flatpickr/dist/plugins/monthSelect/index.js"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/de.js"></script>

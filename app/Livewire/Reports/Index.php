@@ -5,6 +5,7 @@ namespace App\Livewire\Reports;
 use App\Models\OrderItem;
 use App\Models\Transaction;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -13,11 +14,15 @@ class Index extends Component
 
     use Toast;
 
-    public $yearId = 0;
+    public $chartYear = 0;
     public $years = [];
-    public $months = [];
+    // public $months = [];
     public array $yearSalesChart = [];
     public array $mostSoldChart = [];
+    public $reportByDate;
+    public $urlDate;
+    public $reportByMonth;
+    public $reportYear = 0;
 
     public function mount()
     {
@@ -26,9 +31,64 @@ class Index extends Component
         $this->years = Arr::map($years, fn(int $value, int $key) => ['id' => $key, 'name' => $value]);
         $this->monthlySalesPerYear();
         $this->mostSoldProducts();
+        $this->reportByDate = now()->format('Y/m/d');
+        $this->urlDate = now()->format('Ymd');
+        // $this->reportDate = today()->format('Y/m/d');
     }
 
-    public function updatedYearId()
+    public function reportByDateCalendar()
+    {
+        if (session()->has('locale'))
+        {
+            $locale = session('locale');
+        }
+        else
+        {
+            $locale = app()->getLocale();
+        }
+
+        return [
+            'locale' => $locale,
+            'altFormat' => 'Y/m/d',
+        ];
+    }
+
+    public function updatedReportByDate($value)
+    {
+        $this->urlDate = Carbon::createFromFormat('Y-m-d H:s', $value)->format('Ymd');
+    }
+
+    public function reportByMonthCalendar()
+    {
+        if (session()->has('locale'))
+        {
+            $locale = session('locale');
+        }
+        else
+        {
+            $locale = app()->getLocale();
+        }
+
+        return [
+            'locale' => $locale,
+            'plugins' => [
+                [
+                    'monthSelectPlugin' => [
+                        'dateFormat' => 'm-Y',
+                        'altFormat' => 'F Y',
+                    ],
+                ],
+            ],
+        ];
+    }
+
+
+    public function updatedReportByMonth($value)
+    {
+        dd($value);
+    }
+
+    public function updatedChartYear()
     {
         $this->monthlySalesPerYear();
     }
@@ -36,7 +96,7 @@ class Index extends Component
     public function monthlySalesPerYear()
     {
         $yearlySales = Transaction::selectRaw('MONTH(updated_at) as month, SUM(total) as total')
-            ->whereYear('updated_at', $this->years[$this->yearId]['name'])
+            ->whereYear('updated_at', $this->years[$this->chartYear]['name'])
             ->groupBy('month')
             ->orderBy('month')
             ->get();
@@ -103,6 +163,9 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.reports.index');
+        return view('livewire.reports.index', [
+            'byDateCalendar' => $this->reportByDateCalendar(),
+            'byMonthCalendar' => $this->reportByMonthCalendar(),
+        ]);
     }
 }

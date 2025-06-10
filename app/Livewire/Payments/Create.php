@@ -134,6 +134,22 @@ class Create extends Component
         $this->orderItemsTotal = 0;
     }
 
+    public function removePaymentItem($orderItemId)
+    {
+        //Remove payment item
+        $this->paymentItems[$orderItemId]['quantity'] -= 1;
+        $this->paymentItems[$orderItemId]['total'] = number_format($this->paymentItems[$orderItemId]['quantity'] * $this->paymentItems[$orderItemId]['price'], 2);
+
+
+        $this->itemsTotal -= $this->paymentItems[$orderItemId]['total'];
+        unset($this->paymentItems[$orderItemId]);
+
+        // Update order item
+        $this->orderItems[$orderItemId]['quantity'] -= 1;
+        $this->orderItems[$orderItemId]['total'] = number_format($this->orderItems[$orderItemId]['quantity'] * $this->orderItems[$orderItemId]['price'], 2);
+        $this->orderItemsTotal -= $this->orderItems[$orderItemId]['price'];
+    }
+
     public function pay()
     {
         $order = Order::find($this->orderId);

@@ -40,7 +40,11 @@
         <x-card class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             title="{{ __('labels.payment') }}">
             <x-table :headers="$headers" :rows="$paymentItems" empty-text="{{ __('Select an item to add') }}"
-                show-empty-text />
+                show-empty-text>
+                @scope('actions', $paymentItem)
+                    <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                @endscope
+            </x-table>
 
             <hr class="my-8 border border-gray-300" />
 

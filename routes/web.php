@@ -46,7 +46,14 @@ Route::middleware(['auth'])->group(function ()
     Route::get('/payments/{orderId}/create', Payments\Create::class)->name('payments.create');
     Route::get('/payments/quick-order', Payments\QuickOrder::class)->name('payments.quick-order');
 
-    Route::get('/reports', Reports\Index::class)->name('reports.index');
+    Route::name('reports.')->prefix('reports')->group(function ()
+    {
+        Route::get('/', Reports\Index::class)->name('index');
+        Route::get('/cash-close', Reports\CashClose::class)->name('cash-close');
+        Route::get('/by-date/{date}', Reports\ByDate::class)->name('by-date');
+        Route::get('/by-month/{date}', Reports\ByMonth::class)->name('by-month');
+        Route::get('/by-year/{year}', Reports\ByYear::class)->name('by-year');
+    });
 
 
     // Route::redirect('settings', 'settings/profile');

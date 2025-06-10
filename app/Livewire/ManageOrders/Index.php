@@ -53,6 +53,8 @@ class Index extends Component
         $this->success(__('Order deleted successfully'));
     }
 
+    //TODO: Add print order
+
     public function render(): mixed
     {
         return view('livewire.manage-orders.index', [

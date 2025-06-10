@@ -55,6 +55,8 @@ class Show extends Component
         // dd($transac);
     }
 
+    //TODO: Add print order
+
     public function orderItems()
     {
         if ($this->order->table == 'none')

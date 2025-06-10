@@ -229,7 +229,7 @@ class Create extends Component
         return redirect('/');
     }
 
-    //TODO: To include logic for printer.
+    //TODO: Add print receipt and print order.
     public function updatedPrinting()
     {
         sleep(3);

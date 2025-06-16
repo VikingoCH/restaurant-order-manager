@@ -23,6 +23,7 @@ class Index extends Component
     public $urlDate;
     public $reportByMonth;
     public $reportYear = 0;
+    public $urlYear;
 
     public function mount()
     {
@@ -32,7 +33,9 @@ class Index extends Component
         $this->monthlySalesPerYear();
         $this->mostSoldProducts();
         $this->reportByDate = now()->format('Y/m/d');
-        $this->urlDate = now()->format('Ymd');
+        $this->urlDate = now()->format('Y-m-d');
+        $this->reportByMonth = now()->format('m-Y');
+        $this->urlYear = now()->format('Y');
         // $this->reportDate = today()->format('Y/m/d');
     }
 
@@ -55,7 +58,12 @@ class Index extends Component
 
     public function updatedReportByDate($value)
     {
-        $this->urlDate = Carbon::createFromFormat('Y-m-d H:s', $value)->format('Ymd');
+        $this->urlDate = Carbon::createFromFormat('Y-m-d H:s', $value)->format('Y-m-d');
+    }
+
+    public function updatedReportYear($value)
+    {
+        $this->urlYear = $this->years[$value]['name'];
     }
 
     public function reportByMonthCalendar()
@@ -80,12 +88,6 @@ class Index extends Component
                 ],
             ],
         ];
-    }
-
-
-    public function updatedReportByMonth($value)
-    {
-        dd($value);
     }
 
     public function updatedChartYear()

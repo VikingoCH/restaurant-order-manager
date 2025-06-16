@@ -21,6 +21,7 @@ use App\Livewire\Orders;
 use App\Livewire\Transactions;
 use App\Livewire\Payments;
 use App\Livewire\Reports;
+use App\Http\Controllers\PdfReports\ByDateController;
 
 // Route::view('/', 'home')
 //     ->middleware(['auth', 'verified'])
@@ -53,6 +54,13 @@ Route::middleware(['auth'])->group(function ()
         Route::get('/by-date/{date}', Reports\ByDate::class)->name('by-date');
         Route::get('/by-month/{date}', Reports\ByMonth::class)->name('by-month');
         Route::get('/by-year/{year}', Reports\ByYear::class)->name('by-year');
+    });
+
+    Route::name('printPdf.')->prefix('print-pdf')->group(function ()
+    {
+        Route::get('/by-date/{date}', [ByDateController::class, 'printPDF'])->name('by-date');
+        // Route::get('/by-month/{date}', \App\Http\Controllers\PdfReports\ByMonthController::class)->name('by-month');
+        // Route::get('/by-year/{year}', \App\Http\Controllers\PdfReports\ByYearController::class)->name('by-year');
     });
 
 

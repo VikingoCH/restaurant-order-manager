@@ -6,13 +6,22 @@ use App\Models\MenuSection;
 use App\Models\Order;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Livewire\Attributes\On;
 
 class Edit extends Component
 {
     use Toast;
 
     public $orderId;
+    // public $showMenuItems = false;
     public array $selectedRows;
+
+    // #[On('show-menu-items')]
+    // public function showMenuItems($sectionId)
+    // {
+    //     $this->showMenuItems = true;
+    //     $this->dispatch('list-menu-items', $sectionId);
+    // }
 
 
     public function headers(): array

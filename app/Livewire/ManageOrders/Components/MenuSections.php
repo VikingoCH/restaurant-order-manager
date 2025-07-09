@@ -4,10 +4,19 @@ namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\MenuSection;
 use Livewire\Component;
+use Mary\Traits\Toast;
 
 class MenuSections extends Component
 {
+    use Toast;
     public $orderId;
+
+    public function openSection($sectionId)
+    {
+        $this->success('Open Section' . $sectionId);
+
+        // $this->emit('openSection', $sectionId);
+    }
 
     public function render()
     {

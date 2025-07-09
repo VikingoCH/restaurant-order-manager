@@ -3,11 +3,13 @@
 namespace App\Livewire\ManageOrders\Components;
 
 use App\Models\MenuItem;
+use App\Models\MenuSection;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Mary\Traits\Toast;
+use Livewire\Attributes\On;
 
 class MenuItems extends Component
 {
@@ -17,6 +19,8 @@ class MenuItems extends Component
     public $orderId;
 
     public string $search = '';
+    public $menuItemsClass = 'hidden w-full flex-col gap-4';
+    public $sectionName = '';
 
     // Add form variables
     public $openAddForm = false;
@@ -24,6 +28,20 @@ class MenuItems extends Component
     public $selectableSides;
     public $orderNotes = '';
     public $editMenuItem;
+
+    #[On('show-menu-items')]
+    public function showMenuItems($sectionId)
+    {
+        // $this->success('Open Section ' . $sectionId);
+        $this->sectionId = $sectionId;
+        $this->sectionName = MenuSection::find($sectionId)->name;
+        $this->menuItemsClass = 'flex w-full flex-col gap-4 lg:basis-1/3';
+    }
+
+    public function closeMenuItems()
+    {
+        $this->reset('search', 'menuItemsClass', 'sectionName');
+    }
 
     public function menuitems()
     {

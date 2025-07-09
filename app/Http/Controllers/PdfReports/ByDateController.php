@@ -11,11 +11,18 @@ class ByDateController extends Controller
 {
     public function printPDF($date)
     {
+        // $datos = $this->getData($date);
+        // dd($datos);
+        $transactions = $this->getData($date);
         $data = [
-            'title' => 'PDF Test',
             'date' => $date,
-            'users' => 'PDF Content'
+            'transactions' => $transactions,
+            'subtotal' => $this->getSubtotal($transactions),
+            'total' => $this->getTotal($date)
         ];
+        // dd($data);
+
+
         $pdfInstance = app(PDF::class);
         $pdf = $pdfInstance->loadView('pdf-reports.by-date', $data);
         return $pdf->stream();
@@ -23,13 +30,25 @@ class ByDateController extends Controller
 
     private function getData($date)
     {
-        $data = Transaction::whereDate('updated_at', $date)->get();
-        // Fetch data based on the date
-        // This is a placeholder for actual data fetching logic
-        return [
-            'title' => 'PDF Report for ' . $date,
-            'date' => $date,
-            'users' => ['User1', 'User2', 'User3'] // Example data
-        ];
+        return Transaction::whereDate('updated_at', $date)->with('transactionItems')->orderBy('updated_at', 'desc')->get();
+    }
+
+    private function getTotal($date)
+    {
+        return Transaction::whereDate('updated_at', $date)->selectRaw('SUM(total) as total_sum')->get();
+    }
+
+    private function getSubtotal($transactions)
+    {
+        $subtotal = [];
+        foreach ($transactions as $transaction)
+        {
+            $subtotal[$transaction->id] = 0;
+            foreach ($transaction->transactionItems as $item)
+            {
+                $subtotal[$transaction->id] += number_format($item->quantity * $item->price, 2);
+            }
+        }
+        return $subtotal;
     }
 }

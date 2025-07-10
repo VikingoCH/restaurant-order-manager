@@ -3,21 +3,28 @@
         <table>
             <tr>
                 <td>
-                    <h2>{{ $date }}</h2>
+                    <h3>{{ $date }}</h3>
                 </td>
                 <td class="right">
-                    <h2> {{ 'Total ' . $total[0]->total_sum }}</h2>
+                    <h3> {{ __('labels.total') }}: {{ number_format($total[0]->total_sum, 2) }}</h3>
                 </td>
             </tr>
+        </table>
     </div>
     @foreach ($transactions as $transaction)
         <div class="card">
-            {{-- <p> --}}
-            <h3>{{ __('labels.order_number') }}: {{ $transaction->number }}</h3>
-            {{-- <span>{{ __('labels.total') }}: {{ $transaction->total }}</span> --}}
-            {{-- </p> --}}
+            <table>
+                <tr>
+                    <td>
+                        <h3>{{ __('labels.order_number') }}: {{ $transaction->number }}</h3>
+                    </td>
+                    <td class="right">
+                        <h3>{{ __('labels.total') }}: {{ $transaction->total }}</h3>
+                    </td>
+                </tr>
+            </table>
 
-            <table style="margin-top: 1rem; border-top: 1px dashed #aaa; border-bottom: 1px dashed #aaa;">
+            <table class="table-bordered">
                 @foreach ($transaction->transactionItems as $item)
                     <tr class="font-small">
                         <td>{{ $item->item }}</td>
@@ -27,20 +34,20 @@
                     </tr>
                 @endforeach
             </table>
-            <table style="margin-top: 1rem;">
+            <table class="mt-1">
                 <tr class="font-small">
                     <th class="left">{{ __('labels.sub_total') }}</th>
                     <th class="left">{{ __('labels.discount') }}</th>
                     <th class="left">{{ __('labels.tax') }}</th>
                     <th class="left">{{ __('labels.tip') }}</th>
-                    <th class="left">{{ __('labels.total') }}</th>
+                    {{-- <th class="left">{{ __('labels.total') }}</th> --}}
                 </tr>
-                <tr style="font-weight: bold;">
+                <tr class="font-bold">
                     <td class="left">{{ number_format($subtotal[$transaction->id], 2) }}</td>
                     <td class="left">{{ $transaction->discount }}</td>
                     <td class="left">{{ $transaction->tax }}</td>
                     <td class="left">{{ $transaction->tip }}</td>
-                    <td class="left">{{ $transaction->total }}</td>
+                    {{-- <td class="left">{{ $transaction->total }}</td> --}}
                 </tr>
             </table>
         </div>

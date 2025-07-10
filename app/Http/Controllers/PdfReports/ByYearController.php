@@ -7,7 +7,7 @@ use App\Models\Transaction;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 
-class ByDateController extends Controller
+class ByYearController extends Controller
 {
     public function printPDF($date)
     {
@@ -30,12 +30,12 @@ class ByDateController extends Controller
 
     private function getData($date)
     {
-        return Transaction::whereDate('updated_at', $date)->with('transactionItems')->orderBy('updated_at', 'desc')->get();
+        return Transaction::whereYear('updated_at', $date)->with('transactionItems')->orderBy('updated_at', 'desc')->get();
     }
 
     private function getTotal($date)
     {
-        return Transaction::whereDate('updated_at', $date)->selectRaw('SUM(total) as total_sum')->get();
+        return Transaction::whereYear('updated_at', $date)->selectRaw('SUM(total) as total_sum')->get();
     }
 
     private function getSubtotal($transactions)

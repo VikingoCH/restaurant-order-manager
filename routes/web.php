@@ -22,6 +22,8 @@ use App\Livewire\Transactions;
 use App\Livewire\Payments;
 use App\Livewire\Reports;
 use App\Http\Controllers\PdfReports\ByDateController;
+use App\Http\Controllers\PdfReports\ByMonthController;
+use App\Http\Controllers\PdfReports\ByYearController;
 
 // Route::view('/', 'home')
 //     ->middleware(['auth', 'verified'])
@@ -51,14 +53,13 @@ Route::middleware(['auth'])->group(function ()
     {
         Route::get('/', Reports\Index::class)->name('index');
         Route::get('/cash-close', Reports\CashClose::class)->name('cash-close');
-        Route::get('/by-date/{date}', Reports\ByDate::class)->name('by-date');
-        Route::get('/by-month/{date}', Reports\ByMonth::class)->name('by-month');
-        Route::get('/by-year/{year}', Reports\ByYear::class)->name('by-year');
     });
 
     Route::name('printPdf.')->prefix('print-pdf')->group(function ()
     {
         Route::get('/by-date/{date}', [ByDateController::class, 'printPDF'])->name('by-date');
+        Route::get('/by-month/{date}', [ByMonthController::class, 'printPDF'])->name('by-month');
+        Route::get('/by-year/{date}', [ByYearController::class, 'printPDF'])->name('by-year');
         // Route::get('/by-month/{date}', \App\Http\Controllers\PdfReports\ByMonthController::class)->name('by-month');
         // Route::get('/by-year/{year}', \App\Http\Controllers\PdfReports\ByYearController::class)->name('by-year');
     });

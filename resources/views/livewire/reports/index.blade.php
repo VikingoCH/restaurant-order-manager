@@ -13,7 +13,7 @@
                 <x-datepicker :config="$byDateCalendar" class="bg-info" icon="o-calendar" inline label="{{ __('labels.date') }}"
                     wire:model.live="reportByDate" />
                 {{-- <x-buttons.go link="{{ route('reports.by-date', $urlDate) }}" /> --}}
-                <x-buttons.go external link="{{ route('printPdf.by-date', $urlDate) }}" />
+                <x-buttons.pdf external link="{{ route('printPdf.by-date', $urlDate) }}" />
             </div>
         </x-card>
 
@@ -23,7 +23,7 @@
             <div class="flex flex-col justify-center gap-4 lg:flex-row">
                 <x-datepicker :config="$byMonthCalendar" class="bg-info" icon="o-calendar" inline label="{{ __('labels.date') }}"
                     wire:model.live="reportByMonth" />
-                <x-buttons.go link="{{ route('reports.by-month', $reportByMonth) }}" />
+                <x-buttons.pdf external link="{{ route('printPdf.by-month', $reportByMonth) }}" />
                 {{-- <x-buttons.report-details /> --}}
             </div>
         </x-card>
@@ -32,7 +32,7 @@
             <div class="flex flex-col justify-center gap-4 lg:flex-row">
                 <x-select :options="$years" class="bg-info" icon="o-calendar" inline label="{{ __('labels.year') }}"
                     wire:model.live="reportYear" />
-                <x-buttons.go link="{{ route('reports.by-year', $urlYear) }}" />
+                <x-buttons.pdf external link="{{ route('printPdf.by-year', $urlYear) }}" />
             </div>
         </x-card>
 

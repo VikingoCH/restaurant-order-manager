@@ -7,18 +7,21 @@ use App\Models\Transaction;
 use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 
-class ByDateController extends Controller
+class ByMonthController extends Controller
 {
     public function printPDF($date)
     {
         // $datos = $this->getData($date);
-        // dd($datos);
-        $transactions = $this->getData($date);
+        // dd($date);
+        $year = substr($date, strrpos($date, '-') + 1);
+        $month = substr($date, 0, 2);
+        // dd($year, $month);
+        $transactions = $this->getData($month, $year);
         $data = [
             'date' => $date,
             'transactions' => $transactions,
             'subtotal' => $this->getSubtotal($transactions),
-            'total' => $this->getTotal($date)
+            'total' => $this->getTotal($month, $year)
         ];
         // dd($data);
 
@@ -28,14 +31,15 @@ class ByDateController extends Controller
         return $pdf->stream();
     }
 
-    private function getData($date)
+    private function getData($month, $year)
     {
-        return Transaction::whereDate('updated_at', $date)->with('transactionItems')->orderBy('updated_at', 'desc')->get();
+
+        return Transaction::whereMonth('updated_at', $month)->whereYear('updated_at', $year)->with('transactionItems')->orderBy('updated_at', 'desc')->get();
     }
 
-    private function getTotal($date)
+    private function getTotal($month, $year)
     {
-        return Transaction::whereDate('updated_at', $date)->selectRaw('SUM(total) as total_sum')->get();
+        return Transaction::whereMonth('updated_at', $month)->whereYear('updated_at', $year)->selectRaw('SUM(total) as total_sum')->get();
     }
 
     private function getSubtotal($transactions)

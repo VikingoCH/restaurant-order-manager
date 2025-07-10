@@ -1,51 +1,47 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
     <head>
+
+        <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
         <title>PDF Report</title>
         <style type="text/css">
             @page {
-                margin: 1cm;
+                margin: 0cm 0cm;
             }
 
+            /** Define now the real margins of every page in the PDF **/
             body {
-                font-family: sans-serif;
-                /* margin: 0.5cm 0; */
-                text-align: justify;
+                margin-top: 3cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                margin-bottom: 2cm;
             }
 
-            .header,
-            .footer {
+            /** Define the header rules **/
+            header {
                 position: fixed;
-                left: 0;
-                right: 0;
-                color: #aaa;
-                font-size: 0.9em;
+                top: 0cm;
+                left: 1cm;
+                right: 1cm;
+                height: 3cm;
             }
 
-            .header {
-                top: 0;
+            header table {
                 border-bottom: 0.1pt solid #aaa;
-                margin-bottom: 1cm;
             }
 
-            .footer {
-                bottom: 0;
+            /** Define the footer rules **/
+            footer {
+                position: fixed;
+                bottom: 0cm;
+                left: 1cm;
+                right: 1cm;
+                height: 2cm;
+            }
+
+            footer div {
                 border-top: 0.1pt solid #aaa;
-            }
-
-            .header table,
-            .footer table {
-                /* width: 100%; */
-                border-collapse: collapse;
-                border: none;
-                margin-bottom: 0.1cm
-            }
-
-            .header td,
-            .footer td {
-                padding: 0;
-                width: 50%;
             }
 
             .page-number {
@@ -63,6 +59,12 @@
 
             table {
                 width: 100%;
+            }
+
+            .table-bordered {
+                margin-top: 1rem;
+                border-top: 1px dashed #aaa;
+                border-bottom: 1px dashed #aaa;
             }
 
             .card {
@@ -92,25 +94,33 @@
             .font-small {
                 font-size: 0.6em;
             }
+
+            .font-bold {
+                font-weight: bold;
+            }
+
+            .mt-1 {
+                margin-top: 1rem;
+            }
         </style>
         {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"> --}}
         {{-- <link href="{{ asset('css/pdf.css') }}" rel="stylesheet"> --}}
     </head>
 
     <body>
-        <div class="header">
+        <header>
             <table>
                 <tr>
                     <td><img src="/public/storage/site_logo.png" style="width: 5rem; height: 5rem;" /></td>
-                    <td style="text-align: right;">Picanha Brasil - Dübendorf</td>
+                    <td class="right">Picanha Brasil - Dübendorf</td>
                 </tr>
             </table>
-        </div>
-        <p class="separator" />
-        {{ $slot }}
-        <div class="footer">
+        </header>
+        {{-- <p class="separator" /> --}}
+        <footer>
             <div class="page-number"></div>
-        </div>
+        </footer>
+        {{ $slot }}
     </body>
 
 </html>

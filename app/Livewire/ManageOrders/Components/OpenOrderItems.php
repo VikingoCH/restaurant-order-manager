@@ -6,6 +6,8 @@ use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Printer;
+use App\Traits\PrintReciept;
+use App\Traits\PrintReciepts;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -15,6 +17,7 @@ use phpDocumentor\Reflection\Types\Boolean;
 class OpenOrderItems extends Component
 {
     use Toast;
+    use PrintReciepts;
 
     // public $isPrinted = false;
     public $orderId;
@@ -84,17 +87,49 @@ class OpenOrderItems extends Component
             $openItems = $openItems->only(Arr::flatten($this->selectedRows));
         }
 
-        foreach ($openItems as $openItem)
+
+        $printers = Printer::get();
+        if ($printerId == 'all')
         {
-            $openItem->update([
-                'printed' => true,
-            ]);
+            foreach ($printers as $printer)
+            {
+                $printItems = $openItems->where('menuItem.printer_id', $printer->id);
+                $this->printItems($printer, $printItems);
+            }
+        }
+        elseif ($printerId != 'none' && $printerId != 'all')
+        {
+            $printer = $printers->find($printerId);
+            // dd($printer);
+            $this->printItems($printer, $openItems);
+        }
+        elseif ($printerId == 'none')
+        {
+            foreach ($openItems as $openItem)
+            {
+                $openItem->update([
+                    'printed' => true,
+                ]);
+            }
         }
 
-        //TODO: To include logic for printer.
         $this->dispatch('OrderItemsPrinted');
+    }
 
-        $this->success(__('Items printed successfully'));
+    private function printItems($printer, $orderItems)
+    {
+        $printItems = $orderItems->where('menuItem.printer_id', $printer->id);
+        if (!$printItems->isEmpty())
+        {
+            $this->printOrder($printer, $this->orderId, $printItems);
+            foreach ($printItems as $printItem)
+            {
+                $printItem->update([
+                    'printed' => true,
+                ]);
+            }
+            $this->success(__('Items printed successfully'));
+        }
     }
 
     public function editForm(OrderItem $orderItem)

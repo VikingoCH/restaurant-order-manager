@@ -13,6 +13,7 @@ class Printer extends Model
         'location',
         'ip_address',
         'conection_type',
+        'connection_port',
     ];
 
     public function menuItem(): HasMany

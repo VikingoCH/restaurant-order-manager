@@ -51,3 +51,38 @@
         @enderror
     </x-card>
 </div>
+
+<div class="mt-4 flex flex-row gap-4">
+    <div class="flex w-3/5 flex-col">
+        <h3 class="text-lg font-bold">{{ __('Receipt Header') }}</h3>
+        <p class="text-gray-500">
+            {{ __('Define the header of receipt when printing.') }}</p>
+    </div>
+    <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
+        <x-input :label="__('Store Name')" name="printer_store_name"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_name : '' }}" />
+        @error('printer_store_name')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_name') }}</span>
+        @enderror
+        <x-input :label="__('Store Address')" name="printer_store_address"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_address : '' }}" />
+        @error('printer_store_address')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_address') }}</span>
+        @enderror
+        <x-input :label="__('Store Phone')" name="printer_store_phone"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_phone : '' }}" />
+        @error('printer_store_phone')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_phone') }}</span>
+        @enderror
+        <x-input :label="__('Store Email')" name="printer_store_email"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_email : '' }}" />
+        @error('printer_store_email')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_email') }}</span>
+        @enderror
+        <x-input :label="__('Store Website')" name="printer_store_website"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_website : '' }}" />
+        @error('printer_store_website')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_website') }}</span>
+        @enderror
+    </x-card>
+</div>

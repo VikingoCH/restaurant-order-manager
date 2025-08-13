@@ -11,12 +11,14 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "charlieuki/receiptprinter": "^1.2",
         "codeat3/blade-google-material-design-icons": "^1.20",
         "laravel-lang/common": "^6.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "livewire/flux": "^2.0",
         "livewire/livewire": "^3.6",
+        "mike42/escpos-php": "^2.2",
         "outhebox/blade-flags": "^1.5",
         "robsontenorio/mary": "^2.0"
     },

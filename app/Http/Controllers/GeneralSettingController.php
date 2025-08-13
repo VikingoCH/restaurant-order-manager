@@ -34,17 +34,18 @@ class GeneralSettingController extends Controller
     {
         Gate::authorize('manage_settings');
 
-        $request->validate([
-            'order_prefix' => 'required|string|max:255',
-            'quick_order_name' => 'required|string|max:255',
-            'tax' => 'required|decimal:0,2',
-            'rows_per_page' => 'required|integer',
-        ]);
+        $this->validateForm($request);
+
         AppSetting::create([
             'order_prefix' => $request->order_prefix,
             'quick_order_name' => $request->quick_order_name,
             'tax' => $request->tax,
             'rows_per_page' => $request->rows_per_page,
+            'printer_store_name' => $request->printer_store_name,
+            'printer_store_address' => $request->printer_store_address,
+            'printer_store_email' => $request->printer_store_email,
+            'printer_store_phone' => $request->printer_store_phone,
+            'printer_store_website' => $request->printer_store_website,
         ]);
         return redirect()->route('settings.general');
     }
@@ -53,20 +54,34 @@ class GeneralSettingController extends Controller
     {
         Gate::authorize('manage_settings');
 
-        $request->validate([
-            'order_prefix' => 'required|string|max:255',
-            'quick_order_name' => 'required|string|max:255',
-            'tax' => 'required|decimal:0,2',
-            'rows_per_page' => 'required|integer',
-        ]);
-        // dd($request->rows_per_page);
+        $this->validateForm($request);
 
         $appSetting = AppSetting::find($id);
         $appSetting->order_prefix = $request->order_prefix;
         $appSetting->quick_order_name = $request->quick_order_name;
         $appSetting->tax = $request->tax;
         $appSetting->rows_per_page = $request->rows_per_page;
+        $appSetting->printer_store_name = $request->printer_store_name;
+        $appSetting->printer_store_address = $request->printer_store_address;
+        $appSetting->printer_store_email = $request->printer_store_email;
+        $appSetting->printer_store_phone = $request->printer_store_phone;
+        $appSetting->printer_store_website = $request->printer_store_website;
         $appSetting->save();
         return redirect()->route('settings.general');
+    }
+
+    public function validateForm(Request $request)
+    {
+        $request->validate([
+            'order_prefix' => 'required|string|max:255',
+            'quick_order_name' => 'required|string|max:255',
+            'tax' => 'required|decimal:0,2',
+            'rows_per_page' => 'required|integer',
+            'printer_store_name' => 'required|string|max:100',
+            'printer_store_address' => 'required|string|max:250',
+            'printer_store_email' => 'required|email|max:100',
+            'printer_store_phone' => 'required|string|max:20',
+            'printer_store_website' => 'required|url|max:100',
+        ]);
     }
 }

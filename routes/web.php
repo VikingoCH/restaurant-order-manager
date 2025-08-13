@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function ()
         Route::get('/cash-close', Reports\CashClose::class)->name('cash-close');
     });
 
+    //PDF Reports
     Route::name('printPdf.')->prefix('print-pdf')->group(function ()
     {
         Route::get('/by-date/{date}', [ByDateController::class, 'printPDF'])->name('by-date');

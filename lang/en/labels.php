@@ -101,7 +101,7 @@ return [
     'table' => 'Table',
     'tables' => 'Tables',
     'table_locations' => 'Table Locations',
-    'tax' => 'MWST(%)',
+    'tax' => 'MWST( :value %)',
     'taxes' => 'Taxes',
     'tip' => 'Tip',
     'title' => 'Title',

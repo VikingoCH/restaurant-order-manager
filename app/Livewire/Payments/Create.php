@@ -25,7 +25,11 @@ class Create extends Component
 
     public $itemsTotal = 0;
     public $discount = 0;
+    public $discountAmount = 0;
     public $tax;
+    public $taxAmount = 0;
+    public $netTotal = 0;
+    public $grossTotal = 0;
     public $tip = 0;
     public $paymentMethod;
 
@@ -113,6 +117,11 @@ class Create extends Component
         $this->itemsTotal += $this->paymentItems[$orderItemId]['price'];
         $this->orderItemsTotal -= $this->paymentItems[$orderItemId]['price'];
 
+        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
+        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
+        $this->netTotal = $totalWithDiscount - $this->taxAmount;
+        $this->grossTotal = $totalWithDiscount + $this->tip;
+
 
         // If all order items added to payment list then remove it from ordered list
         if ($this->orderItems[$orderItemId]['quantity'] == 0)
@@ -132,6 +141,11 @@ class Create extends Component
         }
         $this->orderItems = [];
         $this->orderItemsTotal = 0;
+
+        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
+        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
+        $this->netTotal = $totalWithDiscount - $this->taxAmount;
+        $this->grossTotal = $totalWithDiscount + $this->tip;
     }
 
     public function removePaymentItem($orderItemId)
@@ -163,6 +177,11 @@ class Create extends Component
         $this->itemsTotal -= $this->paymentItems[$orderItemId]['price'];
         $this->orderItemsTotal += $this->paymentItems[$orderItemId]['price'];
 
+        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
+        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
+        $this->netTotal = $totalWithDiscount - $this->taxAmount;
+        $this->grossTotal = $totalWithDiscount + $this->tip;
+
         // If all order items removed from payment list then add it from ordered list
         if ($this->paymentItems[$orderItemId]['quantity'] == 0)
         {
@@ -172,6 +191,7 @@ class Create extends Component
 
     public function pay()
     {
+        // dd($this->grossTotal, $this->discountAmount, $this->tip, $this->taxAmount);
         $order = Order::find($this->orderId);
 
         //Transaction Number
@@ -182,10 +202,10 @@ class Create extends Component
         // Transaction register
         $transaction = Transaction::create([
             'number' => $transacNumber,
-            'total' => $this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal + (float) $this->tip + ($this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal) * ((float) $this->tax / 100),
-            'discount' => ((float) $this->discount / 100) * $this->itemsTotal,
+            'total' => $this->grossTotal,
+            'discount' => $this->discountAmount,
             'tip' => $this->tip,
-            'tax' => ($this->itemsTotal - ((float) $this->discount / 100) * $this->itemsTotal) * ((float) $this->tax / 100),
+            'tax' => $this->taxAmount,
             'paid' => true,
             'order_id' => $order->id,
             'payment_method_id' => $this->paymentMethod,
@@ -236,10 +256,26 @@ class Create extends Component
         $this->printing = false;
     }
 
+    public function updatedDiscount()
+    {
+        $this->discountAmount = ((float) $this->discount / 100) * $this->itemsTotal;
+        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
+        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
+        $this->netTotal = $totalWithDiscount - $this->taxAmount;
+        $this->grossTotal = $totalWithDiscount + $this->tip;
+    }
+
+    public function updatedTip()
+    {
+        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
+        $this->grossTotal = $totalWithDiscount + $this->tip;
+    }
+
+
 
     public function cancel()
     {
-        $this->reset('orderItems', 'orderItemsTotal', 'paymentItems', 'itemsTotal', 'discount', 'tip');
+        $this->reset('orderItems', 'orderItemsTotal', 'paymentItems', 'itemsTotal', 'discount', 'discountAmount', 'tip', 'taxAmount', 'netTotal', 'grossTotal');
         $this->setOrderItems();
         $this->tax = $this->tax();
     }

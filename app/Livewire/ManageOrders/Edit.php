@@ -4,13 +4,14 @@ namespace App\Livewire\ManageOrders;
 
 use App\Models\MenuSection;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Livewire\Component;
 use Mary\Traits\Toast;
-use Livewire\Attributes\On;
+use App\Traits\PrintReceipts;
 
 class Edit extends Component
 {
-    use Toast;
+    use Toast, PrintReceipts;
 
     public $orderId;
     // public $showMenuItems = false;
@@ -39,6 +40,24 @@ class Edit extends Component
     public function order()
     {
         return Order::with('place')->find($this->orderId);
+    }
+
+    public function print()
+    {
+        $this->authorize('manage_orders');
+        $invoiceItems = OrderItem::with(['menuItem'])->where('order_id', $this->orderId)->get();
+        $openItems = $invoiceItems->where('printed', false);
+        if (!$openItems->isEmpty())
+        {
+            foreach ($openItems as $openItem)
+            {
+                $openItem->update([
+                    'printed' => true,
+                ]);
+            }
+        }
+        $this->printInvoice($this->orderId, $invoiceItems);
+        $this->success(__('Items printed successfully'));
     }
 
 

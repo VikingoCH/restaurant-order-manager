@@ -55,12 +55,7 @@
                     value="{{ number_format($itemsTotal, 2) }}" />
 
                 <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" wire:model.live='discount' />
-                <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly
-                    value="{{ number_format(((int) $discount / 100) * $itemsTotal, 2) }}" />
-
-                <x-input icon="gmdi.percent-o" label="{{ __('labels.tax') }}" wire:model.live='tax' />
-                <x-input label="{{ __('Total MWST') }}" prefix="CHF" readonly
-                    value="{{ number_format(($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
+                <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly value="{{ $discountAmount }}" />
 
                 {{-- <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div> --}}
                 <span></span>
@@ -69,9 +64,16 @@
                 {{-- <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div> --}}
                 <span></span>
                 <x-input label="{{ __('labels.total') }}" prefix="CHF" readonly
-                    value="{{ number_format($itemsTotal - ((int) $discount / 100) * $itemsTotal + (int) $tip + ($itemsTotal - ((int) $discount / 100) * $itemsTotal) * ((int) $tax / 100), 2) }}" />
+                    value="{{ number_format($grossTotal, 2) }}" />
             </div>
+            <div class="mt-8 grid grid-cols-2 gap-2 border-t border-gray-300">
 
+                <x-input label="{{ __('labels.tax', ['value' => $tax]) }}" prefix="CHF" readonly
+                    value="{{ number_format($taxAmount, 2) }}" />
+
+                <x-input label="{{ __('Net Total') }}" prefix="CHF" readonly
+                    value="{{ number_format($netTotal, 2) }}" />
+            </div>
             <div class="mt-8 flex flex-col gap-4 border-t border-gray-300">
 
                 <x-select :options="$paymentMethods" icon="o-credit-card" label="{{ __('Payment Method') }}"

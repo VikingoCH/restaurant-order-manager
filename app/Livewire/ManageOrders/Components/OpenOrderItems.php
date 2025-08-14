@@ -6,18 +6,16 @@ use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Printer;
-use App\Traits\PrintReciept;
-use App\Traits\PrintReciepts;
+use App\Traits\PrintReceipts;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Mary\Traits\Toast;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class OpenOrderItems extends Component
 {
     use Toast;
-    use PrintReciepts;
+    use PrintReceipts;
 
     // public $isPrinted = false;
     public $orderId;

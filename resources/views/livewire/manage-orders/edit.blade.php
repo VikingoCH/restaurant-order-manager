@@ -2,6 +2,7 @@
     <x-header progress-indicator separator subtitle="{{ $order->number }}"
         title="{{ __('labels.table') . ' - ' . $order->place->location->name . ' / ' . $order->place->number }}">
         <x-slot name="actions">
+            <x-button class="btn-primary btn-sm" icon="o-printer" label="{{ __('Print Invoice') }}" wire:click="print" />
             <x-buttons.pay link="{{ route('payments.create', [$order->id]) }}" />
         </x-slot>
     </x-header>

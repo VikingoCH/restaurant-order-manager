@@ -68,7 +68,7 @@
             </div>
             <div class="mt-8 grid grid-cols-2 gap-2 border-t border-gray-300">
 
-                <x-input label="{{ __('labels.tax', ['value' => $tax]) }}" prefix="CHF" readonly
+                <x-input label="{{ __('labels.tax_value', ['value' => $tax]) }}" prefix="CHF" readonly
                     value="{{ number_format($taxAmount, 2) }}" />
 
                 <x-input label="{{ __('Net Total') }}" prefix="CHF" readonly

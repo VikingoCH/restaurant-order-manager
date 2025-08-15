@@ -20,6 +20,8 @@ class ReceiptPrinter
     private $invoiceHeader = [];
     private $orderHeader = [];
 
+    private $maxChrs = 42;
+
     public function __construct($device)
     {
         $this->device = $device;
@@ -52,6 +54,7 @@ class ReceiptPrinter
             //Initialize the printer
             $this->printer->initialize();
             $this->printer->setPrintLeftMargin(1);
+            $this->printer->setFont(Printer::FONT_B);
 
             //Header
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -151,7 +154,7 @@ class ReceiptPrinter
     private function orderItem($item)
     {
         $qty_cols = 5;
-        $name_cols = 40;
+        $name_cols = $this->maxChrs - $qty_cols;
 
         if (strlen($item->menuItem->name) >= $name_cols)
         {
@@ -193,10 +196,10 @@ class ReceiptPrinter
 
     private function invoiceItem($item)
     {
-        $name_cols = 25;
         $qty_cols = 3;
-        $price_cols = 8;
+        $price_cols = 7;
         $total_cols = 9;
+        $name_cols = $this->maxChrs - $qty_cols - $price_cols - $total_cols;
 
         if (strlen($item->menuItem->name) >= $name_cols)
         {
@@ -218,6 +221,6 @@ class ReceiptPrinter
 
     private function separator($chr)
     {
-        return str_repeat($chr, 47) . "\n";
+        return str_repeat($chr, $this->maxChrs) . "\n";
     }
 }

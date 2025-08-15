@@ -15,32 +15,29 @@ class MenuItems extends Component
 {
     use Toast;
 
-    public $sectionId;
     public $orderId;
-
     public string $search = '';
-    public $menuItemsClass = 'hidden w-full flex-col gap-4';
-    public $sectionName = '';
-
-    // Add form variables
-    public $openAddForm = false;
     public $fixedSides;
     public $selectableSides;
     public $orderNotes = '';
-    public $editMenuItem;
+    public $itemOptions;
+    public $openMenuItems = false;
+    public $sectionId;
+    public $sectionName = '';
 
     #[On('show-menu-items')]
     public function showMenuItems($sectionId)
     {
-        // $this->success('Open Section ' . $sectionId);
+        $this->authorize('manage_orders');
+
         $this->sectionId = $sectionId;
         $this->sectionName = MenuSection::find($sectionId)->name;
-        $this->menuItemsClass = 'flex w-full flex-col gap-4 lg:basis-1/3';
+        $this->openMenuItems = true;
     }
 
     public function closeMenuItems()
     {
-        $this->reset('search', 'menuItemsClass', 'sectionName');
+        $this->reset('search', 'sectionName');
     }
 
     public function menuitems()
@@ -52,28 +49,26 @@ class MenuItems extends Component
             ->orderBy('position', 'asc')->get();
     }
 
-    public function addForm(MenuItem $menuItem)
+    public function showOptions(MenuItem $menuItem)
     {
         $this->authorize('manage_orders');
 
-        $this->editMenuItem = $menuItem;
-        if ($this->editMenuItem->menuFixedSides->count())
+        $this->itemOptions = $menuItem->id;
+        if ($menuItem->menuFixedSides->count())
         {
-            $this->fixedSides = $this->editMenuItem->menuFixedSides->pluck('id')->toArray();
-        }
-        if ($this->editMenuItem->menuSelectableSides->count())
-        {
-            $this->selectableSides = $this->editMenuItem->menuSelectableSides()->orderBy('position', 'asc')->first()->id;
+            $this->fixedSides = $menuItem->menuFixedSides->pluck('id')->toArray();
         }
 
-        $this->openAddForm = true;
+        if ($menuItem->menuSelectableSides->count())
+        {
+            $this->selectableSides = $menuItem->menuSelectableSides()->orderBy('position', 'asc')->first()->id;
+        }
     }
 
     public function add(MenuItem $menuItem)
     {
         $this->authorize('manage_orders');
 
-        $orderItems = OrderItem::where('order_id', $this->orderId)->where('printed', false)->where('menu_item_id', $menuItem->id)->get();
 
         $sides = '';
         $fixedSides = '';
@@ -83,8 +78,8 @@ class MenuItems extends Component
             foreach ($this->fixedSides as $fixSide)
             {
                 $sides .= $menuItem->menuFixedSides->where('id', $fixSide)->implode('name', ' | ') . ' | ';
-                $fixedSides = $menuItem->menuFixedSides->where('id', $fixSide)->implode('id', ',');
             }
+            $fixedSides = implode(',', $this->fixedSides);
         }
         elseif ($menuItem->menuFixedSides()->count())
         {
@@ -94,7 +89,7 @@ class MenuItems extends Component
         if ($this->selectableSides != null)
         {
             $sides .= $menuItem->menuSelectableSides->where('id', $this->selectableSides)->implode('name', ' | ');
-            $selectableSides = $menuItem->menuSelectableSides->where('id', $this->selectableSides)->implode('id', ',');
+            $selectableSides = $this->selectableSides;
         }
         elseif ($menuItem->menuSelectableSides()->count())
         {
@@ -102,8 +97,10 @@ class MenuItems extends Component
             $selectableSides = $menuItem->menuSelectableSides()->orderBy('position', 'asc')->first()->id;
         }
 
-        // dd($sides, $fixedSides, $selectableSides);
         $itemExist = false;
+        // Get Order items already in the Open items list that match selected item
+        $orderItems = OrderItem::where('order_id', $this->orderId)->where('printed', false)->where('menu_item_id', $menuItem->id)->get();
+
         if ($orderItems)
         {
             foreach ($orderItems as $item)
@@ -141,7 +138,7 @@ class MenuItems extends Component
         ]);
 
 
-        $this->reset('search', 'openAddForm', 'fixedSides', 'selectableSides', 'orderNotes', 'editMenuItem');
+        $this->reset('search', 'fixedSides', 'selectableSides', 'orderNotes', 'itemOptions');
         $this->dispatch('refreshOrderItems');
         $this->success(__('Order item added successfully'));
     }

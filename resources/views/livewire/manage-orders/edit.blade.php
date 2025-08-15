@@ -2,7 +2,7 @@
     <x-header progress-indicator separator subtitle="{{ $order->number }}"
         title="{{ __('labels.table') . ' - ' . $order->place->location->name . ' / ' . $order->place->number }}">
         <x-slot name="actions">
-            <x-button class="btn-primary btn-sm" icon="o-printer" label="{{ __('Print Invoice') }}" wire:click="print" />
+            <x-buttons.print label="Print Invoice" wire:click='print' />
             <x-buttons.pay link="{{ route('payments.create', [$order->id]) }}" />
         </x-slot>
     </x-header>
@@ -12,7 +12,6 @@
     <div class="flex flex-col gap-4 lg:flex-row">
 
         <!-- Order Items section -->
-        {{-- <div class="flex w-full flex-col gap-4 lg:basis-3/4"> --}}
         <div class="flex w-full flex-col gap-4">
             <!-- Open Order Items -->
             <livewire:manage-orders.components.open-order-items :$orderId />
@@ -20,9 +19,8 @@
             <!-- Closed Order Items -->
             <livewire:manage-orders.components.closed-order-items :$orderId />
         </div>
-        {{-- @if ($showMenuItems) --}}
+
         <livewire:manage-orders.components.menu-items :$orderId />
-        {{-- @endif --}}
 
     </div>
 </div>

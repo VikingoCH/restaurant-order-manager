@@ -17,7 +17,6 @@ class OpenOrderItems extends Component
     use Toast;
     use PrintReceipts;
 
-    // public $isPrinted = false;
     public $orderId;
     public array $selectedRows;
 
@@ -32,9 +31,9 @@ class OpenOrderItems extends Component
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => 'id', 'class' => 'w-1'],
+            ['key' => 'id', 'label' => 'id', 'hidden' => 'true'],
             ['key' => 'items', 'label' => __('labels.items')],
-            ['key' => 'quantity', 'label' => __('labels.quantity'), 'class' => 'text-center'],
+            ['key' => 'quantity', 'label' => __('labels.quantity'), 'class' => 'text-center text-xs lg:text-md'],
             ['key' => 'price', 'label' => __('labels.price'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'text-center'],
             ['key' => 'total', 'label' => __('labels.total'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'text-center'],
         ];
@@ -47,6 +46,7 @@ class OpenOrderItems extends Component
         $orderItem->update([
             'quantity' => $orderItem->quantity + 1,
         ]);
+
         //Update total price of the order
         $order = Order::find($this->orderId);
         $order->update([
@@ -65,6 +65,7 @@ class OpenOrderItems extends Component
             $orderItem->update([
                 'quantity' => $orderItem->quantity - 1,
             ]);
+
             //Update total price of the order
             $order = Order::find($this->orderId);
             $order->update([
@@ -98,7 +99,6 @@ class OpenOrderItems extends Component
         elseif ($printerId != 'none' && $printerId != 'all')
         {
             $printer = $printers->find($printerId);
-            // dd($printer);
             $this->printItems($printer, $openItems);
         }
         elseif ($printerId == 'none')
@@ -140,16 +140,15 @@ class OpenOrderItems extends Component
         }
         if ($this->menuItem->menuSelectableSides->count())
         {
-            $this->selectableSides = $orderItem->selectable_sides;
+            $this->selectableSides = (int) $orderItem->selectable_sides;
         }
+
         $this->orderNotes = $orderItem->remarks;
         $this->openEditForm = true;
     }
 
     public function update()
     {
-        // $menuItem = MenuItem::with(['menuFixedSides', 'menuSelectableSides'])->find($this->menuItemId);
-        // $orderItem = OrderItem::where('order_id', $this->orderId)->where('printed', false)->where('menu_item_id', $this->menuItemId)->get();
         $sides = '';
         if ($this->fixedSides != null)
         {
@@ -169,7 +168,6 @@ class OpenOrderItems extends Component
             'remarks' => $this->orderNotes,
         ]);
 
-        // $this->openEditForm = false;
         $this->reset(
             'openEditForm',
             'fixedSides',
@@ -204,9 +202,7 @@ class OpenOrderItems extends Component
     {
         return view('livewire.manage-orders.components.open-order-items', [
             'orderItems' => OrderItem::with(['menuItem'])->where('printed', false)->where('order_id', $this->orderId)->get(),
-            // 'withActions' => !$this->isPrinted,
             'headers' => $this->headers(),
-            // 'title' => $this->isPrinted ? __("labels.open_orders") : __("labels.unprocessed"),
             'printers' => Printer::get(),
         ]);
     }

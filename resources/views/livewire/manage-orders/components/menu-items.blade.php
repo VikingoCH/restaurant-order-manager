@@ -19,7 +19,8 @@
             </x-slot:value>
             <x-slot:sub-value>
                 @if ($menuItem->menuFixedSides->count() || $menuItem->menuSelectableSides->count())
-                    <x-button class="btn-ghost btn-sm" icon="o-plus" wire:click='showOptions({{ $menuItem->id }})' />
+                    <x-button class="btn-ghost btn-sm" icon-right="o-chevron-down" label="{{ __('labels.options') }}"
+                        wire:click='showOptions({{ $menuItem->id }})' />
                 @endif
                 @if (@isset($itemOptions) && $itemOptions == $menuItem->id)
                     {{-- <div class="{{ $menuItemsClass }}"> --}}

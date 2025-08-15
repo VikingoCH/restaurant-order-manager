@@ -25,7 +25,7 @@
         <x-card class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
             title="{{ __('labels.open_items') }}">
             <x-slot:menu>
-                <x-buttons.pay label="{{ __('Pay all') }}" wire:click='addAllPaymentItems' />
+                <x-buttons.all wire:click='addAllPaymentItems' />
             </x-slot:menu>
             <x-table :headers="$headers" :rows="$orderItems" @row-click="$wire.addPaymentItem($event.detail.id)"
                 empty-text="{{ __('All ordered items are paid!') }}" show-empty-text />

@@ -4,12 +4,12 @@
     <x-slot:actions separator>
         <div class="grid grid-cols-2 gap-2 lg:flex lg:flex-row">
             @foreach ($printers as $printer)
-                <x-button class="btn-primary btn-sm" icon="o-printer" label="{{ $printer->name }}"
-                    wire:click="print({{ $printer->id }})" />
+                <x-button class="btn-primary btn-sm" icon="{{ $printer->icon ?? 'o-printer' }}"
+                    label="{{ $printer->name }}" wire:click="print({{ $printer->id }})" />
             @endforeach
-            <x-button class="btn-secondary btn-sm" icon="o-printer" label="{{ __('Print All') }}"
+            <x-button class="btn-secondary btn-sm" icon="gmdi.restaurant-menu-r" label="{{ __('Print All') }}"
                 wire:click="print('all')" />
-            <x-button class="btn-accent btn-sm" icon="o-printer" label="{{ __('No Print') }}"
+            <x-button class="btn-accent btn-sm" icon="gmdi.print-disabled-o" label="{{ __('No Print') }}"
                 wire:click="print('none')" />
         </div>
 

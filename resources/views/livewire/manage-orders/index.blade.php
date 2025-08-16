@@ -3,6 +3,7 @@
         <x-slot:actions>
             <x-button class="btn-accent" icon="gmdi.fastfood-o" label="{{ __('labels.quick_order') }}"
                 link="{{ route('payments.quick-order') }}" responsive />
+            <x-buttons.cash-close wire:click='print' />
         </x-slot:actions>
     </x-header>
 

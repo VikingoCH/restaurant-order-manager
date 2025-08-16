@@ -2,6 +2,7 @@
 
 namespace App\Printer;
 
+use App\Models\Order;
 use App\Traits\AppSettings;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
@@ -47,6 +48,8 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
+            dd($this->device->name, $this->orderHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
             $this->printer = new Printer($connector);
@@ -109,37 +112,87 @@ class ReceiptPrinter
         }
     }
 
-    public function invoiceTotals($invoiceItems)
+    public function invoiceTotals($order)
     {
-        $right_cols = 36;
         $left_cols = 9;
-        $subtotal = 0;
+        $right_cols = $this->maxChrs - $left_cols;
+        $total = $order->total;
         $tax = $this->tax();
         $invoiceTax = 0;
 
-        foreach ($invoiceItems as $item)
-        {
-            $subtotal += $item->price * $item->quantity;
-        }
-        $this->total = str_pad('Total CHF', $right_cols) . str_pad(number_format($subtotal, 2), $left_cols, ' ', STR_PAD_LEFT);
+        // foreach ($invoiceItems as $item)
+        // {
+        //     $total += $item->price * $item->quantity;
+        // }
+        $this->total = str_pad('Gesamt Brutto', $right_cols) . str_pad(number_format($total, 2), $left_cols, ' ', STR_PAD_LEFT);
 
-        $invoiceTax = number_format($subtotal - ($subtotal / (1 + ($tax / 100))), 2);
+        $invoiceTax = number_format($total - ($total / (1 + ($tax / 100))), 2);
 
         $this->tax = str_pad('MWST (' . $tax . ')', $right_cols) . str_pad($invoiceTax, $left_cols, ' ', STR_PAD_LEFT);
 
-        $this->subtotal = str_pad('Nettobetrag', $right_cols) . str_pad(number_format($subtotal - $invoiceTax, 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->subtotal = str_pad('Nettobetrag', $right_cols) . str_pad(number_format($total - $invoiceTax, 2), $left_cols, ' ', STR_PAD_LEFT);
     }
 
     public function printInvoice()
     {
         if ($this->device)
         {
-            dd($this->device, $this->invoiceHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+            dd($this->device->name, $this->invoiceHeader, $this->items, $this->total, $this->tax, $this->subtotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
             $this->printer = new Printer($connector);
 
+            //Initialize the printer
+            $this->printer->initialize();
+            $this->printer->setPrintLeftMargin(1);
+            $this->printer->setFont(Printer::FONT_B);
+
+            //Header
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($this->invoiceHeader['store_name'] . "\n");
+            $this->printer->selectPrintMode();
+            $this->printer->text($this->invoiceHeader['store_address'] . "\n");
+            $this->printer->text($this->invoiceHeader['store_phone'] . "\n");
+
+            $this->printer->setJustification(Printer::JUSTIFY_LEFT);
+            $this->printer->text($this->separator('-'));
+            $this->printer->text(date('j F Y H:i:s'));
+            $this->printer->feed();
+            $this->printer->text($this->invoiceHeader['order_id'] . "\n");
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed();
+
+            //Items
+            foreach ($this->items as $item)
+            {
+                $this->printer->text($item);
+            }
+
+            //Totals
+            $this->printer->feed(2);
+            $this->printer->text($this->separator('*'));
+            $printer->setEmphasis(true);
+            $this->printer->text($this->total . "\n");
+            $printer->setEmphasis(false);
+            $this->printer->text($this->separator('*'));
+            $this->printer->feed(2);
+
+            $this->printer->text($this->separator('-'));
+            $this->printer->text($this->tax . "\n");
+            $this->printer->text($this->subtotal . "\n");
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed(2);
+
+            //Footer
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text("Danke für Ihre Besuch!\n");
+            $this->printer->selectPrintMode();
+            $this->printer->feed();
+            $this->printer->text($this->invoiceHeader['store_website'] . "\n");
+            $this->printer->text($this->invoiceHeader['store_email'] . "\n");
 
             //Cut & Close
             $this->printer->cut();
@@ -178,15 +231,15 @@ class ReceiptPrinter
 
         if (isset($print_sides) && isset($print_remarks))
         {
-            return "$print_name$print_qty\n$print_sides\n$print_remarks\n";
+            return $print_name . $print_qty . "\n" . $print_sides . "\n" . $print_remarks . "\n";
         }
         else if (isset($print_sides) && !isset($print_remarks))
         {
-            return "$print_name$print_qty\n$print_sides\n";
+            return $print_name . $print_qty . "\n" . $print_sides . "\n";
         }
         else if (isset($print_remarks) && !isset($print_sides))
         {
-            return "$print_name$print_qty\n$print_remarks\n";
+            return $print_name . $print_qty . "\n" . $print_remarks . "\n";
         }
         else
         {

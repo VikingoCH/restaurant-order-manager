@@ -52,7 +52,6 @@ Route::middleware(['auth'])->group(function ()
     Route::name('reports.')->prefix('reports')->group(function ()
     {
         Route::get('/', Reports\Index::class)->name('index');
-        Route::get('/cash-close', Reports\CashClose::class)->name('cash-close');
     });
 
     //PDF Reports

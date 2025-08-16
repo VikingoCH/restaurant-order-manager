@@ -6,13 +6,14 @@ use App\Models\Location;
 use App\Models\Order;
 use App\Models\Place;
 use App\Traits\AppSettings;
+use App\Traits\PrintReceipts;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use AppSettings, Toast, WithPagination;
+    use AppSettings, Toast, WithPagination, PrintReceipts;
 
     public function headers(): array
     {
@@ -54,6 +55,14 @@ class Index extends Component
     }
 
     //TODO: Add print order
+    public function print()
+    {
+        $this->authorize('manage_orders');
+
+        $this->printCashClose();
+
+        $this->success(__('Cash Close printed successfully'));
+    }
 
     public function render(): mixed
     {

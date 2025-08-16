@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Place;
 use App\Models\Printer;
 use App\Printer\ReceiptPrinter;
 // use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
@@ -13,9 +14,11 @@ trait PrintReceipts
 
     protected function printOrder($printer, $orderId, $orderItems)
     {
+        $order = Order::with('place')->find($orderId);
+        // $table = Place::find($order->place_id)->location->name;
+
         $orderReceipt = new ReceiptPrinter($printer);
-        $table = Order::find($orderId)->place->name ?? 'N/A';
-        $orderReceipt->setOrderHeader($table, $orderId);
+        $orderReceipt->setOrderHeader($order->table, $order->number);
         $orderReceipt->addOrderItems($orderItems);
         $orderReceipt->printOrder();
         //TODO: Temporal return to test printing. To be deleted the $temp var.
@@ -25,11 +28,17 @@ trait PrintReceipts
 
     protected function printInvoice($orderId, $invoiceItems)
     {
+        $order = Order::find($orderId);
         $printer = Printer::where('id', 1)->first();
         $invoiceReceipt = new ReceiptPrinter($printer);
-        $invoiceReceipt->setInvoiceHeader($orderId);
+        $invoiceReceipt->setInvoiceHeader($order->number);
         $invoiceReceipt->addInvoiceItems($invoiceItems);
-        $invoiceReceipt->invoiceTotals($invoiceItems);
+        $invoiceReceipt->invoiceTotals($order);
         $invoiceReceipt->printInvoice();
+    }
+
+    protected function printCashClose()
+    {
+        $printer = Printer::where('id', 1)->first();
     }
 }

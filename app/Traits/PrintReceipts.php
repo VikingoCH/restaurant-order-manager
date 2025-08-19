@@ -21,9 +21,6 @@ trait PrintReceipts
         $orderReceipt->setOrderHeader($order->table, $order->number);
         $orderReceipt->addOrderItems($orderItems);
         $orderReceipt->printOrder();
-        //TODO: Temporal return to test printing. To be deleted the $temp var.
-        // $temp =  $orderReceipt->printOrder();
-        // return $temp;
     }
 
     protected function printInvoice($orderId, $invoiceItems)
@@ -39,7 +36,6 @@ trait PrintReceipts
 
     protected function printCashClose($items)
     {
-        // dd($items);
         $printer = Printer::where('id', 1)->first();
         $invoiceReceipt = new ReceiptPrinter($printer);
         $invoiceReceipt->setCashCloseHeader();

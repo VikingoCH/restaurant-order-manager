@@ -9,6 +9,7 @@ use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 
 class ReceiptPrinter
 {
+    //TODO: Remove dd() comand from print methods after testing.
     use AppSettings;
 
 
@@ -47,7 +48,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+            dd($this->device->name, $this->receiptHeader, $this->items);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -190,8 +191,10 @@ class ReceiptPrinter
             $this->printer->text("Danke für Ihre Besuch!\n");
             $this->printer->selectPrintMode();
             $this->printer->feed();
+            $this->printer->text($this->separator('='));
             $this->printer->text($this->receiptHeader['store_website'] . "\n");
             $this->printer->text($this->receiptHeader['store_email'] . "\n");
+            $this->printer->feed(2);
 
             //Cut & Close
             $this->printer->cut();
@@ -218,6 +221,7 @@ class ReceiptPrinter
             $this->items[] = $this->cashCloseItem($item);
             $this->total += $item->total;
         }
+        $this->total = str_pad('Total', $this->maxChrs - 5) . str_pad(number_format($this->total, 2), 5, ' ', STR_PAD_LEFT);
     }
 
     public function printCashClose()
@@ -225,6 +229,47 @@ class ReceiptPrinter
         if ($this->device)
         {
             dd($this->device->name, $this->receiptHeader, $this->items, $this->total);
+
+            // Start the printer
+            $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
+            $this->printer = new Printer($connector);
+
+            //Initialize the printer
+            $this->printer->initialize();
+            $this->printer->setPrintLeftMargin(1);
+            $this->printer->setFont(Printer::FONT_B);
+
+            //Header
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($this->receiptHeader['title'] . "\n");
+            $this->printer->text($this->receiptHeader['date'] . "\n");
+            $this->printer->selectPrintMode();
+            $this->printer->setJustification(Printer::JUSTIFY_RIGHT);
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed();
+
+            //Items
+            $this->printer->text($this->separator('-'));
+            $this->printer->setJustification(Printer::JUSTIFY_LEFT);
+            $this->printer->feed();
+            foreach ($this->items as $item)
+            {
+                $this->printer->text($item);
+            }
+            $this->printer->feed();
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed(2);
+
+            //Total
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($this->total . "\n");
+            $this->printer->feed();
+
+
+            //Cut & Close
+            $this->printer->cut();
+            $this->printer->close();
         }
         else
         {

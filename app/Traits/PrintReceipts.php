@@ -37,8 +37,13 @@ trait PrintReceipts
         $invoiceReceipt->printInvoice();
     }
 
-    protected function printCashClose()
+    protected function printCashClose($items)
     {
+        // dd($items);
         $printer = Printer::where('id', 1)->first();
+        $invoiceReceipt = new ReceiptPrinter($printer);
+        $invoiceReceipt->setCashCloseHeader();
+        $invoiceReceipt->addCashCloseItems($items);
+        $invoiceReceipt->printCashClose();
     }
 }

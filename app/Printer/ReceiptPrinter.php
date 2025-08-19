@@ -18,8 +18,7 @@ class ReceiptPrinter
     private $total = 0;
     private $tax = 0;
     private $subtotal = 0;
-    private $invoiceHeader = [];
-    private $orderHeader = [];
+    private $receiptHeader = [];
 
     private $maxChrs = 42;
 
@@ -30,7 +29,7 @@ class ReceiptPrinter
 
     public function setOrderHeader($table, $id)
     {
-        $this->orderHeader = [
+        $this->receiptHeader = [
             'table' => $table,
             'order_id' => $id,
         ];
@@ -48,7 +47,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->orderHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->total, $this->tax, $this->subtotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -62,8 +61,8 @@ class ReceiptPrinter
             //Header
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text($this->orderHeader['order_id'] . "\n");
-            $this->printer->text($this->orderHeader['table'] . "\n");
+            $this->printer->text($this->receiptHeader['order_id'] . "\n");
+            $this->printer->text($this->receiptHeader['table'] . "\n");
             $this->printer->selectPrintMode();
             $this->printer->setJustification(Printer::JUSTIFY_RIGHT);
             $this->printer->text(date('j F Y H:i:s'));
@@ -94,7 +93,7 @@ class ReceiptPrinter
     public function setInvoiceHeader($id)
     {
         $storeInfo = $this->AppSettings();
-        $this->invoiceHeader = [
+        $this->receiptHeader = [
             'order_id' => $id,
             'store_name' => $storeInfo->printer_store_name,
             'store_address' => $storeInfo->printer_store_address,
@@ -137,7 +136,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->invoiceHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->total, $this->tax, $this->subtotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -151,16 +150,16 @@ class ReceiptPrinter
             //Header
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text($this->invoiceHeader['store_name'] . "\n");
+            $this->printer->text($this->receiptHeader['store_name'] . "\n");
             $this->printer->selectPrintMode();
-            $this->printer->text($this->invoiceHeader['store_address'] . "\n");
-            $this->printer->text($this->invoiceHeader['store_phone'] . "\n");
+            $this->printer->text($this->receiptHeader['store_address'] . "\n");
+            $this->printer->text($this->receiptHeader['store_phone'] . "\n");
 
             $this->printer->setJustification(Printer::JUSTIFY_LEFT);
             $this->printer->text($this->separator('-'));
             $this->printer->text(date('j F Y H:i:s'));
             $this->printer->feed();
-            $this->printer->text($this->invoiceHeader['order_id'] . "\n");
+            $this->printer->text($this->receiptHeader['order_id'] . "\n");
             $this->printer->text($this->separator('-'));
             $this->printer->feed();
 
@@ -191,12 +190,41 @@ class ReceiptPrinter
             $this->printer->text("Danke für Ihre Besuch!\n");
             $this->printer->selectPrintMode();
             $this->printer->feed();
-            $this->printer->text($this->invoiceHeader['store_website'] . "\n");
-            $this->printer->text($this->invoiceHeader['store_email'] . "\n");
+            $this->printer->text($this->receiptHeader['store_website'] . "\n");
+            $this->printer->text($this->receiptHeader['store_email'] . "\n");
 
             //Cut & Close
             $this->printer->cut();
             $this->printer->close();
+        }
+        else
+        {
+            throw new \Exception('Printer device not set.');
+        }
+    }
+
+    public function setCashCloseHeader()
+    {
+        $this->receiptHeader = [
+            'title' => 'Kassenabschluss',
+            'date' => now()->format('Y-m-d H:i:s'),
+        ];
+    }
+
+    public function addCashCloseItems($items)
+    {
+        foreach ($items as $item)
+        {
+            $this->items[] = $this->cashCloseItem($item);
+            $this->total += $item->total;
+        }
+    }
+
+    public function printCashClose()
+    {
+        if ($this->device)
+        {
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->total);
         }
         else
         {
@@ -270,6 +298,15 @@ class ReceiptPrinter
         $print_total = str_pad(number_format($item->price * $item->quantity, 2), $total_cols, ' ', STR_PAD_LEFT);
 
         return "$print_name$print_qty$print_price$print_total\n";
+    }
+
+    private function cashCloseItem($item)
+    {
+        $total_cols = 5;
+        $name_cols = $this->maxChrs - $total_cols;
+        $print_number = str_pad($item->number, $name_cols);
+        $print_total = str_pad($item->total, $total_cols, ' ', STR_PAD_LEFT);
+        return "$print_number$print_total\n";
     }
 
     private function separator($chr)

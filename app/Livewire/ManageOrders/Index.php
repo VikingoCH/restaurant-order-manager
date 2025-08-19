@@ -6,6 +6,7 @@ use App\Models\Location;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Place;
+use App\Models\Transaction;
 use App\Traits\AppSettings;
 use App\Traits\PrintReceipts;
 use Livewire\Component;
@@ -55,22 +56,20 @@ class Index extends Component
         $this->success(__('Order deleted successfully'));
     }
 
-    //TODO: Add print order
     public function print()
     {
         $this->authorize('manage_orders');
 
-        $items = OrderItem::get();
+        $items = Transaction::where('cash_closing_at', null)->get();
+
+        $this->printCashClose($items);
+
         foreach ($items as $item)
         {
-            OrderItem::where('id', $item->id)->update([
-                'is_paid' => false,
-                'paid_quantity' => 0
+            Transaction::where('id', $item->id)->update([
+                'cash_closing_at' => date('Y-m-d'),
             ]);
         }
-
-        // $this->printCashClose();
-
         $this->success(__('Cash Close printed successfully'));
     }
 

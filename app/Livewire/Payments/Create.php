@@ -9,6 +9,7 @@ use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Traits\AppSettings;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -24,13 +25,22 @@ class Create extends Component
     public $orderItemsTotal = 0;
 
     public $itemsTotal = 0;
-    public $discount = 0;
-    public $discountAmount = 0;
     public $tax;
     public $taxAmount = 0;
     public $netTotal = 0;
     public $grossTotal = 0;
+    public $paymentTotal = 0;
+
+    #[Validate('required|numeric|min:0|max:100')]
+    public $discount = 0;
+
+    #[Validate('required|numeric|min:0')]
+    public $discountAmount = 0;
+
+    #[Validate('required|numeric|min:0')]
     public $tip = 0;
+
+    #[Validate('required|exists:payment_methods,id')]
     public $paymentMethod;
 
     public $printing = false;
@@ -117,10 +127,7 @@ class Create extends Component
         $this->itemsTotal += $this->paymentItems[$orderItemId]['price'];
         $this->orderItemsTotal -= $this->paymentItems[$orderItemId]['price'];
 
-        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
-        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
-        $this->netTotal = $totalWithDiscount - $this->taxAmount;
-        $this->grossTotal = $totalWithDiscount + $this->tip;
+        $this->calculateTotals();
 
 
         // If all order items added to payment list then remove it from ordered list
@@ -142,10 +149,7 @@ class Create extends Component
         $this->orderItems = [];
         $this->orderItemsTotal = 0;
 
-        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
-        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
-        $this->netTotal = $totalWithDiscount - $this->taxAmount;
-        $this->grossTotal = $totalWithDiscount + $this->tip;
+        $this->calculateTotals();
     }
 
     public function removePaymentItem($orderItemId)
@@ -177,10 +181,7 @@ class Create extends Component
         $this->itemsTotal -= $this->paymentItems[$orderItemId]['price'];
         $this->orderItemsTotal += $this->paymentItems[$orderItemId]['price'];
 
-        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
-        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
-        $this->netTotal = $totalWithDiscount - $this->taxAmount;
-        $this->grossTotal = $totalWithDiscount + $this->tip;
+        $this->calculateTotals();
 
         // If all order items removed from payment list then add it from ordered list
         if ($this->paymentItems[$orderItemId]['quantity'] == 0)
@@ -191,6 +192,8 @@ class Create extends Component
 
     public function pay()
     {
+        $this->validate();
+
         // dd($this->grossTotal, $this->discountAmount, $this->tip, $this->taxAmount);
         $order = Order::find($this->orderId);
 
@@ -258,20 +261,23 @@ class Create extends Component
 
     public function updatedDiscount()
     {
+        $this->validate();
         $this->discountAmount = ((float) $this->discount / 100) * $this->itemsTotal;
-        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
-        $this->taxAmount = $totalWithDiscount - ($totalWithDiscount / (1 + $this->tax / 100));
-        $this->netTotal = $totalWithDiscount - $this->taxAmount;
-        $this->grossTotal = $totalWithDiscount + $this->tip;
+        $this->calculateTotals();
+    }
+
+    public function updatedDiscountAmount()
+    {
+        $this->validate();
+        $this->discount = ($this->discountAmount / $this->itemsTotal) * 100;
+        $this->calculateTotals();
     }
 
     public function updatedTip()
     {
-        $totalWithDiscount = $this->itemsTotal - $this->discountAmount;
-        $this->grossTotal = $totalWithDiscount + $this->tip;
+        $this->validate();
+        $this->calculateTotals();
     }
-
-
 
     public function cancel()
     {
@@ -287,5 +293,13 @@ class Create extends Component
             'paymentMethods' => $this->setPaymentMethods(),
             'headers' => $this->headers(),
         ]);
+    }
+
+    private function calculateTotals()
+    {
+        $this->grossTotal = $this->itemsTotal - $this->discountAmount;
+        $this->taxAmount = $this->grossTotal - ($this->grossTotal / (1 + $this->tax / 100));
+        $this->netTotal = $this->grossTotal - $this->taxAmount;
+        $this->paymentTotal = $this->grossTotal + $this->tip;
     }
 }

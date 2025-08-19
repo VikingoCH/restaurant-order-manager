@@ -107,6 +107,8 @@ return [
     'tip' => 'Tip',
     'title' => 'Title',
     'total' => 'Total',
+    'total_gross' => 'Gross Total',
+    'total_net' => 'Net Total',
     'total_paid' => 'Total Paid',
     'total_sales' => 'Total Sales',
     'transactions' => 'Transactions',

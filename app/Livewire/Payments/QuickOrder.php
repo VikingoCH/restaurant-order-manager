@@ -17,6 +17,13 @@ class QuickOrder extends Component
 
     public $itemName;
 
+    // public $itemsTotal = 0;
+    public $taxAmount = 0;
+    public $netTotal = 0;
+    public $grossTotal = 0;
+    public $paymentTotal = 0;
+    public $tax;
+
     #[Validate('required|numeric|min:1')]
     public $orderAmount = 0;
 
@@ -24,7 +31,7 @@ class QuickOrder extends Component
     public $discount = 0;
 
     #[Validate('required|numeric|min:0')]
-    public $tax;
+    public $discountAmount = 0;
 
     #[Validate('required|numeric|min:0')]
     public $tip = 0;
@@ -43,11 +50,12 @@ class QuickOrder extends Component
 
     public function pay()
     {
+        $this->validate();
         //Create the order
         $prefix = $this->orderPrefix();
         $order = Order::create([
             'number' => $prefix,
-            'total' => $this->orderAmount,
+            'total' => $this->grossTotal,
             'is_open' => false,
             'table' => 'none',
             'place_id' => 1,
@@ -58,10 +66,10 @@ class QuickOrder extends Component
         //Create the transaction
         $transaction = Transaction::create([
             'number' => $order->number . '-' . date('Gis'),
-            'total' => $this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount + (float) $this->tip + ($this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount) * ((float) $this->tax / 100),
-            'discount' => ((float) $this->discount / 100) * $this->orderAmount,
+            'total' => $this->grossTotal,
+            'discount' => $this->discountAmount,
             'tip' => $this->tip,
-            'tax' => ($this->orderAmount - ((float) $this->discount / 100) * $this->orderAmount) * ((float) $this->tax / 100),
+            'tax' => $this->taxAmount,
             'paid' => true,
             'order_id' => $order->id,
             'payment_method_id' => $this->paymentMethod,
@@ -96,16 +104,52 @@ class QuickOrder extends Component
 
     public function cancel()
     {
-        $this->reset('orderAmount', 'discount', 'tip');
+        $this->reset('orderAmount', 'discount', 'tip', 'discountAmount', 'taxAmount', 'netTotal', 'grossTotal', 'paymentTotal');
+        $this->calculateTotals();
         $this->tax = $this->tax();
     }
 
+    public function updatedOrderAmount()
+    {
+        $this->validate();
+        $this->discountAmount = ($this->discount / 100) * $this->orderAmount;
+        // dd($this->discountAmount);
+        $this->calculateTotals();
+    }
 
+    public function updatedDiscount()
+    {
+        $this->validate();
+        $this->discountAmount = ($this->discount / 100) * $this->orderAmount;
+        $this->calculateTotals();
+    }
+
+    public function updatedDiscountAmount()
+    {
+        $this->validate();
+        $this->discount = ($this->discountAmount / $this->orderAmount) * 100;
+        $this->calculateTotals();
+    }
+
+    public function updatedTip()
+    {
+        $this->validate();
+        $this->calculateTotals();
+    }
 
     public function render()
     {
         return view('livewire.payments.quick-order', [
             'paymentMethods' => $this->setPaymentMethods(),
         ]);
+    }
+
+
+    private function calculateTotals()
+    {
+        $this->grossTotal = $this->orderAmount - $this->discountAmount;
+        $this->taxAmount = $this->grossTotal - ($this->grossTotal / (1 + $this->tax / 100));
+        $this->netTotal = $this->grossTotal - $this->taxAmount;
+        $this->paymentTotal = $this->grossTotal + $this->tip;
     }
 }

@@ -48,30 +48,37 @@
 
             <hr class="my-8 border border-gray-300" />
 
-            <div class="grid grid-cols-2 gap-2">
+            <div class="grid grid-cols-3 gap-2">
                 {{-- <div class="py-2 text-end font-bold">{{ __('labels.sub_total') }}</div> --}}
-                <span></span>
-                <x-input label="{{ __('labels.sub_total') }}" prefix="CHF" readonly
-                    value="{{ number_format($itemsTotal, 2) }}" />
+                <span class="col-span-2 col-start-2">
+                    <x-input label="{{ __('labels.sub_total') }}" prefix="CHF" readonly
+                        value="{{ number_format($itemsTotal, 2) }}" />
+                </span>
 
                 <x-input icon="gmdi.percent-o" label="{{ __('Discount (%)') }}" wire:model.live='discount' />
-                <x-input label="{{ __('Total Discount') }}" prefix="CHF" readonly value="{{ $discountAmount }}" />
+                <span class="col-span-2 col-start-2">
+                    <x-input label="{{ __('Total Discount') }}" prefix="CHF" wire:model.live='discountAmount' />
+                </span>
 
                 {{-- <div class="py-2 text-end font-bold">{{ __('labels.tip') }}</div> --}}
-                <span></span>
-                <x-input label="{{ __('labels.tip') }}" prefix="CHF" wire:model.live='tip' />
+                <span class="col-span-2 col-start-2">
+                    <x-input label="{{ __('labels.total_gross') }}" prefix="CHF" readonly
+                        value="{{ number_format($grossTotal, 2) }}" />
+                </span>
 
                 {{-- <div class="py-2 text-end font-bold">{{ __('labels.total') }}</div> --}}
-                <span></span>
-                <x-input label="{{ __('labels.total') }}" prefix="CHF" readonly
-                    value="{{ number_format($grossTotal, 2) }}" />
+                <x-input label="{{ __('labels.tip') }}" prefix="CHF" wire:model.live='tip' />
+                <span class="bg-(--color-primary) col-span-2 col-start-2 pb-2 pl-2 pr-2">
+                    <x-input label="{{ __('labels.total_paid') }}" prefix="CHF" readonly
+                        value="{{ number_format($paymentTotal, 2) }}" />
+                </span>
             </div>
             <div class="mt-8 grid grid-cols-2 gap-2 border-t border-gray-300">
 
-                <x-input label="{{ __('labels.tax_value', ['value' => $tax]) }}" prefix="CHF" readonly
-                    value="{{ number_format($taxAmount, 2) }}" />
+                <x-input class="bg-gray-50 text-gray-400" label="{{ __('labels.tax_value', ['value' => $tax]) }}"
+                    prefix="CHF" readonly value="{{ number_format($taxAmount, 2) }}" />
 
-                <x-input label="{{ __('Net Total') }}" prefix="CHF" readonly
+                <x-input class="bg-gray-50 text-gray-400" label="{{ __('labels.total_net') }}" prefix="CHF" readonly
                     value="{{ number_format($netTotal, 2) }}" />
             </div>
             <div class="mt-8 flex flex-col gap-4 border-t border-gray-300">

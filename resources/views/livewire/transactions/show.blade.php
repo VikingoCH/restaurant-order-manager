@@ -31,26 +31,35 @@
                 </div>
             </div>
 
-            <!-- Order Tip -->
-            <div class="flex flex-row gap-2">
-                <div class="w-1/2 py-2 text-end font-bold">{{ __('labels.tip') }}</div>
-                <div class="w-full py-2 text-end font-bold">
-                    {{ 'CHF ' . number_format($transaction->tip, 2) }}
-                </div>
-            </div>
-            <!-- Total Paid -->
-            <div class="mt-4 flex flex-row gap-2 border-b border-t border-gray-500">
+            <!-- Total Order -->
+            <div class="mb-4 flex flex-row gap-2 border-t border-gray-500">
                 <div class="w-1/2 py-2 text-end font-bold">{{ __('labels.total') }}</div>
                 <div class="w-full py-2 text-end font-bold">
                     {{ 'CHF ' . number_format($transaction->total, 2) }}
                 </div>
             </div>
 
+            <!-- Order Tip -->
+            <div class="flex flex-row gap-2 border-t border-gray-300 text-xs font-bold text-gray-400">
+                <div class="w-1/2 py-2 text-end">{{ __('labels.tip') }}</div>
+                <div class="w-full py-2 text-end">
+                    {{ 'CHF ' . number_format($transaction->tip, 2) }}
+                </div>
+            </div>
+
             <!-- Order Tax -->
-            <div class="mt-8 flex flex-row gap-2 border-b border-t border-gray-300">
-                <div class="w-1/2 py-2 text-end text-xs font-bold text-gray-400">{{ __('labels.tax') }}</div>
-                <div class="w-full py-2 text-end text-xs font-bold text-gray-400">
+            <div class="flex flex-row gap-2 border-b border-gray-300 text-xs font-bold text-gray-400">
+                <div class="w-1/2 py-2 text-end">{{ __('labels.tax') }}</div>
+                <div class="w-full py-2 text-end">
                     {{ 'CHF ' . number_format($transaction->tax, 2) }}
+                </div>
+            </div>
+
+            <!-- Total Paid -->
+            <div class="mt-4 flex flex-row gap-2 border-b border-t border-gray-500">
+                <div class="w-1/2 py-2 text-end font-bold">{{ __('labels.total_paid') }}</div>
+                <div class="w-full py-2 text-end font-bold">
+                    {{ 'CHF ' . number_format($transaction->total + $transaction->tip, 2) }}
                 </div>
             </div>
         </x-card>

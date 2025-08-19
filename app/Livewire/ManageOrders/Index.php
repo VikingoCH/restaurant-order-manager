@@ -4,6 +4,7 @@ namespace App\Livewire\ManageOrders;
 
 use App\Models\Location;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Place;
 use App\Traits\AppSettings;
 use App\Traits\PrintReceipts;
@@ -59,7 +60,16 @@ class Index extends Component
     {
         $this->authorize('manage_orders');
 
-        $this->printCashClose();
+        $items = OrderItem::get();
+        foreach ($items as $item)
+        {
+            OrderItem::where('id', $item->id)->update([
+                'is_paid' => false,
+                'paid_quantity' => 0
+            ]);
+        }
+
+        // $this->printCashClose();
 
         $this->success(__('Cash Close printed successfully'));
     }

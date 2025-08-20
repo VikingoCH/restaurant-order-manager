@@ -91,7 +91,7 @@
                         <x-button class="btn-primary mt-auto" icon="gmdi.payments-o" label="{{ __('labels.pay') }}"
                             wire:click='pay' />
                         <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print') }}"
-                            wire:click="$toggle('printing')" />
+                            wire:click="print" />
                     @else
                         <x-button class="btn-primary mt-auto" disabled icon="gmdi.payments-o"
                             label="{{ __('labels.pay') }}" />

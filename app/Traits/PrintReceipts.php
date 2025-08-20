@@ -34,6 +34,17 @@ trait PrintReceipts
         $invoiceReceipt->printInvoice();
     }
 
+    protected function printCashRegister($orderId, $items, $totals)
+    {
+        $order = Order::find($orderId);
+        $printer = Printer::where('id', 1)->first();
+        $invoiceReceipt = new ReceiptPrinter($printer);
+        $invoiceReceipt->setInvoiceHeader($order->number);
+        $invoiceReceipt->addCashRegisterItems($items);
+        $invoiceReceipt->cashregisterTotals($totals);
+        $invoiceReceipt->printCashRegister();
+    }
+
     protected function printCashClose($items)
     {
         $printer = Printer::where('id', 1)->first();

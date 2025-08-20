@@ -16,9 +16,13 @@ class ReceiptPrinter
     private $printer;
     private $device;
     private $items = [];
-    private $total = 0;
+    private $grossTotal = 0;
     private $tax = 0;
-    private $subtotal = 0;
+    private $netTotal = 0;
+    private $discount = 0;
+    private $tip = 0;
+    private $totalPaid = 0;
+    private $itemsTotal = 0;
     private $receiptHeader = [];
 
     private $maxChrs = 42;
@@ -120,24 +124,20 @@ class ReceiptPrinter
         $tax = $this->tax();
         $invoiceTax = 0;
 
-        // foreach ($invoiceItems as $item)
-        // {
-        //     $total += $item->price * $item->quantity;
-        // }
-        $this->total = str_pad('Gesamt Brutto', $right_cols) . str_pad(number_format($total, 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->grossTotal = str_pad('Gesamt Brutto', $right_cols) . str_pad(number_format($total, 2), $left_cols, ' ', STR_PAD_LEFT);
 
         $invoiceTax = number_format($total - ($total / (1 + ($tax / 100))), 2);
 
-        $this->tax = str_pad('MWST (' . $tax . ')', $right_cols) . str_pad($invoiceTax, $left_cols, ' ', STR_PAD_LEFT);
+        $this->tax = str_pad('MWST (' . $tax . '%)', $right_cols) . str_pad($invoiceTax, $left_cols, ' ', STR_PAD_LEFT);
 
-        $this->subtotal = str_pad('Nettobetrag', $right_cols) . str_pad(number_format($total - $invoiceTax, 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->netTotal = str_pad('Nettobetrag', $right_cols) . str_pad(number_format($total - $invoiceTax, 2), $left_cols, ' ', STR_PAD_LEFT);
     }
 
     public function printInvoice()
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->total, $this->tax, $this->subtotal);
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal, $this->tax, $this->netTotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -169,19 +169,124 @@ class ReceiptPrinter
             {
                 $this->printer->text($item);
             }
+            $this->printer->feed();
+            $this->printer->text($this->separator('-'));
 
             //Totals
-            $this->printer->feed(2);
+            $this->printer->feed();
             $this->printer->text($this->separator('*'));
             $printer->setEmphasis(true);
-            $this->printer->text($this->total . "\n");
+            $this->printer->text($this->grossTotal . "\n");
             $printer->setEmphasis(false);
             $this->printer->text($this->separator('*'));
             $this->printer->feed(2);
 
             $this->printer->text($this->separator('-'));
             $this->printer->text($this->tax . "\n");
-            $this->printer->text($this->subtotal . "\n");
+            $this->printer->text($this->netTotal . "\n");
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed(2);
+
+            //Footer
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text("Danke für Ihre Besuch!\n");
+            $this->printer->selectPrintMode();
+            $this->printer->feed();
+            $this->printer->text($this->separator('='));
+            $this->printer->text($this->receiptHeader['store_website'] . "\n");
+            $this->printer->text($this->receiptHeader['store_email'] . "\n");
+            $this->printer->feed(2);
+
+            //Cut & Close
+            $this->printer->cut();
+            $this->printer->close();
+        }
+        else
+        {
+            throw new \Exception('Printer device not set.');
+        }
+    }
+
+    public function addCashRegisterItems($items)
+    {
+        foreach ($items as $item)
+        {
+            $this->items[] = $this->cashRegisterItem($item);
+        }
+    }
+
+    public function cashregisterTotals($totals)
+    {
+        $left_cols = 9;
+        $right_cols = $this->maxChrs - $left_cols;
+
+        $this->itemsTotal = str_pad('Summe', $right_cols) . str_pad(number_format($totals['items_total'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->grossTotal = str_pad('Gesamt Brutto', $right_cols) . str_pad(number_format($totals['gross_total'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->tax = str_pad('MWST (' . $totals['tax'] . '%)', $right_cols) . str_pad(number_format($totals['tax_amount'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->netTotal = str_pad('Nettobetrag', $right_cols) . str_pad(number_format($totals['net_total'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->discount = str_pad('Rabatt', $right_cols) . str_pad(number_format($totals['discount'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->tip = str_pad('Trinkgeld', $right_cols) . str_pad(number_format($totals['tip'], 2), $left_cols, ' ', STR_PAD_LEFT);
+        $this->totalPaid = str_pad('Total bezahlt', $right_cols) . str_pad(number_format($totals['total_paid'], 2), $left_cols, ' ', STR_PAD_LEFT);
+    }
+
+    public function printCashRegister()
+    {
+        if ($this->device)
+        {
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->itemsTotal, $this->grossTotal, $this->tax, $this->netTotal, $this->discount, $this->tip, $this->totalPaid);
+
+            // Start the printer
+            $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
+            $this->printer = new Printer($connector);
+
+            //Initialize the printer
+            $this->printer->initialize();
+            $this->printer->setPrintLeftMargin(1);
+            $this->printer->setFont(Printer::FONT_B);
+
+            //Header
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($this->receiptHeader['store_name'] . "\n");
+            $this->printer->selectPrintMode();
+            $this->printer->text($this->receiptHeader['store_address'] . "\n");
+            $this->printer->text($this->receiptHeader['store_phone'] . "\n");
+
+            $this->printer->setJustification(Printer::JUSTIFY_LEFT);
+            $this->printer->text($this->separator('-'));
+            $this->printer->text(date('j F Y H:i:s'));
+            $this->printer->feed();
+            $this->printer->text($this->receiptHeader['order_id'] . "\n");
+            $this->printer->text($this->separator('-'));
+            $this->printer->feed();
+
+            //Items
+            foreach ($this->items as $item)
+            {
+                $this->printer->text($item);
+            }
+            $this->printer->feed();
+            $this->printer->text($this->separator('-'));
+
+            //Totals
+            $this->printer->feed();
+            $this->printer->text($this->itemsTotal . "\n");
+            $this->printer->text($this->discount . "\n");
+            $this->printer->text($this->grossTotal . "\n");
+            $this->printer->text($this->tip . "\n");
+            $this->printer->feed();
+
+            $this->printer->text($this->separator('*'));
+            $printer->setEmphasis(true);
+            $this->printer->text($this->totalPaid . "\n");
+            $printer->setEmphasis(false);
+            $this->printer->text($this->separator('*'));
+            $this->printer->feed(2);
+
+            $this->printer->text($this->separator('-'));
+            $this->printer->text($this->tax . "\n");
+            $this->printer->text($this->netTotal . "\n");
             $this->printer->text($this->separator('-'));
             $this->printer->feed(2);
 
@@ -219,16 +324,16 @@ class ReceiptPrinter
         foreach ($items as $item)
         {
             $this->items[] = $this->cashCloseItem($item);
-            $this->total += $item->total;
+            $this->grossTotal += $item->total;
         }
-        $this->total = str_pad('Total', $this->maxChrs - 5) . str_pad(number_format($this->total, 2), 5, ' ', STR_PAD_LEFT);
+        $this->grossTotal = str_pad('Total', $this->maxChrs - 5) . str_pad(number_format($this->grossTotal, 2), 5, ' ', STR_PAD_LEFT);
     }
 
     public function printCashClose()
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->total);
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -263,7 +368,7 @@ class ReceiptPrinter
 
             //Total
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text($this->total . "\n");
+            $this->printer->text($this->grossTotal . "\n");
             $this->printer->feed();
 
 
@@ -341,6 +446,31 @@ class ReceiptPrinter
         $print_price = str_pad(trim($item->price), $price_cols, ' ', STR_PAD_LEFT);
 
         $print_total = str_pad(number_format($item->price * $item->quantity, 2), $total_cols, ' ', STR_PAD_LEFT);
+
+        return "$print_name$print_qty$print_price$print_total\n";
+    }
+
+    private function cashRegisterItem($item)
+    {
+        $qty_cols = 3;
+        $price_cols = 7;
+        $total_cols = 9;
+        $name_cols = $this->maxChrs - $qty_cols - $price_cols - $total_cols;
+
+        if (strlen($item['item']) >= $name_cols)
+        {
+            $print_name = str_pad(substr(trim($item['item']), 0, $name_cols - 1), $name_cols);
+        }
+        else
+        {
+            $print_name = str_pad(trim($item['item']), $name_cols);
+        }
+
+        $print_qty = str_pad(trim($item['quantity']), $qty_cols, ' ', STR_PAD_LEFT);
+
+        $print_price = str_pad(trim($item['price']), $price_cols, ' ', STR_PAD_LEFT);
+
+        $print_total = str_pad($item['total'], $total_cols, ' ', STR_PAD_LEFT);
 
         return "$print_name$print_qty$print_price$print_total\n";
     }

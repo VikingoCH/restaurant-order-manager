@@ -9,13 +9,14 @@ use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Traits\AppSettings;
+use App\Traits\PrintReceipts;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
 class Create extends Component
 {
-    use Toast, AppSettings;
+    use Toast, AppSettings, PrintReceipts;
 
     public $orderId;
 
@@ -42,9 +43,6 @@ class Create extends Component
 
     #[Validate('required|exists:payment_methods,id')]
     public $paymentMethod;
-
-    public $printing = false;
-
 
     public function mount()
     {
@@ -252,17 +250,26 @@ class Create extends Component
         return redirect('/');
     }
 
-    //TODO: Add print receipt and print order.
-    public function updatedPrinting()
+    public function print()
     {
-        sleep(3);
-        $this->printing = false;
+        $this->authorize('manage_orders');
+        $totals = [
+            'items_total' => $this->itemsTotal,
+            'gross_total' => $this->grossTotal,
+            'tax' => $this->tax,
+            'tax_amount' => $this->taxAmount,
+            'net_total' => $this->netTotal,
+            'discount' => $this->discountAmount,
+            'tip' => $this->tip,
+            'total_paid' => $this->paymentTotal,
+        ];
+        $this->printCashRegister($this->orderId, $this->paymentItems, $totals);
     }
 
     public function updatedDiscount()
     {
         $this->validate();
-        $this->discountAmount = ((float) $this->discount / 100) * $this->itemsTotal;
+        $this->discountAmount = number_format(($this->discount / 100) * $this->itemsTotal, 2);
         $this->calculateTotals();
     }
 

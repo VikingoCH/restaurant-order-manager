@@ -24,7 +24,12 @@
                     <x-icon class="cursor-pointer" name="o-bars-3" />
                 </label>
                 <!-- APP LOGO -->
-                <x-app-logo />
+                <x-app-logo>
+                    <h2 class="text-base-content md:text-md text-xs font-bold lg:text-2xl">
+                        {{-- Display the store name from the config --}}
+                        {{ config('app.store_name') }}
+                    </h2>
+                </x-app-logo>
 
             </x-slot:brand>
 

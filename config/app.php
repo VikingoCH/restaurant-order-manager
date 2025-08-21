@@ -129,4 +129,5 @@ return [
     |--------------------------------------------------------------------------
     */
     'logo' => env('APP_LOGO', 'logo.png'),
+    'store_name' => env('APP_STORE_NAME', 'Picanha Brasil - Dübendorf')
 ];

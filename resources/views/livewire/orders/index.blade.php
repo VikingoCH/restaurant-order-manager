@@ -3,7 +3,7 @@
     <div class="flex w-full flex-col justify-center gap-4">
         <!-- Closed Orders table -->
         <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
-            subtitle="{{ $showing }}" title="{{ __('Close Orders') }}">
+            subtitle="{{ $showing }}" title="{{ __('labels.closed_orders') }}">
             <x-slot:menu>
                 <x-select :options="$dateRanges" class="bg-primary" wire:model.live="dateRange" />
                 <x-datepicker :config="$datePlugin" class="bg-primary" icon="o-calendar" inline
@@ -22,7 +22,7 @@
 
         <!-- Open Orders table -->
         <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
-            title="{{ __('Open Orders') }}">
+            title="{{ __('labels.open_orders') }}">
             <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No orders to show!') }}"
                 link="/manage-order/{id}/edit" show-empty-text>
                 @scope('cell_is_open', $order)

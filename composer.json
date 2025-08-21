@@ -11,7 +11,6 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
-        "charlieuki/receiptprinter": "^1.2",
         "codeat3/blade-google-material-design-icons": "^1.20",
         "laravel-lang/common": "^6.7",
         "laravel/framework": "^12.0",

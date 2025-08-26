@@ -1,12 +1,8 @@
 <x-dropdown>
     <x-slot:trigger>
-        {{-- <x-avatar :placeholder="auth()->user()->initials()" :subtitle="auth()->user()->email" :title="auth()->user()->name" /> --}}
         <span class="cursor-pointer">
             {{-- <x-avatar :placeholder="auth()->user()->initials()" :title="auth()->user()->name" > --}}
             <x-avatar :placeholder="auth()->user()->initials()">
-                <x-slot:title class="hidden text-lg !font-bold lg:flex">
-                    {{ auth()->user()->name }}
-                </x-slot:title>
             </x-avatar>
         </span>
     </x-slot:trigger>

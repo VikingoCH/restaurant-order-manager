@@ -5,6 +5,8 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" name="viewport">
         <meta content="{{ csrf_token() }}" name="csrf-token">
+        <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+
         <!-- Mary UI date picker plugin styles -->
         <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
         <link href="https://unpkg.com/flatpickr/dist/plugins/monthSelect/style.css" rel="stylesheet">

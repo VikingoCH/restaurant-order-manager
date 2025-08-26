@@ -4,7 +4,7 @@
         <span class="cursor-pointer">
             {{-- <x-avatar :placeholder="auth()->user()->initials()" :title="auth()->user()->name" > --}}
             <x-avatar :placeholder="auth()->user()->initials()">
-                <x-slot:title class="hidden text-xl !font-bold lg:flex">
+                <x-slot:title class="hidden text-lg !font-bold lg:flex">
                     {{ auth()->user()->name }}
                 </x-slot:title>
             </x-avatar>

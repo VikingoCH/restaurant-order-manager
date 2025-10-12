@@ -37,6 +37,16 @@
 
             {{-- Right side actions --}}
             <x-slot:actions>
+                @if (session('print_disabled'))
+                    <x-popover>
+                        <x-slot:trigger>
+                            <x-icon class="text-error" name="gmdi.print-disabled-o" />
+                        </x-slot:trigger>
+                        <x-slot:content>
+                            {{ __('Print unavailable. Logout and login again.') }}
+                        </x-slot:content>
+                    </x-popover>
+                @endif
                 <x-menus.lang-menu />
                 <x-theme-toggle class="btn-ghost btn-sm" darkTheme="pbdark" lightTheme="pblight" />
                 <x-menus.user-menu />

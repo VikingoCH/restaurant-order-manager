@@ -41,7 +41,8 @@ class GeneralSettingController extends Controller
             'quick_order_name' => $request->quick_order_name,
             'tax' => $request->tax,
             'rows_per_page' => $request->rows_per_page,
-            'printer_store_name' => $request->printer_store_name,
+            'printer_store_name_1' => $request->printer_store_name_1,
+            'printer_store_name_2' => $request->printer_store_name_2,
             'printer_store_address' => $request->printer_store_address,
             'printer_store_email' => $request->printer_store_email,
             'printer_store_phone' => $request->printer_store_phone,
@@ -53,7 +54,6 @@ class GeneralSettingController extends Controller
     public function update(Request $request, $id)
     {
         Gate::authorize('manage_settings');
-
         $this->validateForm($request);
 
         $appSetting = AppSetting::find($id);
@@ -61,7 +61,8 @@ class GeneralSettingController extends Controller
         $appSetting->quick_order_name = $request->quick_order_name;
         $appSetting->tax = $request->tax;
         $appSetting->rows_per_page = $request->rows_per_page;
-        $appSetting->printer_store_name = $request->printer_store_name;
+        $appSetting->printer_store_name_1 = $request->printer_store_name_1;
+        $appSetting->printer_store_name_2 = $request->printer_store_name_2;
         $appSetting->printer_store_address = $request->printer_store_address;
         $appSetting->printer_store_email = $request->printer_store_email;
         $appSetting->printer_store_phone = $request->printer_store_phone;
@@ -77,7 +78,8 @@ class GeneralSettingController extends Controller
             'quick_order_name' => 'required|string|max:255',
             'tax' => 'required|decimal:0,2',
             'rows_per_page' => 'required|integer',
-            'printer_store_name' => 'required|string|max:100',
+            'printer_store_name_1' => 'required|string|max:100',
+            'printer_store_name_2' => 'nullable|string|max:100',
             'printer_store_address' => 'required|string|max:250',
             'printer_store_email' => 'required|email|max:100',
             'printer_store_phone' => 'required|string|max:20',

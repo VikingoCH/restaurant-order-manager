@@ -11,6 +11,7 @@
             <x-slot:menu>
                 <x-buttons.add link="{{ route('settings.users.add') }}" />
             </x-slot:menu>
+            <div>{{ $token ?? 'NO TOKEN FOUND' }}</div>
             <x-table :headers="$headers" :rows="$users">
 
                 @scope('cell_is_admin', $user)

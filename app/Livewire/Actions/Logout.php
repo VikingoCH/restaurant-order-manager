@@ -3,15 +3,23 @@
 namespace App\Livewire\Actions;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Mary\Traits\Toast;
 
 class Logout
 {
-    /**
-     * Log the current user out of the application.
-     */
+    use Toast;
+
     public function __invoke()
     {
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'logout');
+
+        if (isset($response->json()['success']) && $response->json()['success'])
+        {
+            Session::forget('print_plugin_token');
+        }
+
         Auth::guard('web')->logout();
 
         Session::invalidate();

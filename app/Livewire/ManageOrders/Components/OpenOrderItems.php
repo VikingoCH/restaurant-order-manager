@@ -92,8 +92,8 @@ class OpenOrderItems extends Component
         {
             foreach ($printers as $printer)
             {
-                $printItems = $openItems->where('menuItem.printer_id', $printer->id);
-                $this->printItems($printer, $printItems);
+                // $printItems = $openItems->where('menuItem.printer_id', $printer->id);
+                $this->printItems($printer, $openItems);
             }
         }
         elseif ($printerId != 'none' && $printerId != 'all')

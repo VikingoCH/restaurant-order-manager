@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -11,10 +12,13 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Mary\Traits\Toast;
 
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
+    use Toast;
+
     #[Validate('required|string|email')]
     public string $email = '';
 
@@ -42,6 +46,29 @@ class Login extends Component
         }
 
         RateLimiter::clear($this->throttleKey());
+        $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'login', [
+            'email' => $this->email,
+            'password' => $this->password,
+        ]);
+        // dd($response);
+
+        // print-plugin login
+        if (!isset($response->json()['success']) && $response->status() >= 400)
+        {
+            $this->warning($response->status());
+            Session::put('print_disabled', true);
+        }
+        elseif (!$response->json()['success'])
+        {
+            $this->warning('print-plugin: ' . $response->json()['message']);
+            Session::put('print_disabled', true);
+        }
+        else
+        {
+            Session::put('print_plugin_token', $response->json()['data']['token']);
+            Session::put('print_disabled', false);
+        }
+
         Session::regenerate();
 
         $this->redirectIntended(default: route('home', absolute: false), navigate: true);

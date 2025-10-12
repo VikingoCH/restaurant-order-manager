@@ -59,10 +59,15 @@
             {{ __('Define the header of receipt when printing.') }}</p>
     </div>
     <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
-        <x-input :label="__('Store Name')" name="printer_store_name"
-            value="{{ isset($appSetting) ? $appSetting->printer_store_name : '' }}" />
-        @error('printer_store_name')
-            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_name') }}</span>
+        <x-input :label="__('Store Name')" name="printer_store_name_1"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_name_1 : '' }}" />
+        @error('printer_store_name_1')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_name_2') }}</span>
+        @enderror
+        <x-input :label="__('Additional Store Name')" name="printer_store_name_2"
+            value="{{ isset($appSetting) ? $appSetting->printer_store_name_2 : '' }}" />
+        @error('printer_store_name_2')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('printer_store_name_2') }}</span>
         @enderror
         <x-input :label="__('Store Address')" name="printer_store_address"
             value="{{ isset($appSetting) ? $appSetting->printer_store_address : '' }}" />

@@ -15,6 +15,7 @@ class AppSetting extends Model
         'printer_store_email',
         'printer_store_phone',
         'printer_store_address',
-        'printer_store_name',
+        'printer_store_name_1',
+        'printer_store_name_2',
     ];
 }

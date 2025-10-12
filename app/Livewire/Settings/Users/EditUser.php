@@ -4,6 +4,7 @@ namespace App\Livewire\Settings\Users;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rule;
 
 class EditUser extends Component
@@ -51,6 +52,20 @@ class EditUser extends Component
         if ($user->isDirty('email'))
         {
             $user->email_verified_at = null;
+        }
+
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'update-user', [
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
+
+        if (!isset($response->json()['success']) && $response->status() >= 400)
+        {
+            $this->warning($response->status());
+        }
+        elseif (!$response->json()['success'])
+        {
+            $this->warning('print-plugin: ' . $response->json()['message']);
         }
 
         $user->save();

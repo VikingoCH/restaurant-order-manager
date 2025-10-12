@@ -18,7 +18,7 @@ trait PrintReceipts
         // $table = Place::find($order->place_id)->location->name;
 
         $orderReceipt = new ReceiptPrinter($printer);
-        $orderReceipt->setOrderHeader($order->table, $order->number);
+        $orderReceipt->setOrderHeader($order->table, $order->number, $printer->location);
         $orderReceipt->addOrderItems($orderItems);
         $orderReceipt->printOrder();
     }
@@ -26,12 +26,13 @@ trait PrintReceipts
     protected function printInvoice($orderId, $invoiceItems)
     {
         $order = Order::find($orderId);
-        $printer = Printer::where('id', 1)->first();
+        $printer = Printer::where('id', 2)->first();
         $invoiceReceipt = new ReceiptPrinter($printer);
         $invoiceReceipt->setInvoiceHeader($order->number);
         $invoiceReceipt->addInvoiceItems($invoiceItems);
         $invoiceReceipt->invoiceTotals($order);
         $invoiceReceipt->printInvoice();
+        return back();
     }
 
     protected function printCashRegister($orderId, $items, $totals)

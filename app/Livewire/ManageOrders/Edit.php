@@ -56,6 +56,17 @@ class Edit extends Component
                 ]);
             }
         }
+        $a = str_pad('Picanha Grande com Arroz', 25, ' ');
+        $b = str_pad('Coca cola', 25, ' ');
+        $c = str_pad(2, 3, ' ', STR_PAD_LEFT);
+        $d = str_pad(23, 3, ' ', STR_PAD_LEFT);
+        $e = str_pad("10.00", 7, ' ', STR_PAD_LEFT);
+        $f = str_pad("50.00", 7, ' ', STR_PAD_LEFT);
+        $g = str_pad("150.00", 9, ' ', STR_PAD_LEFT);
+        $h = str_pad("670.00", 9, ' ', STR_PAD_LEFT);
+
+        // dd($a . $c . $e . $g, $b . $d . $f . $h, strlen($a . $c . $e . $g), strlen($b . $d . $f . $h), strlen('Picanha Grande com Arroz'));
+
         $this->printInvoice($this->orderId, $invoiceItems);
         $this->success(__('Items printed successfully'));
     }

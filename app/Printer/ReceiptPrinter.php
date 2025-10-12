@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Traits\AppSettings;
 use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Mike42\Escpos\EscposImage;
 
 class ReceiptPrinter
 {
@@ -32,9 +33,10 @@ class ReceiptPrinter
         $this->device = $device;
     }
 
-    public function setOrderHeader($table, $id)
+    public function setOrderHeader($table, $id, $location)
     {
         $this->receiptHeader = [
+            'location' => $location,
             'table' => $table,
             'order_id' => $id,
         ];
@@ -52,7 +54,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items);
+            // dd($this->device, $this->receiptHeader, $this->items);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -64,8 +66,9 @@ class ReceiptPrinter
             $this->printer->setFont(Printer::FONT_B);
 
             //Header
-            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($this->receiptHeader['location'] . "\n");
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->text($this->receiptHeader['order_id'] . "\n");
             $this->printer->text($this->receiptHeader['table'] . "\n");
             $this->printer->selectPrintMode();
@@ -80,6 +83,7 @@ class ReceiptPrinter
             foreach ($this->items as $item)
             {
                 $this->printer->text($item);
+                $this->printer->feed();
             }
             $this->printer->feed();
             $this->printer->text($this->separator('-'));
@@ -100,11 +104,14 @@ class ReceiptPrinter
         $storeInfo = $this->AppSettings();
         $this->receiptHeader = [
             'order_id' => $id,
-            'store_name' => $storeInfo->printer_store_name,
+            'store_name_1' => $storeInfo->printer_store_name_1,
+            'store_name_2' => $storeInfo->printer_store_name_2,
             'store_address' => $storeInfo->printer_store_address,
             'store_phone' => $storeInfo->printer_store_phone,
             'store_email' => $storeInfo->printer_store_email,
             'store_website' => $storeInfo->printer_store_website,
+            'logo' => EscposImage::load("storage/site_logo.png"),
+
         ];
     }
 
@@ -137,7 +144,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal, $this->tax, $this->netTotal);
+            // dd($this->device, $this->receiptHeader, $this->items, $this->grossTotal, $this->tax, $this->netTotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -150,8 +157,10 @@ class ReceiptPrinter
 
             //Header
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            $this->printer->bitImage($this->receiptHeader['logo']);
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text($this->receiptHeader['store_name'] . "\n");
+            $this->printer->text($this->receiptHeader['store_name_1'] . "\n");
+            $this->printer->text($this->receiptHeader['store_name_2'] . "\n");
             $this->printer->selectPrintMode();
             $this->printer->text($this->receiptHeader['store_address'] . "\n");
             $this->printer->text($this->receiptHeader['store_phone'] . "\n");
@@ -175,9 +184,9 @@ class ReceiptPrinter
             //Totals
             $this->printer->feed();
             $this->printer->text($this->separator('*'));
-            $printer->setEmphasis(true);
+            $this->printer->setEmphasis(true);
             $this->printer->text($this->grossTotal . "\n");
-            $printer->setEmphasis(false);
+            $this->printer->setEmphasis(false);
             $this->printer->text($this->separator('*'));
             $this->printer->feed(2);
 
@@ -189,8 +198,8 @@ class ReceiptPrinter
 
             //Footer
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
-            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text("Danke für Ihre Besuch!\n");
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
+            $this->printer->text("Danke für Ihren Besuch!\n");
             $this->printer->selectPrintMode();
             $this->printer->feed();
             $this->printer->text($this->separator('='));
@@ -234,7 +243,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->itemsTotal, $this->grossTotal, $this->tax, $this->netTotal, $this->discount, $this->tip, $this->totalPaid);
+            // dd($this->device->name, $this->receiptHeader, $this->items, $this->itemsTotal, $this->grossTotal, $this->tax, $this->netTotal, $this->discount, $this->tip, $this->totalPaid);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -248,7 +257,8 @@ class ReceiptPrinter
             //Header
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text($this->receiptHeader['store_name'] . "\n");
+            $this->printer->text($this->receiptHeader['store_name_1'] . "\n");
+            $this->printer->text($this->receiptHeader['store_name_2'] . "\n");
             $this->printer->selectPrintMode();
             $this->printer->text($this->receiptHeader['store_address'] . "\n");
             $this->printer->text($this->receiptHeader['store_phone'] . "\n");
@@ -278,9 +288,9 @@ class ReceiptPrinter
             $this->printer->feed();
 
             $this->printer->text($this->separator('*'));
-            $printer->setEmphasis(true);
+            $this->printer->setEmphasis(true);
             $this->printer->text($this->totalPaid . "\n");
-            $printer->setEmphasis(false);
+            $this->printer->setEmphasis(false);
             $this->printer->text($this->separator('*'));
             $this->printer->feed(2);
 
@@ -292,8 +302,8 @@ class ReceiptPrinter
 
             //Footer
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
-            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
-            $this->printer->text("Danke für Ihre Besuch!\n");
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_HEIGHT);
+            $this->printer->text("Danke für Ihren Besuch!\n");
             $this->printer->selectPrintMode();
             $this->printer->feed();
             $this->printer->text($this->separator('='));
@@ -333,7 +343,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal);
+            // dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);
@@ -387,13 +397,15 @@ class ReceiptPrinter
         $qty_cols = 5;
         $name_cols = $this->maxChrs - $qty_cols;
 
-        if (strlen($item->menuItem->name) >= $name_cols)
+        $name = transliterator_transliterate('Any-Latin; Latin-ASCII', $item->menuItem->name);
+
+        if (strlen($name) >= $name_cols)
         {
-            $print_name = substr($item->menuItem->name, 0, $name_cols - 1);
+            $print_name = substr($name, 0, $name_cols - 2);
         }
         else
         {
-            $print_name = $item->menuItem->name;
+            $print_name = $name;
         }
         if ($item->sides != "")
         {
@@ -432,22 +444,25 @@ class ReceiptPrinter
         $total_cols = 9;
         $name_cols = $this->maxChrs - $qty_cols - $price_cols - $total_cols;
 
-        if (strlen($item->menuItem->name) >= $name_cols)
+        $name = transliterator_transliterate('Any-Latin; Latin-ASCII', $item->menuItem->name);
+
+        if (strlen($name) >= $name_cols)
         {
-            $print_name = str_pad(substr(trim($item->menuItem->name), 0, $name_cols - 1), $name_cols);
+
+            $print_name = str_pad(substr($name, 0, $name_cols - 2), $name_cols, ' ');
         }
         else
         {
-            $print_name = str_pad(trim($item->menuItem->name), $name_cols);
+            $print_name = str_pad($name, $name_cols, ' ');
         }
 
-        $print_qty = str_pad(trim($item->quantity), $qty_cols, ' ', STR_PAD_LEFT);
+        $print_qty = str_pad($item->quantity, $qty_cols, ' ', STR_PAD_LEFT);
 
-        $print_price = str_pad(trim($item->price), $price_cols, ' ', STR_PAD_LEFT);
+        $print_price = str_pad($item->price, $price_cols, ' ', STR_PAD_LEFT);
 
         $print_total = str_pad(number_format($item->price * $item->quantity, 2), $total_cols, ' ', STR_PAD_LEFT);
 
-        return "$print_name$print_qty$print_price$print_total\n";
+        return $print_name . $print_qty . $print_price . $print_total . "\n";
     }
 
     private function cashRegisterItem($item)
@@ -457,31 +472,33 @@ class ReceiptPrinter
         $total_cols = 9;
         $name_cols = $this->maxChrs - $qty_cols - $price_cols - $total_cols;
 
-        if (strlen($item['item']) >= $name_cols)
+        $name = transliterator_transliterate('Any-Latin; Latin-ASCII', $item['item']);
+
+        if (strlen($name) >= $name_cols)
         {
-            $print_name = str_pad(substr(trim($item['item']), 0, $name_cols - 1), $name_cols);
+            $print_name = str_pad(substr($name, 0, $name_cols - 2), $name_cols, ' ');
         }
         else
         {
-            $print_name = str_pad(trim($item['item']), $name_cols);
+            $print_name = str_pad($name, $name_cols, ' ');
         }
 
-        $print_qty = str_pad(trim($item['quantity']), $qty_cols, ' ', STR_PAD_LEFT);
+        $print_qty = str_pad($item['quantity'], $qty_cols, ' ', STR_PAD_LEFT);
 
-        $print_price = str_pad(trim($item['price']), $price_cols, ' ', STR_PAD_LEFT);
+        $print_price = str_pad($item['price'], $price_cols, ' ', STR_PAD_LEFT);
 
         $print_total = str_pad($item['total'], $total_cols, ' ', STR_PAD_LEFT);
 
-        return "$print_name$print_qty$print_price$print_total\n";
+        return $print_name . $print_qty . $print_price . $print_total . "\n";
     }
 
     private function cashCloseItem($item)
     {
         $total_cols = 5;
         $name_cols = $this->maxChrs - $total_cols;
-        $print_number = str_pad($item->number, $name_cols);
+        $print_number = str_pad($item->number, $name_cols, ' ');
         $print_total = str_pad($item->total, $total_cols, ' ', STR_PAD_LEFT);
-        return "$print_number$print_total\n";
+        return $print_number . $print_total . "\n";
     }
 
     private function separator($chr)

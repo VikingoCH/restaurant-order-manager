@@ -6,12 +6,16 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Mary\Traits\Toast;
 
 class RegisterUser extends Component
 {
+    use Toast;
+
     public string $name = '';
 
     public string $email = '';
@@ -43,13 +47,23 @@ class RegisterUser extends Component
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_admin'] = $this->isAdmin;
 
-        event(new Registered(($user = User::create($validated))));
+        User::create($validated);
 
-        // Auth::login($user);
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'register', [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+        ]);
 
-        // $this->redirect(route('home', absolute: false), navigate: true);
+        if (!isset($response->json()['success']) && $response->status() >= 400)
+        {
+            $this->warning($response->status());
+        }
+        elseif (!$response->json()['success'])
+        {
+            $this->warning('print-plugin: ' . $response->json()['message']);
+        }
 
-        // $this->success(__('User Created Successfully'));
-        $this->redirect(route('settings.users.list'));
+        $this->success(__('User created successfully'), redirectTo: route('settings.users.list'));
     }
 }

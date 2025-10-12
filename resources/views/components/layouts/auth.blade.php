@@ -38,6 +38,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mary UI Toast -->
+        <x-toast position="toast-bottom toast-end" />
     </body>
 
 </html>

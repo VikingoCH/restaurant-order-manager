@@ -15,7 +15,7 @@
                     label="{{ __('Forgot your password?') }}" link="{{ route('password.request') }}" />
             @endif
         </div>
-        <x-checkbox label="{{ __('Remember me') }}" wire:model="remember" />
+        <x-checkbox disabled label="{{ __('Remember me') }}" wire:model="remember" />
         <x-button class="btn-accent w-full" label="{{ __('actions.log_in') }}" type="submit" />
     </x-form>
 

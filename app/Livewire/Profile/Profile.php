@@ -7,12 +7,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class Profile extends Component
 {
     public string $name = '';
-
     public string $email = '';
+    public bool $showAlert = false;
+    public string $alertMessage = "";
 
     /**
      * Mount the component.
@@ -32,7 +36,6 @@ class Profile extends Component
 
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-
             'email' => [
                 'required',
                 'string',
@@ -51,6 +54,28 @@ class Profile extends Component
         }
 
         $user->save();
+
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
+
+        if (!isset($response->json()['success']))
+        {
+            $this->showAlert = true;
+            $this->alertMessage = __('Print plug-in - User edit Error:  ' . $response->status());
+            Log::error('Print plug-in - User edit Error: ' . $response->status());
+        }
+        elseif (!$response->json()['success'])
+        {
+            $this->showAlert = true;
+            $errors = "";
+            foreach (Arr::flatten($response->json()['errors']) as $key => $error)
+            {
+                $errors .= $error . ' / ';
+            }
+            Log::error('Print plug-in - User edit Error: ' . $response->status() . ' / ' . $errors);
+        }
 
         $this->dispatch('profile-updated', name: $user->name);
     }

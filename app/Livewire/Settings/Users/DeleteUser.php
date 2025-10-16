@@ -6,11 +6,10 @@ use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Mary\Traits\Toast;
+use Illuminate\Support\Facades\Log;
 
 class DeleteUser extends Component
 {
-    use Toast;
     // public string $userId;
     // public string $name;
     // public string $email;
@@ -35,19 +34,17 @@ class DeleteUser extends Component
 
         if (Auth::check())
         {
-            $response = Http::withToken(session('print_plugin_token'))->delete(env('APP_PRINT_PLUGIN_URL') . 'delete-user', [
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-            ]);
+            $response = Http::withToken(session('print_plugin_token'))->delete(env('APP_PRINT_PLUGIN_URL') . 'user/' . $this->user->id);
 
-
-            if (!isset($response->json()['success']) && $response->status() >= 400)
+            if (!isset($response->json()['success']))
             {
-                $this->warning($response->status());
+                Log::error('Print plug-in - User delete Error: ' . $response->status());
+                $this->warning(__('Print plugin Error!'));
             }
             elseif (!$response->json()['success'])
             {
-                $this->warning('print-plugin: ' . $response->json()['message']);
+                Log::error('Print plug-in - User delete Error: ' . $response->status() . ' / ' . $response->json()['errors']);
+                $this->warning(__('Print plugin Error!'));
             }
 
             User::destroy($this->user->id);

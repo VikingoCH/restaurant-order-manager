@@ -64,12 +64,6 @@ class Index extends Component
 
         $this->printCashClose($items);
 
-        foreach ($items as $item)
-        {
-            Transaction::where('id', $item->id)->update([
-                'cash_closing_at' => date('Y-m-d'),
-            ]);
-        }
         $this->success(__('Cash Close printed successfully'));
     }
 
@@ -77,7 +71,6 @@ class Index extends Component
     {
         return view('livewire.manage-orders.index', [
             'openOrders' => Order::with('place')->where('is_open', true)->orderBy('created_at', 'desc')->paginate(20),
-            // 'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),
             'locations' => Location::where('physical', true)->with('places')->get(),
         ]);

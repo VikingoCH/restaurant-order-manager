@@ -128,6 +128,6 @@ return [
     |Application Logo
     |--------------------------------------------------------------------------
     */
-    'logo' => env('APP_LOGO', 'logo.png'),
+    'logo' => env('APP_LOGO', 'site_logo.png'),
     'store_name' => env('APP_STORE_NAME', 'Picanha Brasil - Dübendorf')
 ];

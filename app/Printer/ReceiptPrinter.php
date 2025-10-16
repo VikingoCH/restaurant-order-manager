@@ -343,7 +343,7 @@ class ReceiptPrinter
     {
         if ($this->device)
         {
-            // dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal);
+            dd($this->device->name, $this->receiptHeader, $this->items, $this->grossTotal);
 
             // Start the printer
             $connector = new NetworkPrintConnector($this->device->ip_address, $this->device->connection_port);

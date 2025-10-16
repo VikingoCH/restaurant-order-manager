@@ -5,6 +5,7 @@
             <x-button class="btn-primary" link="{{ route('settings.users.add') }}">{{ __('actions.new_user') }}</x-button>
         </x-slot:actions> --}}
     </x-header>
+
     <div class="flex justify-center gap-4">
         <x-card class="w-full rounded-xl border border-neutral-200 lg:w-3/4 dark:border-neutral-700" separator shadow
             title="{{ __('Available users') }}">

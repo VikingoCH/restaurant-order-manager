@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         DB::prohibitDestructiveCommands($this->app->environment('production'));
         Gate::define('manage_users', fn(User $user) => $user->is_admin);
         Gate::define('manage_settings', fn(User $user) => $user->is_admin);
+        Gate::define('manage_admin', fn(User $user) => $user->is_admin);
         Gate::define('manage_orders', fn() => Auth::check());
     }
 }

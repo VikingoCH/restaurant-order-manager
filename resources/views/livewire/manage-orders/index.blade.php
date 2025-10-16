@@ -1,9 +1,13 @@
 <div class="flex h-full w-full flex-1 flex-col gap-2 rounded-xl">
     <x-header progress-indicator separator title="{{ __('labels.manage') }}">
         <x-slot:actions>
-            <x-button class="btn-accent" icon="gmdi.fastfood-o" label="{{ __('labels.quick_order') }}"
-                link="{{ route('payments.quick-order') }}" responsive />
-            <x-buttons.cash-close wire:click='print' />
+            @can('manage_orders')
+                <x-button class="btn-accent" icon="gmdi.fastfood-o" label="{{ __('labels.quick_order') }}"
+                    link="{{ route('payments.quick-order') }}" responsive />
+            @endcan
+            @if (!session('print_disabled') && Auth::user()->can('manage_admin'))
+                <x-buttons.cash-close wire:click='print' />
+            @endif
         </x-slot:actions>
     </x-header>
 
@@ -45,12 +49,14 @@
                 title="{{ __('Open Orders') }}">
                 <x-table :headers="$headers" :rows="$openOrders" empty-text="{{ __('No orders yet!') }}"
                     link="/manage-order/{id}/edit" show-empty-text with-pagination>
-                    @scope('actions', $openOrder)
-                        <div class="flex flex-nowrap gap-3">
-                            <x-buttons.pay link="{{ route('payments.create', [$openOrder->id]) }}" />
-                            <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
-                        </div>
-                    @endscope
+                    @can('manage_orders')
+                        @scope('actions', $openOrder)
+                            <div class="flex flex-nowrap gap-3">
+                                <x-buttons.pay link="{{ route('payments.create', [$openOrder->id]) }}" />
+                                <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                            </div>
+                        @endscope
+                    @endcan
                 </x-table>
             </x-card>
             {{-- <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow

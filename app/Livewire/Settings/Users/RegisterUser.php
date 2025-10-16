@@ -3,28 +3,23 @@
 namespace App\Livewire\Settings\Users;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Validation\Rules;
-use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Mary\Traits\Toast;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class RegisterUser extends Component
 {
-    use Toast;
 
     public string $name = '';
-
     public string $email = '';
-
     public string $password = '';
-
     public string $password_confirmation = '';
-
     public bool $isAdmin = false;
+    public bool $showAlert = false;
+    public string $alertMessage = "";
 
     public function mount(): void
     {
@@ -47,23 +42,36 @@ class RegisterUser extends Component
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_admin'] = $this->isAdmin;
 
-        User::create($validated);
+        $user = User::create($validated);
 
         $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'register', [
+            'id' => $user->id,
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password,
         ]);
 
-        if (!isset($response->json()['success']) && $response->status() >= 400)
+        if (!isset($response->json()['success']))
         {
-            $this->warning($response->status());
+            $this->showAlert = true;
+            $this->alertMessage = __('An error ocurred with printer-plugin. Created user cannot print / ' . $response->status());
+            Log::error('Print plug-in - User register Error: ' . $response->status());
         }
         elseif (!$response->json()['success'])
         {
-            $this->warning('print-plugin: ' . $response->json()['message']);
+            $this->showAlert = true;
+            $errors = "";
+            foreach (Arr::flatten($response->json()['errors']) as $key => $error)
+            {
+                $errors .= $error . ' / ';
+            }
+            $this->alertMessage = __('An error ocurred with printer-plugin. Created user cannot print / ' . $errors);
+            Log::error('Print plug-in - User register Error: ' . $response->status() . ' / ' . $errors);
         }
+        else
+        {
 
-        $this->success(__('User created successfully'), redirectTo: route('settings.users.list'));
+            $this->success(__('User created successfully'), redirectTo: route('settings.users.list'));
+        }
     }
 }

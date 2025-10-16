@@ -25,11 +25,8 @@ class Login extends Component
     #[Validate('required|string')]
     public string $password = '';
 
-    public bool $remember = false;
+    public bool $remember = true;
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function login(): void
     {
         $this->validate();
@@ -46,21 +43,14 @@ class Login extends Component
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Print Plugin
         $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'login', [
             'email' => $this->email,
             'password' => $this->password,
         ]);
-        // dd($response);
-
-        // print-plugin login
-        if (!isset($response->json()['success']) && $response->status() >= 400)
+        if (!isset($response->json()['success']) || !$response->json()['success'])
         {
-            $this->warning($response->status());
-            Session::put('print_disabled', true);
-        }
-        elseif (!$response->json()['success'])
-        {
-            $this->warning('print-plugin: ' . $response->json()['message']);
             Session::put('print_disabled', true);
         }
         else
@@ -74,9 +64,6 @@ class Login extends Component
         $this->redirectIntended(default: route('home', absolute: false), navigate: true);
     }
 
-    /**
-     * Ensure the authentication request is not rate limited.
-     */
     protected function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5))
@@ -96,9 +83,6 @@ class Login extends Component
         ]);
     }
 
-    /**
-     * Get the authentication rate limiting throttle key.
-     */
     protected function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());

@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 #[Layout('components.layouts.auth')]
@@ -52,6 +53,7 @@ class Login extends Component
         if (!isset($response->json()['success']) || !$response->json()['success'])
         {
             Session::put('print_disabled', true);
+            Log::error('Print plug-in - User login Error: ' . $response->status());
         }
         else
         {

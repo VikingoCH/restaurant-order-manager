@@ -2,6 +2,7 @@
     @include('partials.page-heading') --}}
 
 <x-profile.layout :heading="__('labels.profile')" :subheading="__('Update your name and email address')">
+    <div>{{ $token ?? 'NO TOKEN FOUND' }}</div>
 
     <x-form wire:submit="updateProfileInformation">
         @if ($showAlert)

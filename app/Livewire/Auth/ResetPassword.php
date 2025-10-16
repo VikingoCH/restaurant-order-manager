@@ -73,7 +73,7 @@ class ResetPassword extends Component
             return;
         }
 
-        //Printer Plugin User update
+        //Printer Plugin User password update
         $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'user-reset', [
             'email' => $this->email,
             'password' => $this->password,

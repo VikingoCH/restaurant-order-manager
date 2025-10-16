@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Password extends Component
 {
@@ -38,6 +40,16 @@ class Password extends Component
         Auth::user()->update([
             'password' => Hash::make($validated['password']),
         ]);
+
+        //Printer Plugin User password update
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user-reset', [
+            'email' => Auth::user()->email,
+            'password' => $validated['password'],
+        ]);
+        if (!isset($response->json()['success']) || !$response->json()['success'])
+        {
+            Log::error('Print plug-in - User password reset Error: ' . $response->status());
+        }
 
         $this->reset('current_password', 'password', 'password_confirmation');
 

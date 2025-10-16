@@ -17,6 +17,7 @@ class Profile extends Component
     public string $email = '';
     public bool $showAlert = false;
     public string $alertMessage = "";
+    public $token;
 
     /**
      * Mount the component.
@@ -25,6 +26,7 @@ class Profile extends Component
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->token = session('print_plugin_token');
     }
 
     /**
@@ -55,9 +57,10 @@ class Profile extends Component
 
         $user->save();
 
+        //Printer Plugin User profile update
         $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
-            'name' => $user->name,
-            'email' => $user->email,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
         ]);
 
         if (!isset($response->json()['success']))

@@ -4,6 +4,7 @@ namespace App\Livewire\Settings\Users;
 
 use Livewire\Component;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 
 class ListUsers extends Component
@@ -15,7 +16,8 @@ class ListUsers extends Component
     public function mount(): void
     {
         $this->authorize('manage_users');
-        $this->users = User::all();
+        $users = User::all();
+        $this->users = $users->except(Auth::id());
 
         //TODO: Show token from session - to be removed
         $this->token = session('print_plugin_token');

@@ -9,9 +9,11 @@ use Illuminate\Validation\Rules;
 use Livewire\Component;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Mary\Traits\Toast;
 
 class RegisterUser extends Component
 {
+    use Toast;
 
     public string $name = '';
     public string $email = '';

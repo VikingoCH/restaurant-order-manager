@@ -39,12 +39,10 @@ class DeleteUser extends Component
             if (!isset($response->json()['success']))
             {
                 Log::error('Print plug-in - User delete Error: ' . $response->status());
-                $this->warning(__('Print plugin Error!'));
             }
             elseif (!$response->json()['success'])
             {
                 Log::error('Print plug-in - User delete Error: ' . $response->status() . ' / ' . $response->json()['errors']);
-                $this->warning(__('Print plugin Error!'));
             }
 
             User::destroy($this->user->id);

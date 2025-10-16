@@ -58,7 +58,7 @@ class Profile extends Component
         $user->save();
 
         //Printer Plugin User profile update
-        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
+        $response = Http::withToken(session('print_plugin_token'))->put(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
             'name' => $validated['name'],
             'email' => $validated['email'],
         ]);

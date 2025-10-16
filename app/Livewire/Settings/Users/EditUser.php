@@ -52,7 +52,7 @@ class EditUser extends Component
 
         $user->save();
 
-        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
+        $response = Http::withToken(session('print_plugin_token'))->put(env('APP_PRINT_PLUGIN_URL') . 'user/' . $user->id, [
             'name' => $user->name,
             'email' => $user->email,
         ]);

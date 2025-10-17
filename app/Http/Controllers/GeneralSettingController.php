@@ -3,87 +3,103 @@
 namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeneralSettingController extends Controller
 {
+    public $appSetting = [
+        'id'                    => 0,
+        'order_prefix'          => "",
+        'quick_order_name'      => "",
+        'tax'                   => 0,
+        'rows_per_page'         => 0,
+    ];
+    public $receiptInfo = [
+        'name'  => "",
+        'additional_name'  => "",
+        'website' => "",
+        'email'   => "",
+        'phone'   => "",
+        'address' => "",
+    ];
+    public $responseError = "";
 
     public function index()
     {
         Gate::authorize('manage_settings');
 
-        $appSetting = AppSetting::first();
+        $appSetting = AppSetting::sole();
 
         if ($appSetting)
         {
-            return view('general-settings.edit', [
-                'appSetting' => $appSetting,
-            ]);
+            $this->appSetting = $appSetting;
+        }
+
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'store-info');
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            $this->responseError = __('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors');
         }
         else
         {
-            return view('general-settings.create');
+            $this->receiptInfo =  $response->json('data');
         }
-    }
 
-
-    public function create(Request $request)
-    {
-        Gate::authorize('manage_settings');
-
-        $this->validateForm($request);
-
-        AppSetting::create([
-            'order_prefix' => $request->order_prefix,
-            'quick_order_name' => $request->quick_order_name,
-            'tax' => $request->tax,
-            'rows_per_page' => $request->rows_per_page,
-            'printer_store_name_1' => $request->printer_store_name_1,
-            'printer_store_name_2' => $request->printer_store_name_2,
-            'printer_store_address' => $request->printer_store_address,
-            'printer_store_email' => $request->printer_store_email,
-            'printer_store_phone' => $request->printer_store_phone,
-            'printer_store_website' => $request->printer_store_website,
+        return view('general-settings.index', [
+            'appSetting' => $this->appSetting,
+            'receiptInfo' => $this->receiptInfo,
+            'responseError' => $this->responseError,
         ]);
-        return redirect()->route('settings.general');
     }
 
-    public function update(Request $request, $id)
+    public function save(Request $request, $id)
     {
         Gate::authorize('manage_settings');
-        $this->validateForm($request);
+        $validated = $this->validateForm($request);
+        $requestValidated = $this->validateApi($request);
+        // dd($validated, $requestValidated);
 
-        $appSetting = AppSetting::find($id);
-        $appSetting->order_prefix = $request->order_prefix;
-        $appSetting->quick_order_name = $request->quick_order_name;
-        $appSetting->tax = $request->tax;
-        $appSetting->rows_per_page = $request->rows_per_page;
-        $appSetting->printer_store_name_1 = $request->printer_store_name_1;
-        $appSetting->printer_store_name_2 = $request->printer_store_name_2;
-        $appSetting->printer_store_address = $request->printer_store_address;
-        $appSetting->printer_store_email = $request->printer_store_email;
-        $appSetting->printer_store_phone = $request->printer_store_phone;
-        $appSetting->printer_store_website = $request->printer_store_website;
-        $appSetting->save();
+        if ($id == 0)
+        {
+            AppSetting::create($validated);
+        }
+        else
+        {
+            AppSetting::where('id', $id)->update($validated);
+        }
+
+        $response = Http::withToken(session('print_plugin_token'))->put(env('APP_PRINT_PLUGIN_URL') . 'store-info', $requestValidated);
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Save Store Info Error: ' . $response->status() . ' / ' . $response->json('errors'));
+        }
+
         return redirect()->route('settings.general');
     }
 
     public function validateForm(Request $request)
     {
-        $request->validate([
-            'order_prefix' => 'required|string|max:255',
-            'quick_order_name' => 'required|string|max:255',
-            'tax' => 'required|decimal:0,2',
-            'rows_per_page' => 'required|integer',
-            'printer_store_name_1' => 'required|string|max:100',
-            'printer_store_name_2' => 'nullable|string|max:100',
-            'printer_store_address' => 'required|string|max:250',
-            'printer_store_email' => 'required|email|max:100',
-            'printer_store_phone' => 'required|string|max:20',
-            'printer_store_website' => 'required|url|max:100',
+        return $request->validate([
+            'order_prefix'      => 'required|string|max:255',
+            'quick_order_name'  => 'required|string|max:255',
+            'tax'               => 'required|decimal:0,2',
+            'rows_per_page'     => 'required|integer',
+        ]);
+    }
+
+    public function validateApi(Request $request)
+    {
+        return $request->validate([
+            'name'              => ['required', 'string', 'max:50'],
+            'additional_name'   => ['required', 'string', 'max:50'],
+            'website'           => ['required', 'string', 'max:100'],
+            'email'             => ['required', 'string', 'email'],
+            'phone'             => ['required', 'string', 'max:20'],
+            'address'           => ['required', 'string', 'max:250'],
         ]);
     }
 }

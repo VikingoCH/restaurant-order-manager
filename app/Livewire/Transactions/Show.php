@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Transactions;
 
+use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Traits\AppSettings;
 use App\Traits\PrintReceipts;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class Show extends Component
 {
@@ -30,37 +33,46 @@ class Show extends Component
     public function headers()
     {
         return [
-            ['key' => 'item', 'label' => __('labels.item')],
+            ['key' => 'item',     'label' => __('labels.item')],
             ['key' => 'quantity', 'label' => __('labels.quantity')],
-            ['key' => 'price', 'label' => __('labels.price'), 'format' => ['currency', '2.\'', 'CHF ']],
-            ['key' => 'amount', 'label' => __('labels.total'), 'format' => ['currency', '2.\'', 'CHF']],
+            ['key' => 'price',    'label' => __('labels.price'), 'format' => ['currency', '2.\'', 'CHF ']],
+            ['key' => 'amount',   'label' => __('labels.total'), 'format' => ['currency', '2.\'', 'CHF']],
         ];
     }
 
     public function print()
     {
         $this->authorize('manage_orders');
+        $orderNumber = Order::find($this->transaction->order_id);
         $items = [];
         foreach ($this->items as $item)
         {
             $items[] = [
-                'item' => $item->item,
+                'name'     => $item->item,
                 'quantity' => $item->quantity,
-                'price' => $item->price,
-                'total' => number_format($item->quantity * $item->price, 2),
+                'price'    => $item->price,
             ];
         }
-        $totals = [
-            'items_total' => $this->subtotal,
-            'gross_total' => $this->transaction->total,
-            'tax' => $this->tax(),
-            'tax_amount' => $this->transaction->tax,
-            'net_total' => number_format($this->transaction->total - $this->transaction->tax, 2),
-            'discount' => $this->transaction->discount,
-            'tip' => $this->transaction->tip,
-            'total_paid' => number_format($this->transaction->total + $this->transaction->tip, 2),
+
+        $request = [
+            'printer-id'   => 1,
+            'order_number' => $orderNumber->number,
+            'items'        => $items,
+            'items_total'  => $this->subtotal,
+            'gross_total'  => $this->transaction->total,
+            'tax'          => $this->tax(),
+            'tax_amount'   => $this->transaction->tax,
+            'net_total'    => number_format($this->transaction->total - $this->transaction->tax, 2),
+            'discount'     => $this->transaction->discount,
+            'tip'          => $this->transaction->tip,
+            'total_paid'   => number_format($this->transaction->total + $this->transaction->tip, 2),
         ];
-        $this->printCashRegister($this->transaction->order_id, $items, $totals);
+
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-invoice', $request);
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+        }
     }
 
     public function render()

@@ -57,6 +57,7 @@ return new class extends Migration
             $table->decimal('tip', total: 4, places: 2);
             $table->decimal('tax', total: 4, places: 2);
             $table->boolean('paid')->default(false);
+            $table->date('cash_closing_at')->nullable();
             $table->foreignId('order_id')->constrained();
             $table->foreignId('payment_method_id')->constrained();
             $table->timestamps();

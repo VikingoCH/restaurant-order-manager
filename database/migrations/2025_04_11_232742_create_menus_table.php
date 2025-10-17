@@ -47,8 +47,8 @@ return new class extends Migration
             $table->string('name', length: 150);
             $table->decimal('price', total: 8, places: 2);
             $table->string('image_path')->nullable();
+            $table->integer('printer_id');
             $table->foreignId('menu_section_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('printer_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

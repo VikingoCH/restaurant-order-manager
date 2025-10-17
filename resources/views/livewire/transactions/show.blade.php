@@ -4,7 +4,10 @@
         title="{{ __('labels.transaction_detail') }}">
         <x-slot name="actions">
             <x-buttons.back link="{{ route('transactions.index') }}" />
-            <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print') }}" wire:click="print" />
+            @if (!session('print_disabled') && Auth::user()->can('manage_orders'))
+                <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print') }}"
+                    wire:click="print" />
+            @endif
         </x-slot>
     </x-header>
     <div class="flex flex-col gap-4 lg:flex-row">

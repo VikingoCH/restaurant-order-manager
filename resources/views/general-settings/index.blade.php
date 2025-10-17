@@ -1,9 +1,9 @@
 <x-layouts.app :title="__('App')">
-    {{-- {{ dd($appSetting) }} --}}
+    {{-- {{ dd($appSetting['id']) }} --}}
 
-    <form action="{{ route('settings.general.update', $appSetting->id) }}" method="POST">
+    <form action="{{ route('settings.general.save', $appSetting['id']) }}" method="POST">
         @csrf
-        @method('PUT')
+        {{-- @method('PUT') --}}
         <x-header separator subtitle="{{ __('Settings used in general by the App') }}"
             title="{{ __('General Settings') }}">
             <x-slot:actions>

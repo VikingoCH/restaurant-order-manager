@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+//TODO: To be removed
 class Printer extends Model
 {
     protected $fillable = [

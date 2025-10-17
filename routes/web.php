@@ -93,8 +93,8 @@ Route::middleware(['auth'])->group(function ()
             Route::get('/printers', Printers::class)->name('printers');
 
             Route::get('/general', [GeneralSettingController::class, 'index'])->name('general');
-            Route::post('/general/create', [GeneralSettingController::class, 'create'])->name('general.create');
-            Route::put('/general/{id}/update', [GeneralSettingController::class, 'update'])->name('general.update');
+            Route::post('/general/save/{id}', [GeneralSettingController::class, 'save'])->name('general.save');
+            // Route::put('/general/{id}/update', [GeneralSettingController::class, 'update'])->name('general.update');
 
             Route::name('users.')->prefix('users')->group(
                 function ()

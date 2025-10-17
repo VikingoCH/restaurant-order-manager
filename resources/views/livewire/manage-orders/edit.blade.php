@@ -2,8 +2,12 @@
     <x-header progress-indicator separator subtitle="{{ $order->number }}"
         title="{{ __('labels.table') . ' - ' . $order->place->location->name . ' / ' . $order->place->number }}">
         <x-slot name="actions">
-            <x-buttons.print label="Print Invoice" wire:click='print' />
-            <x-buttons.pay link="{{ route('payments.create', [$order->id]) }}" />
+            @if (Auth::user()->can('manage_orders'))
+                @if (!session('print_disabled'))
+                    <x-buttons.print label="Print Invoice" wire:click='print' />
+                @endif
+                <x-buttons.pay link="{{ route('payments.create', [$order->id]) }}" />
+            @endif
         </x-slot>
     </x-header>
     <!-- Menu Items section -->

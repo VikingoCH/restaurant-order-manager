@@ -77,6 +77,7 @@ return [
     'position' => 'Position',
     'price' => 'Price',
     'print' => 'Print',
+    'print-pay' => 'Print and Pay',
     'printer' => 'Printer',
     'printers' => 'Printers',
     'processed' => 'Processed',

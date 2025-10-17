@@ -6,15 +6,16 @@ use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Traits\AppSettings;
-use App\Traits\PrintReceipts;
-use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Mary\Traits\Toast;
 
 class Show extends Component
 {
-    use AppSettings, PrintReceipts;
+    use Toast;
+
+    use AppSettings;
     public Transaction $transaction;
 
 
@@ -43,7 +44,7 @@ class Show extends Component
     public function print()
     {
         $this->authorize('manage_orders');
-        $orderNumber = Order::find($this->transaction->order_id);
+        $order = Order::find($this->transaction->order_id);
         $items = [];
         foreach ($this->items as $item)
         {
@@ -54,13 +55,14 @@ class Show extends Component
             ];
         }
 
+        //TODO: Define printer_id from general settings
         $request = [
             'printer-id'   => 1,
-            'order_number' => $orderNumber->number,
+            'order_number' => $order->number,
+            'tax'          => $this->tax(),
             'items'        => $items,
             'items_total'  => $this->subtotal,
             'gross_total'  => $this->transaction->total,
-            'tax'          => $this->tax(),
             'tax_amount'   => $this->transaction->tax,
             'net_total'    => number_format($this->transaction->total - $this->transaction->tax, 2),
             'discount'     => $this->transaction->discount,
@@ -72,6 +74,10 @@ class Show extends Component
         if (!$response->json('success'))
         {
             Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+        }
+        else
+        {
+            $this->success(__('Items printed successfully'));
         }
     }
 

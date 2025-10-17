@@ -12,6 +12,8 @@ use App\Traits\AppSettings;
 use App\Traits\PrintReceipts;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 class Create extends Component
@@ -242,28 +244,64 @@ class Create extends Component
         {
             $order->update(['is_open' => false]);
             $order->place->update(['available' => true]);
-            $this->success('No more orders');
+            $this->success(__('Order closed successfully'));
+            return redirect('/');
         }
 
-        $this->reset('paymentItems', 'itemsTotal', 'discount', 'tip');
-        $this->success('Payment processed sucessfully');
-        return redirect('/');
+        $this->reset('paymentItems', 'itemsTotal', 'discount', 'tip', 'grossTotal', 'taxAmount', 'netTotal', 'discountAmount', 'paymentTotal');
+        $this->success(__('Payment processed successfully'));
     }
 
-    public function print()
+    public function printAndPay()
     {
         $this->authorize('manage_orders');
-        $totals = [
-            'items_total' => $this->itemsTotal,
-            'gross_total' => $this->grossTotal,
-            'tax' => $this->tax,
-            'tax_amount' => $this->taxAmount,
-            'net_total' => $this->netTotal,
-            'discount' => $this->discountAmount,
-            'tip' => $this->tip,
-            'total_paid' => $this->paymentTotal,
+        $order = Order::find($this->orderId);
+        // dd($this->paymentItems);
+
+        $items = [];
+        foreach ($this->paymentItems as $item)
+        {
+            $items[] = [
+                'name'     => $item['item'],
+                'quantity' => $item['quantity'],
+                'price'    => $item['price'],
+            ];
+        }
+
+        //TODO: Define printer_id from general settings
+        $request = [
+            'printer-id'   => 1,
+            'order_number' => $order->number,
+            'tax'          => $this->tax(),
+            'items'        => $items,
+            'items_total'  => $this->itemsTotal,
+            'gross_total'  => $this->grossTotal,
+            'tax_amount'   => $this->taxAmount,
+            'net_total'    => $this->netTotal,
+            'discount'     => $this->discountAmount,
+            'tip'          => $this->tip,
+            'total_paid'   => $this->paymentTotal,
         ];
-        $this->printCashRegister($this->orderId, $this->paymentItems, $totals);
+
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-invoice', $request);
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+        }
+
+        $this->pay();
+
+        // $totals = [
+        //     'items_total' => $this->itemsTotal,
+        //     'gross_total' => $this->grossTotal,
+        //     'tax' => $this->tax,
+        //     'tax_amount' => $this->taxAmount,
+        //     'net_total' => $this->netTotal,
+        //     'discount' => $this->discountAmount,
+        //     'tip' => $this->tip,
+        //     'total_paid' => $this->paymentTotal,
+        // ];
+        // $this->printCashRegister($this->orderId, $this->paymentItems, $totals);
     }
 
     public function updatedDiscount()

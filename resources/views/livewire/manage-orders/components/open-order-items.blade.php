@@ -3,10 +3,13 @@
     {{-- <div class="flex justify-end gap-2"> --}}
     <x-slot:actions separator>
         <div class="grid grid-cols-2 gap-2 lg:flex lg:flex-row">
-            @foreach ($printers as $printer)
-                <x-button class="btn-primary btn-sm" icon="{{ $printer->icon ?? 'o-printer' }}"
-                    label="{{ $printer->name }}" wire:click="print({{ $printer->id }})" />
-            @endforeach
+            @if (isset($printers) && !session('print_disabled'))
+                @foreach ($printers as $printer)
+                    <x-button class="btn-primary btn-sm" icon="o-printer" label="{{ $printer['name'] }}"
+                        wire:click="print({{ $printer['id'] }})" />
+                @endforeach
+
+            @endif
             <x-button class="btn-secondary btn-sm" icon="gmdi.restaurant-menu-r" label="{{ __('Print All') }}"
                 wire:click="print('all')" />
             <x-button class="btn-accent btn-sm" icon="gmdi.print-disabled-o" label="{{ __('No Print') }}"

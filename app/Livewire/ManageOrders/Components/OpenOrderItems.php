@@ -10,15 +10,18 @@ use App\Traits\PrintReceipts;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 class OpenOrderItems extends Component
 {
     use Toast;
-    use PrintReceipts;
+    // use PrintReceipts;
 
     public $orderId;
     public array $selectedRows;
+    public $printers;
 
     // Edit form variables
     public $openEditForm = false;
@@ -27,6 +30,18 @@ class OpenOrderItems extends Component
     public $orderNotes = '';
     public $orderItem;
     public $menuItem;
+
+    public function mount()
+    {
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printer');
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
+        }
+
+        $this->printers = $response->json('data');
+    }
 
     public function headers(): array
     {
@@ -86,20 +101,18 @@ class OpenOrderItems extends Component
             $openItems = $openItems->only(Arr::flatten($this->selectedRows));
         }
 
+        $order = Order::with('place')->find($this->orderId);
 
-        $printers = Printer::get();
         if ($printerId == 'all')
         {
-            foreach ($printers as $printer)
+            foreach ($this->printers as $printer)
             {
-                // $printItems = $openItems->where('menuItem.printer_id', $printer->id);
-                $this->printItems($printer, $openItems);
+                $this->printItems($printer['id'], $openItems, $order);
             }
         }
         elseif ($printerId != 'none' && $printerId != 'all')
         {
-            $printer = $printers->find($printerId);
-            $this->printItems($printer, $openItems);
+            $this->printItems($printerId, $openItems, $order);
         }
         elseif ($printerId == 'none')
         {
@@ -114,12 +127,36 @@ class OpenOrderItems extends Component
         $this->dispatch('OrderItemsPrinted');
     }
 
-    private function printItems($printer, $orderItems)
+    private function printItems($printerId, $orderItems, $order)
     {
-        $printItems = $orderItems->where('menuItem.printer_id', $printer->id);
+        $printItems = $orderItems->where('menuItem.printer_id', $printerId);
         if (!$printItems->isEmpty())
         {
-            $this->printOrder($printer, $this->orderId, $printItems);
+            $items = [];
+            foreach ($printItems as $item)
+            {
+                $items[] = [
+                    'name'     => $item->menuItem->name,
+                    'quantity' => $item->quantity,
+                    'sides'    => $item->sides,
+                    'remarks'  => $item->remarks,
+                ];
+            }
+
+            $request = [
+                'printer-id'   => $printerId,
+                'order_number' => $order->number,
+                'table'        => $order->place->location->name . ' / ' . $order->place->number,
+                'items'        => $items,
+
+            ];
+
+            $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-order', $request);
+            if (!$response->json('success'))
+            {
+                Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            }
+
             foreach ($printItems as $printItem)
             {
                 $printItem->update([
@@ -196,14 +233,13 @@ class OpenOrderItems extends Component
         $this->success(__('Menu item deleted successfully'));
     }
 
-
     #[On('refreshOrderItems')]
     public function render()
     {
         return view('livewire.manage-orders.components.open-order-items', [
             'orderItems' => OrderItem::with(['menuItem'])->where('printed', false)->where('order_id', $this->orderId)->get(),
             'headers' => $this->headers(),
-            'printers' => Printer::get(),
+            'printers' => $this->printers,
         ]);
     }
 }

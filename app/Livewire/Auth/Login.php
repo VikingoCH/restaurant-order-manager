@@ -49,7 +49,9 @@ class Login extends Component
         $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'login', [
             'email' => $this->email,
             'password' => $this->password,
+            'is_admin' => Auth::user()->is_admin,
         ]);
+
         if (!isset($response->json()['success']) || !$response->json()['success'])
         {
             Session::put('print_disabled', true);

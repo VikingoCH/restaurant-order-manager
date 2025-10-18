@@ -15,6 +15,7 @@ class LocationPlaceSeeder extends Seeder
     {
         DB::table('locations')->insert([
             [
+                'id' => 1,
                 'name' => 'none',
                 'position' => 100,
                 'physical' => false,

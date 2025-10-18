@@ -18,14 +18,9 @@ class AppSettingsSeeder extends Seeder
                 [
                     'order_prefix' => 'ORD',
                     'quick_order_name' => 'Verschiedene Gerichte',
-                    'tax' => 7.7,
-                    'rows_per_page' => 10,
-                    'printer_store_website' => 'picahna-brasil.ch',
-                    'printer_store_email' => 'info@picahna-brasil.ch',
-                    'printer_store_phone' => '+41 44 821 64 31',
-                    'printer_store_address' => 'Wangenstrasse 37, 8600 Dübendorf, CH',
-                    'printer_store_name_1' => 'Picanha Brasil',
-                    'printer_store_name_2' => 'Dübendorf',
+                    'tax' => 8.1,
+                    'rows_per_page' => 20,
+                    'default_printer' => 1,
                 ],
 
             ]

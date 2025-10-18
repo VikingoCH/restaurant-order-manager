@@ -14,9 +14,11 @@
         @endscope
 
         @scope('actions', $orderItem)
-            <div class="flex flex-nowrap gap-3">
-                <x-buttons.trash wire:click="destroy({{ $orderItem->id }})" />
-            </div>
+            @if (Auth::user()->can('manage_admin'))
+                <div class="flex flex-nowrap gap-3">
+                    <x-buttons.trash wire:click="destroy({{ $orderItem->id }})" />
+                </div>
+            @endif
         @endscope
     </x-table>
 </x-card>

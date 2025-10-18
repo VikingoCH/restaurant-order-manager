@@ -8,10 +8,9 @@
                     <x-button class="btn-primary btn-sm" icon="o-printer" label="{{ $printer['name'] }}"
                         wire:click="print({{ $printer['id'] }})" />
                 @endforeach
-
+                <x-button class="btn-secondary btn-sm" icon="gmdi.restaurant-menu-r" label="{{ __('Print All') }}"
+                    wire:click="print('all')" />
             @endif
-            <x-button class="btn-secondary btn-sm" icon="gmdi.restaurant-menu-r" label="{{ __('Print All') }}"
-                wire:click="print('all')" />
             <x-button class="btn-accent btn-sm" icon="gmdi.print-disabled-o" label="{{ __('No Print') }}"
                 wire:click="print('none')" />
         </div>

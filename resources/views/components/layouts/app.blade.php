@@ -70,19 +70,19 @@
                     <x-menu-item icon="gmdi.payments-o" link="{{ route('transactions.index') }}"
                         title="{{ __('labels.payments') }}" />
 
-                    <x-menu-item icon="o-presentation-chart-bar" link="{{ route('reports.index') }}"
-                        title="{{ __('labels.reports') }}" />
-
-                    <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
-                        <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
-                            title="{{ __('labels.menu_items') }}" />
-                        <x-menu-item icon="gmdi.settings-input-component-o" link="{{ route('sections.index') }}"
-                            title="{{ __('labels.menu_sections') }}" />
-                        <x-menu-item icon="gmdi.discount-o" link="{{ route('sides.index') }}"
-                            title="{{ __('labels.menu_sides') }}" />
-                    </x-menu-sub>
-
                     @can('manage_settings')
+                        <x-menu-item icon="o-presentation-chart-bar" link="{{ route('reports.index') }}"
+                            title="{{ __('labels.reports') }}" />
+
+                        <x-menu-sub icon="gmdi.menu-book-o" title="{{ __('labels.menu') }}">
+                            <x-menu-item icon="gmdi.restaurant-menu-o" link="{{ route('menu.index') }}"
+                                title="{{ __('labels.menu_items') }}" />
+                            <x-menu-item icon="gmdi.settings-input-component-o" link="{{ route('sections.index') }}"
+                                title="{{ __('labels.menu_sections') }}" />
+                            <x-menu-item icon="gmdi.discount-o" link="{{ route('sides.index') }}"
+                                title="{{ __('labels.menu_sides') }}" />
+                        </x-menu-sub>
+
                         <x-menu-sub icon="gmdi.construction-o" title="{{ __('labels.settings') }}">
                             <x-menu-item icon="o-credit-card" link="{{ route('settings.payment.methods') }}"
                                 title="{{ __('labels.payment_methods') }}" />

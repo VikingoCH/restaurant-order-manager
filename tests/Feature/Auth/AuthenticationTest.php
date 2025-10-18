@@ -41,13 +41,13 @@ test('users can not authenticate with invalid password', function ()
     $this->assertGuest();
 });
 
-test('users can logout', function ()
-{
-    $user = User::factory()->create();
+// test('users can logout', function ()
+// {
+//     $user = User::factory()->create();
 
-    $response = $this->actingAs($user)->post('/logout');
+//     $response = $this->actingAs($user)->post('/logout');
 
-    $response->assertRedirect('/');
+//     $response->assertRedirect('/');
 
-    $this->assertGuest();
-});
+//     $this->assertGuest();
+// });

@@ -20,6 +20,7 @@ class Transaction extends Model
         'paid',
         'order_id',
         'payment_method_id',
+        'cash_closing_at'
     ];
 
     public function paymentMethod(): BelongsTo

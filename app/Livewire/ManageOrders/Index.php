@@ -11,11 +11,13 @@ use App\Traits\AppSettings;
 use App\Traits\PrintReceipts;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 class Index extends Component
 {
-    use AppSettings, Toast, WithPagination, PrintReceipts;
+    use AppSettings, Toast, WithPagination;
 
     public function headers(): array
     {
@@ -60,11 +62,45 @@ class Index extends Component
     {
         $this->authorize('manage_orders');
 
-        $items = Transaction::where('cash_closing_at', null)->get();
+        $transactions = Transaction::where('cash_closing_at', null)->get();
+        if (!$transactions->isEmpty())
+        {
+            $items = [];
+            foreach ($transactions as $item)
+            {
+                $items[] = [
+                    'number' => $item->number,
+                    'total'  => $item->total,
+                ];
+            }
 
-        $this->printCashClose($items);
+            //TODO: Define printer_id from general settings
+            $request = [
+                'printer-id'   => 1,
+                'items'        => $items,
 
-        $this->success(__('Cash Close printed successfully'));
+            ];
+            $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-cash-close', $request);
+            if (!$response->json('success'))
+            {
+                Log::error('Print plug-in - Print Cash Close Error: ' . $response->status() . ' / ' . $response->json('errors'));
+                $this->error(__('Cash Close print error'));
+            }
+            else
+            {
+                foreach ($transactions as $transaction)
+                {
+                    $transaction->update([
+                        'cash_closing_at' => now(),
+                    ]);
+                }
+                $this->success(__('Cash Close printed successfully'));
+            }
+        }
+        else
+        {
+            $this->warning(__('No Cash Close pending'));
+        }
     }
 
     public function render(): mixed

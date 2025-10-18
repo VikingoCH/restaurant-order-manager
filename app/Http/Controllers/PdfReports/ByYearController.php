@@ -11,8 +11,6 @@ class ByYearController extends Controller
 {
     public function printPDF($date)
     {
-        // $datos = $this->getData($date);
-        // dd($datos);
         $transactions = $this->getData($date);
         $data = [
             'date' => $date,
@@ -20,8 +18,6 @@ class ByYearController extends Controller
             'subtotal' => $this->getSubtotal($transactions),
             'total' => $this->getTotal($date)
         ];
-        // dd($data);
-
 
         $pdfInstance = app(PDF::class);
         $pdf = $pdfInstance->loadView('pdf-reports.pdf', $data);

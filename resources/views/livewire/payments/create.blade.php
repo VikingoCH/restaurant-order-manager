@@ -49,7 +49,6 @@
             <hr class="my-8 border border-gray-300" />
 
             <div class="grid grid-cols-3 gap-2">
-                {{-- <div class="py-2 text-end font-bold">{{ __('labels.sub_total') }}</div> --}}
                 <span class="col-span-2 col-start-2">
                     <x-input label="{{ __('labels.sub_total') }}" prefix="CHF" readonly
                         value="{{ number_format($itemsTotal, 2) }}" />

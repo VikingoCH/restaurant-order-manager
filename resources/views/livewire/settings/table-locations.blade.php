@@ -32,6 +32,7 @@
                 title="{{ __('New tables location') }}">
 
                 <x-form wire:submit='store'>
+                    @csrf
                     <x-input label="{{ __('labels.name') }}" wire:model="name" />
                     <x-input label="{{ __('labels.position') }}" wire:model="position" />
                     <x-input label="{{ __('labels.tables') }}" wire:model="number" />
@@ -49,6 +50,7 @@
             <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" shadow
                 title="{{ __('Edit Payment Method') }}">
                 <x-form wire:submit='update'>
+                    @csrf
                     <x-input label="Name" wire:model="name" />
                     <x-input label="{{ __('labels.position') }}" wire:model="position" />
                     <x-input label="{{ __('labels.tables') }}" wire:model="number" />

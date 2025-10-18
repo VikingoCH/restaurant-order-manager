@@ -4,6 +4,7 @@
     <!-- Session Status -->
     <x-auth-session-status :status="session('status')" class="text-center" />
     <x-form wire:submit="login">
+        @csrf
         <x-input icon="o-at-symbol" label="{{ __('labels.email') }}" placeholder="email@example.com" required type="email"
             wire:model="email" />
         <div class="relative">

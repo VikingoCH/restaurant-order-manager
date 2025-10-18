@@ -26,6 +26,7 @@
                 title="{{ __('Payment Method') }}">
 
                 <x-form wire:submit='save'>
+                    @csrf
                     <x-input label="{{ __('labels.name') }}" wire:model="name" />
                     <x-slot:actions>
                         <x-buttons.save spinner="save" type="submit" />

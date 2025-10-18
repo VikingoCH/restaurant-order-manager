@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Log;
 
 class DeleteUser extends Component
 {
-    // public string $userId;
-    // public string $name;
-    // public string $email;
-    // public bool $isAdmin;
     public $user;
     public string $password = '';
 

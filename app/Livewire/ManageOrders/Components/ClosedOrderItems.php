@@ -29,7 +29,6 @@ class ClosedOrderItems extends Component
     {
         $this->authorize('manage_orders');
 
-        //remove item price from total price
         $order = Order::find($this->orderId);
         $itemTotal = $orderItem->quantity * $orderItem->price;
         $order->update([

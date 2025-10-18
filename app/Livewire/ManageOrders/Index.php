@@ -4,11 +4,9 @@ namespace App\Livewire\ManageOrders;
 
 use App\Models\Location;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Place;
 use App\Models\Transaction;
 use App\Traits\AppSettings;
-use App\Traits\PrintReceipts;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Http;

@@ -12,14 +12,4 @@
         <x-dynamic-component :component="'flag-language-' . $data['flag']" class="h-6 w-6" />
         </x-menu-item>
     @endforeach
-    {{-- <x-menu-item :href="route('lang', 'it')">
-        <x-flag-language-it class="h-6 w-6" />
-    </x-menu-item>
-    <x-menu-item :href="route('lang', 'es')">
-        <x-flag-language-es class="h-6 w-6" />
-    </x-menu-item>
-    <x-menu-item :href="route('lang', 'de')">
-        <x-flag-language-de class="h-6 w-6" />
-    </x-menu-item> --}}
-
 </x-dropdown>

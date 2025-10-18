@@ -61,7 +61,6 @@ class GeneralSettingController extends Controller
         Gate::authorize('manage_settings');
         $validated = $this->validateForm($request);
         $requestValidated = $this->validateApi($request);
-        // dd($validated, $requestValidated);
 
         if ($id == 0)
         {

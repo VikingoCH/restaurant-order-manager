@@ -14,8 +14,6 @@ class MenuSections extends Component
     public function openSection($sectionId)
     {
         $this->success('Open Section' . $sectionId);
-
-        // $this->emit('openSection', $sectionId);
     }
 
     public function render()

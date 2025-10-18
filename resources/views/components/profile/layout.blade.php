@@ -6,10 +6,6 @@
                 <x-menu-item link="{{ route('profile.index') }}">{{ __('Profile') }}</x-menu-item>
                 <x-menu-item link="{{ route('profile.password') }}">{{ __('Change Password') }}</x-menu-item>
                 <x-menu-item link="{{ route('profile.delete') }}">{{ __('Delete Account') }}</x-menu-item>
-                {{-- <x-menu-item link="{{ route('settings.register') }}">{{ __('New User') }}</x-menu-item> --}}
-                {{-- @can('manage_users')
-                    <x-menu-item link="{{ route('settings.users.list') }}">{{ __('Manage Users') }}</x-menu-item>
-                @endcan --}}
             </x-menu>
 
         </div>

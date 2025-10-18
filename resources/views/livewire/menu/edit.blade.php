@@ -3,6 +3,7 @@
     <div class="flex justify-center">
         <x-card class="w-full rounded-xl border border-neutral-200 lg:w-3/4 dark:border-neutral-700" separator shadow>
             <x-form wire:submit="save">
+                @csrf
                 <div class="flex flex-col gap-4 lg:flex-row lg:gap-8">
                     <div class="flex w-full flex-row gap-8 lg:basis-1/4 lg:flex-col">
                         @if ($image_path && !$newImagePath)

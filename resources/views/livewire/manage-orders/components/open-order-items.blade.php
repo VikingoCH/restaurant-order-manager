@@ -57,7 +57,7 @@
         wire:model="openEditForm" with-close-button>
         @if ($orderItem != null)
             <x-form wire:submit='update'>
-
+                @csrf
                 <x-textarea label="{{ __('labels.remarks') }}" rows="3" wire:model.live='orderNotes' />
 
                 @if ($menuItem->menuFixedSides->count() || $menuItem->menuSelectableSides->count())

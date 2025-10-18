@@ -44,6 +44,7 @@
         {{-- {{ var_dump(count($editItem)) }} --}}
         @if ($editMenuItem != null)
             <x-form wire:submit='add({{ $editMenuItem->id }})'>
+                @csrf
                 <x-textarea label="{{ __('labels.remarks') }}" rows="3" wire:model.live='orderNotes' />
                 @if ($editMenuItem->menuFixedSides->count() || $editMenuItem->menuSelectableSides->count())
                     <h3 class="fieldset-legend mb-0.5">{{ __('labels.sides') }}</h3>
@@ -65,10 +66,7 @@
 
                 <x-slot:actions>
                     <x-button label="{{ __('labels.cancel') }}" wire:click="$toggle('openAddForm')" />
-                    {{-- @if ($menuItem != null) --}}
                     <x-button class="btn-primary" icon="o-check" label="{{ __('labels.add') }}" type='submit' />
-                    {{-- wire:click='add({{ $menuItem->id }})' /> --}}
-                    {{-- @endif --}}
                 </x-slot:actions>
             </x-form>
         @endif

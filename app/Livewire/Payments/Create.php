@@ -2,14 +2,12 @@
 
 namespace App\Livewire\Payments;
 
-use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PaymentMethod;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use App\Traits\AppSettings;
-use App\Traits\PrintReceipts;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
@@ -18,7 +16,7 @@ use Mary\Traits\Toast;
 
 class Create extends Component
 {
-    use Toast, AppSettings, PrintReceipts;
+    use Toast, AppSettings;
 
     public $orderId;
 
@@ -194,7 +192,6 @@ class Create extends Component
     {
         $this->validate();
 
-        // dd($this->grossTotal, $this->discountAmount, $this->tip, $this->taxAmount);
         $order = Order::find($this->orderId);
 
         //Transaction Number
@@ -256,7 +253,6 @@ class Create extends Component
     {
         $this->authorize('manage_orders');
         $order = Order::find($this->orderId);
-        // dd($this->paymentItems);
 
         $items = [];
         foreach ($this->paymentItems as $item)
@@ -290,18 +286,6 @@ class Create extends Component
         }
 
         $this->pay();
-
-        // $totals = [
-        //     'items_total' => $this->itemsTotal,
-        //     'gross_total' => $this->grossTotal,
-        //     'tax' => $this->tax,
-        //     'tax_amount' => $this->taxAmount,
-        //     'net_total' => $this->netTotal,
-        //     'discount' => $this->discountAmount,
-        //     'tip' => $this->tip,
-        //     'total_paid' => $this->paymentTotal,
-        // ];
-        // $this->printCashRegister($this->orderId, $this->paymentItems, $totals);
     }
 
     public function updatedDiscount()

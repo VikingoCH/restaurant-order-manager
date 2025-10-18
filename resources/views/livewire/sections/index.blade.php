@@ -27,6 +27,7 @@
             <x-card class="w-full rounded-xl border border-neutral-200 lg:w-1/4 dark:border-neutral-700" separator
                 shadow>
                 <x-form wire:submit="save">
+                    @csrf
                     <x-input label="{{ __('labels.name') }}" wire:model.blur="name" />
                     <x-input label="{{ __('labels.position') }}" wire:model.blur="position" />
                     <x-slot:actions separator>

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\GeneralSettingController;
-use App\Livewire\Profile\Profile as ProfileProfile;
 use App\Livewire\Profile\DeleteUserForm;
 use App\Livewire\Profile\Password;
 use App\Livewire\Profile\Profile;
@@ -24,10 +23,6 @@ use App\Livewire\Reports;
 use App\Http\Controllers\PdfReports\ByDateController;
 use App\Http\Controllers\PdfReports\ByMonthController;
 use App\Http\Controllers\PdfReports\ByYearController;
-
-// Route::view('/', 'home')
-//     ->middleware(['auth', 'verified'])
-//     ->name('home');
 
 Route::get('/lang/{locale}', function ($locale)
 {
@@ -60,12 +55,9 @@ Route::middleware(['auth'])->group(function ()
         Route::get('/by-date/{date}', [ByDateController::class, 'printPDF'])->name('by-date');
         Route::get('/by-month/{date}', [ByMonthController::class, 'printPDF'])->name('by-month');
         Route::get('/by-year/{date}', [ByYearController::class, 'printPDF'])->name('by-year');
-        // Route::get('/by-month/{date}', \App\Http\Controllers\PdfReports\ByMonthController::class)->name('by-month');
-        // Route::get('/by-year/{year}', \App\Http\Controllers\PdfReports\ByYearController::class)->name('by-year');
     });
 
 
-    // Route::redirect('settings', 'settings/profile');
 
     Route::name('menu.')->prefix('menu')->group(function ()
     {
@@ -94,7 +86,6 @@ Route::middleware(['auth'])->group(function ()
 
             Route::get('/general', [GeneralSettingController::class, 'index'])->name('general');
             Route::post('/general/save/{id}', [GeneralSettingController::class, 'save'])->name('general.save');
-            // Route::put('/general/{id}/update', [GeneralSettingController::class, 'update'])->name('general.update');
 
             Route::name('users.')->prefix('users')->group(
                 function ()

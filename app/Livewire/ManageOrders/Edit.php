@@ -10,23 +10,13 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
-use App\Traits\PrintReceipts;
 
 class Edit extends Component
 {
     use Toast, AppSettings;
 
     public $orderId;
-    // public $showMenuItems = false;
     public array $selectedRows;
-
-    // #[On('show-menu-items')]
-    // public function showMenuItems($sectionId)
-    // {
-    //     $this->showMenuItems = true;
-    //     $this->dispatch('list-menu-items', $sectionId);
-    // }
-
 
     public function headers(): array
     {
@@ -39,7 +29,6 @@ class Edit extends Component
         ];
     }
 
-    // #[On('refreshOrder')]
     public function order()
     {
         return Order::with('place')->find($this->orderId);
@@ -88,14 +77,9 @@ class Edit extends Component
         }
         else
         {
-            // dd('Items printed successfully');
             $this->success(__('Items printed successfully'));
             return redirect(request()->header('Referer'));
         }
-
-
-        // $this->printInvoice($this->orderId, $invoiceItems);
-        // $this->success(__('Items printed successfully'));
     }
 
 

@@ -144,11 +144,9 @@ class Index extends Component
     public function render()
     {
         return view('livewire.orders.index', [
-            // 'closeOrders' => Order::where('is_open', false)->orderBy('updated_at', 'desc')->paginate(20),
             'closeOrders' => $this->closeOrders(),
             'openOrders' => Order::where('is_open', true)->orderBy('updated_at', 'desc')->take(10)->get(),
             'totals' => $this->totals(),
-            // 'closedOrders' => Order::with('place')->where('is_open', false)->orderBy('created_at', 'desc')->paginate(10),
             'headers' => $this->headers(),
             'dateRanges' => $this->dateRanges(),
             'datePlugin' => $this->datePlugin(),

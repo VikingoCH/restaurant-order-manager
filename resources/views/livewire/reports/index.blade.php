@@ -21,7 +21,6 @@
                 <x-datepicker :config="$byMonthCalendar" class="bg-info" icon="o-calendar" inline label="{{ __('labels.date') }}"
                     wire:model.live="reportByMonth" />
                 <x-buttons.pdf external link="{{ route('printPdf.by-month', $reportByMonth) }}" />
-                {{-- <x-buttons.report-details /> --}}
             </div>
         </x-card>
         <x-card class="w-full rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow

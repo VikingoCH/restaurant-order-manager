@@ -11,11 +11,5 @@ class AppSetting extends Model
         'quick_order_name',
         'tax',
         'rows_per_page',
-        'printer_store_website',
-        'printer_store_email',
-        'printer_store_phone',
-        'printer_store_address',
-        'printer_store_name_1',
-        'printer_store_name_2',
     ];
 }

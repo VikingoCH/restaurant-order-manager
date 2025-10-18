@@ -1,16 +1,10 @@
-{{-- <section class="w-full">
-    @include('partials.page-heading') --}}
-
 <x-profile.layout :heading="__('labels.profile')" :subheading="__('Update your name and email address')">
     <div>{{ $token ?? 'NO TOKEN FOUND' }}</div>
 
     <x-form wire:submit="updateProfileInformation">
+        @csrf
         @if ($showAlert)
-            <x-alert :description="$alertMessage" class="alert-error" icon="o-exclamation-triangle" title="Printer Plug-in">
-                {{-- <x-slot:actions>
-                    <x-button :label="__('Close')" class="btn-warning" link="{{ route('settings.users.list') }}" />
-                </x-slot:actions> --}}
-            </x-alert>
+            <x-alert :description="$alertMessage" class="alert-error" icon="o-exclamation-triangle" title="Printer Plug-in" />
         @endif
         <x-input autofocus icon="o-user" label="{{ __('labels.name') }}" placeholder="name" required wire:model="name" />
 
@@ -41,4 +35,3 @@
     </x-form>
 
 </x-profile.layout>
-{{-- </section> --}}

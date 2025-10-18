@@ -11,8 +11,6 @@ class ByMonthController extends Controller
 {
     public function printPDF($date)
     {
-        // $datos = $this->getData($date);
-        // dd($date);
         $year = substr($date, strrpos($date, '-') + 1);
         $month = substr($date, 0, 2);
         // dd($year, $month);
@@ -23,8 +21,6 @@ class ByMonthController extends Controller
             'subtotal' => $this->getSubtotal($transactions),
             'total' => $this->getTotal($month, $year)
         ];
-        // dd($data);
-
 
         $pdfInstance = app(PDF::class);
         $pdf = $pdfInstance->loadView('pdf-reports.pdf', $data);

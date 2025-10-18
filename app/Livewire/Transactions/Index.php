@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Transactions;
 
-use App\Models\Order;
 use App\Models\Transaction;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
@@ -27,12 +26,10 @@ class Index extends Component
         return [
             ['key' => 'number', 'label' => __('labels.number')],
             ['key' => 'order.number', 'label' => __('labels.order_number')],
-            // ['key' => 'total', 'label' => __('labels.sub_total'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'discount', 'label' => __('labels.discount'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'tip', 'label' => __('labels.tip'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'tax', 'label' => __('labels.tax'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'total', 'label' => __('labels.total'), 'format' => ['currency', '2.\'', 'CHF ']],
-            // ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d (H:i)']],
             ['key' => 'updated_at', 'label' => __('labels.date'), 'format' => ['date', 'Y/m/d (H:i)']],
         ];
     }
@@ -112,18 +109,10 @@ class Index extends Component
                 {
                     $query->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()]);
                 }
-                // elseif ($this->dateRange === 'last_week')
-                // {
-                //     $query->whereBetween('updated_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
-                // }
                 elseif ($this->dateRange === 'this_month')
                 {
                     $query->whereMonth('updated_at', now()->month);
                 }
-                // elseif ($this->dateRange === 'last_month')
-                // {
-                //     $query->whereMonth('updated_at', now()->subMonth()->month);
-                // }
                 elseif ($this->dateRange === 'this_year')
                 {
                     $query->whereYear('updated_at', now()->year);
@@ -155,18 +144,10 @@ class Index extends Component
                 {
                     $query->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()]);
                 }
-                // elseif ($this->dateRange === 'last_week')
-                // {
-                //     $query->whereBetween('updated_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
-                // }
                 elseif ($this->dateRange === 'this_month')
                 {
                     $query->whereMonth('updated_at', now()->month);
                 }
-                // elseif ($this->dateRange === 'last_month')
-                // {
-                //     $query->whereMonth('updated_at', now()->subMonth()->month);
-                // }
                 elseif ($this->dateRange === 'this_year')
                 {
                     $query->whereYear('updated_at', now()->year);

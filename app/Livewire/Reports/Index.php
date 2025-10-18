@@ -16,7 +16,6 @@ class Index extends Component
 
     public $chartYear = 0;
     public $years = [];
-    // public $months = [];
     public array $yearSalesChart = [];
     public array $mostSoldChart = [];
     public $reportByDate;
@@ -36,7 +35,6 @@ class Index extends Component
         $this->urlDate = now()->format('Y-m-d');
         $this->reportByMonth = now()->format('m-Y');
         $this->urlYear = now()->format('Y');
-        // $this->reportDate = today()->format('Y/m/d');
     }
 
     public function reportByDateCalendar()
@@ -139,8 +137,6 @@ class Index extends Component
                     'total' => $item->total,
                 ];
             });
-        // ->toArray();
-        // dd($mostSoldProducts->pluck('name')->toArray());
 
         $this->mostSoldChart = [
             'type' => 'pie',

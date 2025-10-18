@@ -11,8 +11,6 @@ class ByDateController extends Controller
 {
     public function printPDF($date)
     {
-        // $datos = $this->getData($date);
-        // dd($datos);
         $transactions = $this->getData($date);
         $data = [
             'date' => $date,
@@ -20,7 +18,6 @@ class ByDateController extends Controller
             'subtotal' => $this->getSubtotal($transactions),
             'total' => $this->getTotal($date)
         ];
-        // dd($data);
 
 
         $pdfInstance = app(PDF::class);

@@ -17,7 +17,6 @@ class QuickOrder extends Component
 
     public $itemName;
 
-    // public $itemsTotal = 0;
     public $taxAmount = 0;
     public $netTotal = 0;
     public $grossTotal = 0;

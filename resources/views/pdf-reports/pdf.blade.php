@@ -47,7 +47,6 @@
                     <td class="left">{{ $transaction->discount }}</td>
                     <td class="left">{{ $transaction->tax }}</td>
                     <td class="left">{{ $transaction->tip }}</td>
-                    {{-- <td class="left">{{ $transaction->total }}</td> --}}
                 </tr>
             </table>
         </div>

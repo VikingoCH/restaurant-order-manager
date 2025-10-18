@@ -37,7 +37,6 @@ class Printers extends Component
             ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('labels.name')],
             ['key' => 'printer_model', 'label' => __('labels.model')],
-            // ['key' => 'location', 'label' => __('labels.location')],
             ['key' => 'ip_address', 'label' => __('labels.ip')],
             ['key' => 'connection_port', 'label' => __('labels.port')],
         ];
@@ -95,8 +94,6 @@ class Printers extends Component
                 'connection_port' => $data['connection_port']
             ]);
 
-            // $printer = Printer::find($this->id);
-            // $printer->update($this->validate());
             $this->reset();
         }
         else
@@ -108,7 +105,6 @@ class Printers extends Component
                 'connection_port' => $data['connection_port']
             ]);
 
-            // Printer::create($this->validate());
             $this->reset();
         }
 

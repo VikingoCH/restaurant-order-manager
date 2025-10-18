@@ -1,6 +1,4 @@
 <x-layouts.app :title="__('App')">
-    {{-- {{ dd($appSetting['id']) }} --}}
-
     <form action="{{ route('settings.general.save', $appSetting['id']) }}" method="POST">
         @csrf
         {{-- @method('PUT') --}}

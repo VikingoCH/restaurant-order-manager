@@ -53,17 +53,14 @@
                         @scope('actions', $openOrder)
                             <div class="flex flex-nowrap gap-3">
                                 <x-buttons.pay link="{{ route('payments.create', [$openOrder->id]) }}" />
-                                <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                                @if (Auth::user()->can('manage_admin'))
+                                    <x-buttons.trash wire:click="destroy({{ $openOrder->id }})" />
+                                @endif
                             </div>
                         @endscope
                     @endcan
                 </x-table>
             </x-card>
-            {{-- <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700" separator shadow
-                title="{{ __('Closed Orders') }}">
-                <x-table :headers="$headers" :rows="$closedOrders" empty-text="{{ __('No closed orders today!') }}"
-                    show-empty-text with-pagination />
-            </x-card> --}}
         </div>
     </div>
 

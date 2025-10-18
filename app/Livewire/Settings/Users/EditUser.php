@@ -56,7 +56,7 @@ class EditUser extends Component
             'name' => $user->name,
             'email' => $user->email,
         ]);
-        // dd($response->status());
+
         if (!isset($response->json()['success']))
         {
             $this->showAlert = true;

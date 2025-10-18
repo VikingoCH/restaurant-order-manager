@@ -5,6 +5,7 @@
     <x-auth-session-status :status="session('status')" class="text-center" />
 
     <x-form wire:submit="sendPasswordResetLink">
+        @csrf
         <!-- Email Address -->
         <x-input icon="o-at-symbol" label="{{ __('labels.email') }}" placeholder="email@example.com" required type="email"
             wire:model="email" />

@@ -47,8 +47,8 @@ return new class extends Migration
             $table->string('name', length: 150);
             $table->decimal('price', total: 8, places: 2);
             $table->string('image_path')->nullable();
-            $table->integer('printer_id');
             $table->foreignId('menu_section_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('printer_id');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -78,7 +78,7 @@ return new class extends Migration
         Schema::dropIfExists('menu_selectable_sides');
         Schema::dropIfExists('menu_fixed_sides');
         Schema::dropIfExists('menu_items');
-        Schema::dropIfExists('printers');
+        // Schema::dropIfExists('printers');
         Schema::dropIfExists('menu_sides');
         Schema::dropIfExists('menu_sections');
     }

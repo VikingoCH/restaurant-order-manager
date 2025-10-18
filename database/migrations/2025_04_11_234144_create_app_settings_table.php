@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('quick_order_name')->default('Verschiedene Gerichte');
             $table->decimal('tax', total: 4, places: 2)->default(8.1);
             $table->integer('rows_per_page')->default(10);
-            $table->integer('default_printer');
+            $table->integer('default_printer')->default(1);
             $table->timestamps();
         });
     }

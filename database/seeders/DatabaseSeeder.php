@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AppSettingsSeeder::class,
             LocationPlaceSeeder::class,
+            MenuSectionSeeder::class,
+            MenuSideSeeder::class,
+            MenuItemSeeder::class,
         ]);
     }
 }

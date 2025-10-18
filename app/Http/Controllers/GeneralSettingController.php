@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Livewire\Settings\Printers;
 use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -11,12 +12,16 @@ use Illuminate\Support\Facades\Log;
 class GeneralSettingController extends Controller
 {
     public $appSetting = [
-        'id'                    => 0,
-        'order_prefix'          => "",
-        'quick_order_name'      => "",
-        'tax'                   => 0,
-        'rows_per_page'         => 0,
+        'id'               => 0,
+        'order_prefix'     => "",
+        'quick_order_name' => "",
+        'tax'              => 0,
+        'rows_per_page'    => 0,
+        'default_printer'  => 0,
     ];
+
+    public $printers = [];
+
     public $receiptInfo = [
         'name'  => "",
         'additional_name'  => "",
@@ -37,8 +42,9 @@ class GeneralSettingController extends Controller
         {
             $this->appSetting = $appSetting;
         }
+        $this->appSetting['default_printer'] = 0;
 
-        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'store-info');
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
         if (!$response->json('success'))
         {
             Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
@@ -46,12 +52,25 @@ class GeneralSettingController extends Controller
         }
         else
         {
+            $this->printers =  $response->json('data');
+        }
+
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'store-info');
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Store Info Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            $this->responseError = __('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors');
+        }
+        else
+        {
             $this->receiptInfo =  $response->json('data');
         }
+
 
         return view('general-settings.index', [
             'appSetting' => $this->appSetting,
             'receiptInfo' => $this->receiptInfo,
+            'printers' => $this->printers,
             'responseError' => $this->responseError,
         ]);
     }
@@ -87,6 +106,7 @@ class GeneralSettingController extends Controller
             'quick_order_name'  => 'required|string|max:255',
             'tax'               => 'required|decimal:0,2',
             'rows_per_page'     => 'required|integer',
+            'default_printer'   => 'required|integer',
         ]);
     }
 

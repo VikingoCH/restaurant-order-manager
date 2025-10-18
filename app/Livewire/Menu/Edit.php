@@ -9,6 +9,8 @@ use App\Models\MenuSelectableSide;
 use App\Models\MenuSide;
 use App\Models\Printer;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
@@ -44,6 +46,8 @@ class Edit extends Component
     #[Validate('required|int')]
     public $printer_id;
 
+    public $printers;
+
     public $image_path;
 
     public function mount(): void
@@ -56,6 +60,17 @@ class Edit extends Component
         if (count($this->fixedSides) != 0 || count($this->selectableSides) != 0)
         {
             $this->withSides = true;
+        }
+
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            // $this->responseError = __('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors');
+        }
+        else
+        {
+            $this->printers =  $response->json('data');
         }
     }
 
@@ -122,7 +137,7 @@ class Edit extends Component
         return view('livewire.menu.edit', [
             'sections' => MenuSection::all(),
             'sides' => MenuSide::all(),
-            'printers' => Printer::all(),
+            // 'printers' => Printer::all(),
         ]);
     }
 }

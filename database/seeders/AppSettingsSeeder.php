@@ -16,11 +16,13 @@ class AppSettingsSeeder extends Seeder
         DB::table('app_settings')->insert(
             [
                 [
-                    'order_prefix' => 'ORD',
+                    'id'               => 1,
+                    'order_prefix'     => 'ORD',
                     'quick_order_name' => 'Verschiedene Gerichte',
-                    'tax' => 8.1,
-                    'rows_per_page' => 20,
-                    'default_printer' => 1,
+                    'tax'              => 8.1,
+                    'rows_per_page'    => 20,
+                    'default_printer'  => 1,
+                    'created_at' => now(),
                 ],
 
             ]

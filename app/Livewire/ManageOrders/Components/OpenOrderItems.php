@@ -30,7 +30,7 @@ class OpenOrderItems extends Component
 
     public function mount()
     {
-        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printer');
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
         if (!$response->json('success'))
         {
             Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));

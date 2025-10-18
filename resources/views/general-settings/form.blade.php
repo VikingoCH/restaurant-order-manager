@@ -60,6 +60,22 @@
     </x-card>
 </div>
 
+<!-- Default Printer -->
+<div class="mt-4 flex flex-row gap-4">
+    <div class="flex w-3/5 flex-col">
+        <h3 class="text-lg font-bold">{{ __('Default Printer') }}</h3>
+        <p class="text-gray-500">
+            {{ __('Define the printer used for invoice and cash close receipts.') }}</p>
+    </div>
+    <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
+        <x-select :options="$printers" icon="o-printer" single wire:model="{{ $appSetting['default_printer'] }}" />
+        {{-- <x-input name="rows_per_page" value="{{ $appSetting['rows_per_page'] }}" /> --}}
+        @error('default_printer')
+            <span class="text-error mt-4 text-sm">{{ $errors->first('default_printer') }}</span>
+        @enderror
+    </x-card>
+</div>
+
 <!-- Receipt header -->
 <div class="mt-4 flex flex-row gap-4">
     <div class="flex w-3/5 flex-col">

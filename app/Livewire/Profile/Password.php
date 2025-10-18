@@ -42,10 +42,11 @@ class Password extends Component
         ]);
 
         //Printer Plugin User password update
-        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'user-reset', [
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'update-password', [
             'email' => Auth::user()->email,
             'password' => $validated['password'],
         ]);
+
         if (!isset($response->json()['success']) || !$response->json()['success'])
         {
             Log::error('Print plug-in - User password reset Error: ' . $response->status());

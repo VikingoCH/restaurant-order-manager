@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Mary\Traits\Toast;
 
 class DeleteUser extends Component
 {
+    use Toast;
+
     public $user;
     public string $password = '';
 

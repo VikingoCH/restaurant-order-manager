@@ -11,6 +11,30 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        Schema::create('payment_methods', function (Blueprint $table)
+        {
+            $table->id();
+            $table->string('name', length: 50);
+            $table->timestamps();
+        });
+
+        Schema::create('transactions', function (Blueprint $table)
+        {
+            $table->id();
+            $table->string('number', length: 50);
+            $table->decimal('total', total: 8, places: 2);
+            $table->decimal('discount', total: 4, places: 2);
+            $table->decimal('tip', total: 4, places: 2);
+            $table->decimal('tax', total: 4, places: 2);
+            $table->boolean('paid')->default(false);
+            $table->date('cash_closing_at')->nullable();
+            $table->foreignId('order_id')->constrained();
+            $table->foreignId('payment_method_id')->constrained();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
         Schema::create('transaction_items', function (Blueprint $table)
         {
             $table->id();

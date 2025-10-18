@@ -29,16 +29,16 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-        Schema::create('printers', function (Blueprint $table)
-        {
-            $table->id();
-            $table->string('name', length: 150);
-            $table->string('identifier', length: 150);
-            $table->string('location', length: 150);
-            $table->string('ip_address', length: 20);
-            $table->string('conection_type', length: 50);
-            $table->timestamps();
-        });
+        // Schema::create('printers', function (Blueprint $table)
+        // {
+        //     $table->id();
+        //     $table->string('name', length: 150);
+        //     $table->string('identifier', length: 150);
+        //     $table->string('location', length: 150);
+        //     $table->string('ip_address', length: 20);
+        //     $table->string('conection_type', length: 50);
+        //     $table->timestamps();
+        // });
 
         Schema::create('menu_items', function (Blueprint $table)
         {

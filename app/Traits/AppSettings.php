@@ -26,6 +26,11 @@ trait AppSettings
         return $this->appSettings()->rows_per_page;
     }
 
+    protected function defaultPrinter()
+    {
+        return $this->appSettings()->default_printer;
+    }
+
     private function appSettings()
     {
         return AppSetting::orderBy('created_at', 'desc')->first();

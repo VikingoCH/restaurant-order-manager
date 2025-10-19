@@ -72,9 +72,8 @@ class Index extends Component
                 ];
             }
 
-            //TODO: Define printer_id from general settings
             $request = [
-                'printer-id'   => 1,
+                'printer-id'   => $this->defaultPrinter(),
                 'items'        => $items,
 
             ];

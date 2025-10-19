@@ -19,7 +19,7 @@ class TableLocations extends Component
     #[Validate('integer')]
     public $position = 1;
 
-    #[Validate('required|integer')]
+    #[Validate('required|integer|gt:0')]
     public $number = '';
 
     public $id;
@@ -53,9 +53,14 @@ class TableLocations extends Component
     {
         $this->authorize('manage_settings');
 
+        $this->validate();
+
         //Update Locations Table
         $location = Location::find($this->id);
-        $location->update($this->validate());
+        $location->update([
+            'name' => $this->name,
+            'position' => $this->position,
+        ]);
 
         //Current number of places in DB
         $tables = $location->places->count();
@@ -104,6 +109,7 @@ class TableLocations extends Component
         $this->validate();
         $location = Location::create([
             'name' => $this->name,
+            'position' => $this->position,
         ]);
         for ($i = 1; $i <= $this->number; $i++)
         {

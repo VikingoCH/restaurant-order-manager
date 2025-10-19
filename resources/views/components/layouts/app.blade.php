@@ -94,6 +94,7 @@
                                 title="{{ __('labels.app_settings') }}" />
                             <x-menu-item icon="o-users" link="{{ route('settings.users.list') }}"
                                 title="{{ __('labels.users') }}" />
+                            <!-- TODO: To implement sof deletes recovery and destroy methods -->
                             <x-menu-item icon="gmdi.restore-from-trash-o" link="###"
                                 title="{{ __('labels.trash') }}" />
                         </x-menu-sub>

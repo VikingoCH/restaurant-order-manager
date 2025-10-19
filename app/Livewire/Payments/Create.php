@@ -264,9 +264,8 @@ class Create extends Component
             ];
         }
 
-        //TODO: Define printer_id from general settings
         $request = [
-            'printer-id'   => 1,
+            'printer-id'   => $this->defaultPrinter(),
             'order_number' => $order->number,
             'tax'          => $this->tax(),
             'items'        => $items,

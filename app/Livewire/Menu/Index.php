@@ -40,7 +40,6 @@ class Index extends Component
 
     public function delete(MenuItem $menuItem): void
     {
-        // TODO: To implement sof deletes recovery and destroy methods
 
         $menuItem->delete();
 

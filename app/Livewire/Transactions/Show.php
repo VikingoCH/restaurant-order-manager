@@ -13,9 +13,8 @@ use Mary\Traits\Toast;
 
 class Show extends Component
 {
-    use Toast;
+    use Toast, AppSettings;
 
-    use AppSettings;
     public Transaction $transaction;
 
 
@@ -55,9 +54,8 @@ class Show extends Component
             ];
         }
 
-        //TODO: Define printer_id from general settings
         $request = [
-            'printer-id'   => 1,
+            'printer-id'   => $this->defaultPrinter(),
             'order_number' => $order->number,
             'tax'          => $this->tax(),
             'items'        => $items,

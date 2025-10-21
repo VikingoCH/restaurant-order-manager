@@ -13,11 +13,14 @@ class Logout
 
     public function __invoke()
     {
-        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'logout');
-
-        if (isset($response->json()['success']) && $response->json()['success'])
+        if (session('print_plugin_token'))
         {
-            Session::forget('print_plugin_token');
+            $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'logout');
+
+            if (isset($response->json()['success']) && $response->json()['success'])
+            {
+                Session::forget('print_plugin_token');
+            }
         }
 
         Auth::guard('web')->logout();

@@ -15,8 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="bg-base-200/50 dark:bg-base-200/75 font-[verdana] antialiased">
-
+    <body class="bg-base-200/50 dark:bg-base-200/75 min-h-screen font-[verdana] antialiased">
         {{-- The navbar with `sticky` and `full-width` --}}
         <x-nav full-width sticky>
 
@@ -25,13 +24,10 @@
                 <label class="mr-3 lg:hidden" for="main-drawer">
                     <x-icon class="cursor-pointer" name="o-bars-3" />
                 </label>
-                <!-- APP LOGO -->
-                <x-app-logo>
-                    <h2 class="text-base-content md:text-md text-xs font-bold lg:text-2xl">
-                        {{-- Display the store name from the config --}}
-                        {{ config('app.store_name') }}
-                    </h2>
-                </x-app-logo>
+                <!-- Store Name -->
+                <h2 class="text-base-content md:text-md text-xs font-bold lg:text-3xl">
+                    {{ config('app.store_name') }}
+                </h2>
 
             </x-slot:brand>
 
@@ -59,6 +55,7 @@
             {{-- This is a sidebar that works also as a drawer on small screens --}}
             {{-- Notice the `main-drawer` reference here --}}
             <x-slot:sidebar class="bg-base-300" collapsible drawer="main-drawer">
+                <x-app-logo />
 
                 {{-- Activates the menu item when a route matches the `link` property --}}
                 <x-menu activate-by-route>

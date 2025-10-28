@@ -42,13 +42,18 @@
                 @if ($orderAmount >= 1)
                     <x-button class="btn-primary mt-auto" icon="gmdi.payments-o" label="{{ __('labels.pay') }}"
                         wire:click='pay' />
-                    <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print') }}"
-                        wire:click="$toggle('printing')" />
+                    @if (!session('print_disabled'))
+                        <x-button class="btn-secondary mt-auto" icon="o-printer" label="{{ __('labels.print-pay') }}"
+                            wire:click="printAndPay" />
+                    @else
+                        <x-button class="btn-secondary mt-auto" disabled icon="o-printer"
+                            label="{{ __('labels.print-pay') }}" />
+                    @endif
                 @else
                     <x-button class="btn-primary mt-auto" disabled icon="gmdi.payments-o"
                         label="{{ __('labels.pay') }}" />
                     <x-button class="btn-secondary mt-auto" disabled icon="o-printer"
-                        label="{{ __('labels.print') }}" />
+                        label="{{ __('labels.print-pay') }}" />
                 @endif
                 <x-buttons.cancel class="mt-auto" wire:click='cancel' />
             </div>

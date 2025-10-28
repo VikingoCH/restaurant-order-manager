@@ -5,8 +5,9 @@
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <title>{{ config('app.name', 'laravel') }}</title>
-        <link href="https://fonts.bunny.net" rel="preconnect">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+        {{-- <link href="https://fonts.bunny.net" rel="preconnect">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" /> --}}
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>

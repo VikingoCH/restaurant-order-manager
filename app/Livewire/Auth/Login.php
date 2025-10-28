@@ -46,11 +46,23 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
 
         // Print Plugin
-        $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'login', [
-            'email' => $this->email,
-            'password' => $this->password,
-            'is_admin' => Auth::user()->is_admin,
-        ]);
+        try
+        {
+            $response = Http::post(env('APP_PRINT_PLUGIN_URL') . 'login', [
+                'email' => $this->email,
+                'password' => $this->password,
+                'is_admin' => Auth::user()->is_admin,
+            ]);
+        }
+        catch (\Exception $e)
+        {
+            Session::put('print_disabled', true);
+            Log::error('Print plug-in - User login Exception: ' . $e->getMessage());
+            $this->toastError(__('messages.print_plugin_unreachable'));
+            Session::regenerate();
+            $this->redirectIntended(default: route('home', absolute: false), navigate: true);
+            return;
+        }
 
         if (!isset($response->json()['success']) || !$response->json()['success'])
         {

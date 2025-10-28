@@ -30,14 +30,22 @@ class OpenOrderItems extends Component
 
     public function mount()
     {
-        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
-        if (!$response->json('success'))
+        try
         {
-            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
-            $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
-        }
+            $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
+            if (!$response->json('success'))
+            {
+                Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+                $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
+            }
 
-        $this->printers = $response->json('data');
+            $this->printers = $response->json('data');
+        }
+        catch (\Exception $e)
+        {
+            Log::error('Print plug-in - Printers Exception: ' . $e->getMessage());
+            $this->warning(__('messages.print_plugin_unreachable'));
+        }
     }
 
     public function headers(): array
@@ -151,7 +159,7 @@ class OpenOrderItems extends Component
             $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-order', $request);
             if (!$response->json('success'))
             {
-                Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+                Log::error('Print plug-in - Print Order Error: ' . $response->status() . ' / ' . $response->json('errors'));
             }
 
             foreach ($printItems as $printItem)

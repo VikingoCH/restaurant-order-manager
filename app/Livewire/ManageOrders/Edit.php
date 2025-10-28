@@ -72,7 +72,7 @@ class Edit extends Component
         $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-check', $request);
         if (!$response->json('success'))
         {
-            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            Log::error('Print plug-in - Print Check Error: ' . $response->status() . ' / ' . $response->json('errors'));
         }
         else
         {

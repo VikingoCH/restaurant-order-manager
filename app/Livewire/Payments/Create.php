@@ -281,7 +281,7 @@ class Create extends Component
         $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-invoice', $request);
         if (!$response->json('success'))
         {
-            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            Log::error('Print plug-in - Print invoice Error: ' . $response->status() . ' / ' . $response->json('errors'));
         }
 
         $this->pay();

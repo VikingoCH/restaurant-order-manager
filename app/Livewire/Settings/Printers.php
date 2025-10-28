@@ -2,34 +2,60 @@
 
 namespace App\Livewire\Settings;
 
-use App\Models\Printer;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Validate;
 use Mary\Traits\Toast;
 
 class Printers extends Component
 {
     use Toast;
 
+    public $responseError = false;
+    public $printers;
+    public $headers;
+    public $showForm = false;
+
+    public $id = 0;
     #[Validate('required|string|max:150')]
     public $name = '';
-
     #[Validate('required|string|max:150')]
     public $printer_model = '';
-
-
     #[Validate('ip')]
     public $ip_address = '';
-
     #[Validate('required|integer')]
     public $connection_port = 0;
 
-    public $id;
-    public $responseError = "";
+    public function mount()
+    {
+        $this->getPrinters();
+        $this->headers = $this->headers();
+        // $this->getStoreInfo();
+    }
 
-    public $showForm = false;
+    public function getPrinters()
+    {
+        try
+        {
+            $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
+            if (!$response->json('success'))
+            {
+                Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+                $this->responseError = true;
+                $this->printers =  [];
+                return;
+            }
+        }
+        catch (\Exception $e)
+        {
+            Log::error('Print plug-in - Printers Exception: ' . $e->getMessage());
+            $this->responseError = true;
+            $this->printers =  [];
+            return;
+        }
+        $this->printers =  $response->json('data');
+    }
 
     public function headers()
     {
@@ -41,34 +67,12 @@ class Printers extends Component
             ['key' => 'connection_port', 'label' => __('labels.port')],
         ];
     }
-
-    public function printers()
-    {
-        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
-        if (!$response->json('success'))
-        {
-            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
-            $this->responseError = __('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors');
-            return [];
-        }
-        return $response->json('data');
-    }
-
-
     public function edit($id)
     {
         $this->authorize('manage_settings');
+        $printers = collect($this->printers);
+        $printer = $printers->where('id', $id)->first();
 
-        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printer/' . $id);
-        if (!$response->json('success'))
-        {
-            Log::error('Print plug-in - List Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
-            $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
-            return;
-        }
-        $printer = $response->json('data');
-
-        $this->reset();
         $this->fill($printer);
         $this->showForm = true;
     }
@@ -77,7 +81,7 @@ class Printers extends Component
     {
         $this->authorize('manage_settings');
 
-        $this->reset();
+        $this->reset('name', 'printer_model', 'ip_address', 'connection_port');
         $this->showForm = true;
     }
 
@@ -93,8 +97,6 @@ class Printers extends Component
                 'ip_address'      => $data['ip_address'],
                 'connection_port' => $data['connection_port']
             ]);
-
-            $this->reset();
         }
         else
         {
@@ -104,8 +106,6 @@ class Printers extends Component
                 'ip_address'      => $data['ip_address'],
                 'connection_port' => $data['connection_port']
             ]);
-
-            $this->reset();
         }
 
         if ($response->json('success'))
@@ -117,6 +117,9 @@ class Printers extends Component
             Log::error('Print plug-in - Save Printer Error: ' . $response->status() . ' / ' . $response->json('errors'));
             $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
         }
+        $this->getPrinters();
+        $this->reset('name', 'printer_model', 'ip_address', 'connection_port', 'showForm', 'id');
+        $this->dispatch('printerUpdated');
     }
 
     public function destroy($id)
@@ -134,15 +137,14 @@ class Printers extends Component
             Log::error('Print plug-in - Destroy Printer Error: ' . $response->status() . ' / ' . $response->json('errors'));
             $this->warning(__('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors'));
         }
+        $this->getPrinters();
+        $this->dispatch('printerUpdated');
     }
+
 
     public function render()
     {
-        $this->authorize('manage_settings');
 
-        return view('livewire.settings.printers', [
-            'headers' => $this->headers(),
-            'printers' => $this->printers(),
-        ]);
+        return view('livewire.settings.printers');
     }
 }

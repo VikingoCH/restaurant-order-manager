@@ -22,5 +22,5 @@ yarn-error.log
 /.vscode
 /.zed
 .DS_Store
-Archive.zip
+*.zip
 /temp

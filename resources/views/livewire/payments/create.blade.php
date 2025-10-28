@@ -94,7 +94,7 @@
                                 label="{{ __('labels.print-pay') }}" wire:click="printAndPay" />
                         @else
                             <x-button class="btn-secondary mt-auto" disabled icon="o-printer"
-                                label="{{ __('labels.print') }}" />
+                                label="{{ __('labels.print-pay') }}" />
                         @endif
                     @else
                         <x-button class="btn-primary mt-auto" disabled icon="gmdi.payments-o"
@@ -107,12 +107,4 @@
             </div>
         </x-card>
     </div>
-
-    <!-- Temporal printing modal - to be replaced by final printer method -->
-    <x-modal separator title="Printing payment" wire:model="printing">
-        <div class="flex justify-between">
-            Printing ...
-            <x-loading class="loading-bars" />
-        </div>
-    </x-modal>
 </div>

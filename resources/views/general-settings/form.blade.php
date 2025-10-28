@@ -61,27 +61,30 @@
 </div>
 
 <!-- Default Printer -->
-<div class="mt-4 flex flex-row gap-4">
-    <div class="flex w-3/5 flex-col">
-        <h3 class="text-lg font-bold">{{ __('Default Printer') }}</h3>
-        <p class="text-gray-500">
-            {{ __('Define the printer used for invoice and cash close receipts.') }}</p>
-    </div>
-    <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
-        <x-select :options="$printers" icon="o-printer" single wire:model="{{ $appSetting['default_printer'] }}" />
-        {{-- <x-input name="rows_per_page" value="{{ $appSetting['rows_per_page'] }}" /> --}}
-        @error('default_printer')
-            <span class="text-error mt-4 text-sm">{{ $errors->first('default_printer') }}</span>
-        @enderror
-    </x-card>
-</div>
+{{-- <div class="mt-4 flex flex-row gap-4"> --}}
+{{-- <div class="flex w-3/5 flex-col"> --}}
+{{-- <h3 class="text-lg font-bold">{{ __('Default Printer') }}</h3> --}}
+{{-- <p class="text-gray-500"> --}}
+{{-- {{ __('Define the printer used for invoice and cash close receipts.') }}</p> --}}
+{{-- </div> --}}
+{{-- <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow> --}}
 
-<!-- Receipt header -->
-<div class="mt-4 flex flex-row gap-4">
+{{-- @if ($reponseError != '') --}}
+{{-- <x-select :options="$printers" icon="o-printer" single wire:model="{{ $appSetting['default_printer'] }}" /> --}}
+{{-- <x-input name="rows_per_page" value="{{ $appSetting['rows_per_page'] }}" /> --}}
+{{-- @error('default_printer') --}}
+{{-- <span class="text-error mt-4 text-sm">{{ $errors->first('default_printer') }}</span> --}}
+{{-- @enderror --}}
+{{-- @endif --}}
+{{-- </x-card> --}}
+{{-- </div> --}}
+
+<!-- Receipt Store Info -->
+{{-- <div class="mt-4 flex flex-row gap-4">
     <div class="flex w-3/5 flex-col">
-        <h3 class="text-lg font-bold">{{ __('Receipt Header') }}</h3>
+        <h3 class="text-lg font-bold">{{ __('Receipt Restaurant Info') }}</h3>
         <p class="text-gray-500">
-            {{ __('Define the header of receipt when printing.') }}</p>
+            {{ __('Define the data to be shown in the header / footer of the receipt.') }}</p>
         <p class="text-red-500">{{ $responseError }}</p>
     </div>
     <x-card class="w-full rounded-xl border-neutral-200 dark:border-neutral-700" shadow>
@@ -110,4 +113,4 @@
             <span class="text-error mt-4 text-sm">{{ $errors->first('website') }}</span>
         @enderror
     </x-card>
-</div>
+</div> --}}

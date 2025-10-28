@@ -35,4 +35,3 @@ In the livewire component include 'changeRowOrder' method:
         }
 ```
 
-

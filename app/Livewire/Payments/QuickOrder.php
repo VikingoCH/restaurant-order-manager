@@ -9,6 +9,8 @@ use App\Models\TransactionItem;
 use App\Traits\AppSettings;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Mary\Traits\Toast;
 
 class QuickOrder extends Component
@@ -22,6 +24,7 @@ class QuickOrder extends Component
     public $grossTotal = 0;
     public $paymentTotal = 0;
     public $tax;
+    public $orderNumber;
 
     #[Validate('required|numeric|min:1')]
     public $orderAmount = 0;
@@ -50,6 +53,7 @@ class QuickOrder extends Component
     public function pay()
     {
         $this->validate();
+
         //Create the order
         $prefix = $this->orderPrefix();
         $order = Order::create([
@@ -61,6 +65,7 @@ class QuickOrder extends Component
         ]);
         $order->number = $prefix . "-" . date("Ymd") . "-" . $order->id;
         $order->save();
+        $this->orderNumber = $order->number;
 
         //Create the transaction
         $transaction = Transaction::create([
@@ -85,14 +90,37 @@ class QuickOrder extends Component
         return redirect()->route('transactions.index');
     }
 
-    //TODO: To include logic for printer.
-    public function updatedPrinting()
+    public function printAndPay()
     {
-        sleep(3);
-        $this->printing = false;
-        $this->success('Printed!');
-    }
+        $this->authorize('manage_orders');
+        $this->pay();
 
+        $items[] = [
+            'name'     => $this->itemName,
+            'quantity' => 1,
+            'price'    => $this->orderAmount,
+        ];
+
+        $request = [
+            'printer-id'   => $this->defaultPrinter(),
+            'order_number' => $this->orderNumber,
+            'tax'          => $this->tax(),
+            'items'        => $items,
+            'items_total'  => $this->orderAmount,
+            'gross_total'  => $this->grossTotal,
+            'tax_amount'   => $this->taxAmount,
+            'net_total'    => $this->netTotal,
+            'discount'     => $this->discountAmount,
+            'tip'          => $this->tip,
+            'total_paid'   => $this->paymentTotal,
+        ];
+
+        $response = Http::withToken(session('print_plugin_token'))->post(env('APP_PRINT_PLUGIN_URL') . 'print-invoice', $request);
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Print invoice Error: ' . $response->status() . ' / ' . $response->json('errors'));
+        }
+    }
 
     public function setPaymentMethods()
     {
@@ -112,7 +140,6 @@ class QuickOrder extends Component
     {
         $this->validate();
         $this->discountAmount = ($this->discount / 100) * $this->orderAmount;
-        // dd($this->discountAmount);
         $this->calculateTotals();
     }
 

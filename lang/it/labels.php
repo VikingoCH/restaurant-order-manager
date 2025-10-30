@@ -93,7 +93,7 @@ return [
     'section' => 'Sezione',
     'sections' => 'Sezioni',
     'settings' => 'Impostazioni',
-    'sides' => 'Contorni',
+    'sides' => 'Contorni - Opzioni',
     'slug' => 'Slug',
     'statistics' => 'Statistiche',
     'status' => 'Stato',

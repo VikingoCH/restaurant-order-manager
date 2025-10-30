@@ -93,7 +93,7 @@ return [
     'section' => 'Abschnitt',
     'sections' => 'Abschnitte',
     'settings' => 'Einstellungen',
-    'sides' => 'Beilagen',
+    'sides' => 'Beilagen - Optionen',
     'slug' => 'Slug',
     'statistics' => 'Statistiken',
     'status' => 'Status',

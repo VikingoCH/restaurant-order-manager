@@ -62,23 +62,26 @@
                 @if ($menuItem->menuFixedSides->count() || $menuItem->menuSelectableSides->count())
                     <h3 class="fieldset-legend mb-0.5">{{ __('labels.sides') }}</h3>
                 @endif
-                <div class="grid grid-cols-2 items-center">
-                    @if ($menuItem->menuFixedSides->count() || $menuItem->menuSelectableSides->count())
-                        <div>
-                            @foreach ($menuItem->menuFixedSides as $side)
-                                {{-- @if (in_array($side->id, $fixedSides)) --}}
-                                <x-checkbox label='{{ $side->name }}' value='{{ $side->id }}'
-                                    wire:model.live='fixedSides' />
-                                {{-- @endif --}}
-                            @endforeach
-                        </div>
-                    @endif
-                    @if ($menuItem->menuSelectableSides->count())
-                        <div>
-                            <x-radio :options="$menuItem->menuSelectableSides" wire:model="selectableSides" />
-                        </div>
-                    @endif
-                </div>
+                {{-- <div class="grid grid-cols-2 items-center"> --}}
+                {{-- @if ($menuItem->menuFixedSides->count() || $menuItem->menuSelectableSides->count()) --}}
+                @if ($menuItem->menuFixedSides->count())
+                    <div class="flex flex-row items-center gap-6 border-b border-neutral-200 py-2">
+                        {{-- <div> --}}
+                        @foreach ($menuItem->menuFixedSides as $side)
+                            {{-- @if (in_array($side->id, $fixedSides)) --}}
+                            <x-checkbox inline label='{{ $side->name }}' value='{{ $side->id }}'
+                                wire:model.live='fixedSides' />
+                            {{-- @endif --}}
+                        @endforeach
+                        {{-- </div> --}}
+                    </div>
+                @endif
+                @if ($menuItem->menuSelectableSides->count())
+                    {{-- <div class="flex flex-row gap-2"> --}}
+                    {{-- <div class="h-1/4 w-1/3"> --}}
+                    <x-radio :options="$menuItem->menuSelectableSides" class="flex" wire:model="selectableSides" />
+                    {{-- </div> --}}
+                @endif
 
                 <x-slot:actions>
                     <x-button label="{{ __('labels.cancel') }}" wire:click="$toggle('openEditForm')" />

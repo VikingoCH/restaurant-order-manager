@@ -24,9 +24,9 @@
                         <x-select :options="$printers" label="{{ __('labels.printer') }}" placeholder="---"
                             wire:model.blur="printer_id" />
                         <x-card class="rounded-xl border border-neutral-200 dark:border-neutral-700"
-                            title="{{ __('Side dishes') }}">
+                            title="{{ __('Sides-options') }}">
                             <x-slot:menu>
-                                <x-toggle label="{{ $withSides ? __('With Side Dishes') : __('Without Side Dishes') }}"
+                                <x-toggle label="{{ $withSides ? __('labels.included') : __('labels.included-not') }}"
                                     right wire:click="$toggle('withSides')" wire:model='withSides' />
                             </x-slot:menu>
                             @if ($withSides)

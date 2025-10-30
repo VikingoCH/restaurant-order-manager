@@ -10,6 +10,8 @@ use App\Models\MenuSide;
 use App\Models\Printer;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Livewire\WithFileUploads;
 use Mary\Traits\Toast;
 
@@ -20,6 +22,7 @@ class Create extends Component
     public $withSides = true;
     public $fixedSides = [];
     public $selectableSides = [];
+    public $printers;
 
     #[Validate('integer')]
     public $position;
@@ -38,6 +41,20 @@ class Create extends Component
 
     #[Validate('required|int')]
     public $printer_id;
+
+    public function mount(): void
+    {
+        $response = Http::withToken(session('print_plugin_token'))->get(env('APP_PRINT_PLUGIN_URL') . 'printers');
+        if (!$response->json('success'))
+        {
+            Log::error('Print plug-in - Printers Error: ' . $response->status() . ' / ' . $response->json('errors'));
+            // $this->responseError = __('Printer Plug-in error: ') . $response->status() . ' / ' . $response->json('errors');
+        }
+        else
+        {
+            $this->printers =  $response->json('data');
+        }
+    }
 
     public function save(): void
     {
@@ -81,7 +98,6 @@ class Create extends Component
         return view('livewire.menu.create', [
             'sections' => MenuSection::all(),
             'sides' => MenuSide::all(),
-            'printers' => Printer::all(),
         ]);
     }
 }

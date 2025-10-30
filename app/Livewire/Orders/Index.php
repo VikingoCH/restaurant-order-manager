@@ -26,7 +26,7 @@ class Index extends Component
             ['key' => 'is_open', 'label' => '', 'class' => 'w-1'],
             ['key' => 'number', 'label' => __('labels.order_number')],
             ['key' => 'table', 'label' => __('labels.table'), 'class' => 'w-3'],
-            ['key' => 'total', 'label' => __('labels.amount_order'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'w-48'],
+            ['key' => 'total', 'label' => __('labels.amount'), 'format' => ['currency', '2.\'', 'CHF '], 'class' => 'w-48'],
             ['key' => 'total_order', 'label' => __('labels.total_paid'), 'format' => ['currency', '2.\'', 'CHF ']],
             ['key' => 'created_at', 'label' => __('labels.open_at'), 'format' => ['date', 'Y/m/d (H:i)']],
             ['key' => 'updated_at', 'label' => __('labels.closed_at'), 'format' => ['date', 'Y/m/d (H:i)']],

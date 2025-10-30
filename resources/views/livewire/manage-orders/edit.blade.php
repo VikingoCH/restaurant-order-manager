@@ -4,7 +4,7 @@
         <x-slot name="actions">
             @if (Auth::user()->can('manage_orders'))
                 @if (!session('print_disabled'))
-                    <x-buttons.print label="Print Invoice" wire:click='print' />
+                    <x-buttons.print :label="__('Invoice')" wire:click='print' />
                 @endif
                 <x-buttons.pay link="{{ route('payments.create', [$order->id]) }}" />
             @endif

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CashClose;
 use App\Http\Controllers\GeneralSettingController;
 use App\Livewire\Profile\DeleteUserForm;
 use App\Livewire\Profile\Password;
@@ -56,8 +57,6 @@ Route::middleware(['auth'])->group(function ()
         Route::get('/by-month/{date}', [ByMonthController::class, 'printPDF'])->name('by-month');
         Route::get('/by-year/{date}', [ByYearController::class, 'printPDF'])->name('by-year');
     });
-
-
 
     Route::name('menu.')->prefix('menu')->group(function ()
     {

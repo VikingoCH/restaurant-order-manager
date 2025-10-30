@@ -19,9 +19,6 @@ class ListUsers extends Component
         $users = User::all();
         $this->users = $users->except(Auth::id());
 
-        //TODO: Show token from session - to be removed
-        $this->token = session('print_plugin_token');
-
         $this->headers = [
             ['key' => 'name', 'label' => __('Name')],
             ['key' => 'email', 'label' => __('Email')],

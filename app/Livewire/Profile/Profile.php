@@ -17,7 +17,6 @@ class Profile extends Component
     public string $email = '';
     public bool $showAlert = false;
     public string $alertMessage = "";
-    public $token;
 
     /**
      * Mount the component.
@@ -26,7 +25,6 @@ class Profile extends Component
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
-        $this->token = session('print_plugin_token');
     }
 
     /**

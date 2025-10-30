@@ -24,3 +24,5 @@ yarn-error.log
 .DS_Store
 *.zip
 /temp
+database/seeders/*
+database/seeders/User*.php

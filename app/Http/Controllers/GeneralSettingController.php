@@ -30,9 +30,6 @@ class GeneralSettingController extends Controller
 
         return view('general-settings.index', [
             'appSetting' => $this->appSetting,
-            // 'receiptInfo' => $this->receiptInfo,
-            // 'printers' => $this->printers,
-            // 'responseError' => $this->responseError,
         ]);
     }
 

@@ -30,13 +30,7 @@
                     {{ 'CHF ' . number_format($totals->discount_sum, 2) }}
                 </div>
             </div>
-            <!-- Order Tax -->
-            {{-- <div class="mt-4 flex flex-row gap-2">
-                <div class="basis-2/3 py-2 text-end font-bold">{{ __('labels.tax') }}</div>
-                <div class="basis-1/3 px-12 py-2 text-end font-bold">
-                    {{ 'CHF ' . number_format($totals->tax_sum, 2) }}
-                </div>
-            </div> --}}
+
             <!-- Order Tip -->
             <div class="mt-4 flex flex-row gap-2">
                 <div class="basis-2/3 py-2 text-end font-bold">{{ __('labels.tip') }}</div>

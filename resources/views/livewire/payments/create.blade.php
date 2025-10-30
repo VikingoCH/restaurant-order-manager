@@ -4,11 +4,10 @@
             <div class="flex flex-row gap-2 text-xl font-bold lg:text-2xl">
                 <span>{{ $order->number . ': ' }}</span>
                 <span>{{ 'CHF ' . number_format($order->total, 2) }}</span>
-
             </div>
-
         </x-slot:middle>
     </x-header>
+
     @if ($hasOpenItems)
         <x-alert class="alert-warning"
             description="{{ __('If continue with payment all open items will be closed automatically or check Order page') }}"

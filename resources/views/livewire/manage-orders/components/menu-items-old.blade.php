@@ -9,7 +9,6 @@
 
         @foreach ($menuItems as $menuItem)
             <x-list-item :item="$menuItem" avatar="image_path" class="w-full">
-                {{-- <x-list-item :item="$menuItem" class="w-full"> --}}
                 <x-slot:avatar>
                     <a class="cursor-pointer" link="#" wire:click.prevent='add({{ $menuItem->id }})'>
                         @if ($menuItem->image_path != null)

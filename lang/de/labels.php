@@ -62,7 +62,7 @@ return [
     'one_of' => 'Einer von',
     'open_at' => 'Geöffnet bei',
     'open_items' => 'Offene Gegenstände',
-    'open_orders' => 'Aufträge offen',
+    'open_orders' => 'offene Bestellungen',
     'option' => 'Option',
     'options' => 'Optionen',
     'order' => 'Bestellung',
